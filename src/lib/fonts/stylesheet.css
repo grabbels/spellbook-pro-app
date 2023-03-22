@@ -1,0 +1,12 @@
+@font-face {
+    font-family: 'Nakaryon\'s Gifts';
+    src: url('NakaryonsGifts-Bold.eot');
+    src: url('NakaryonsGifts-Bold.eot?#iefix') format('embedded-opentype'),
+        url('NakaryonsGifts-Bold.woff2') format('woff2'),
+        url('NakaryonsGifts-Bold.woff') format('woff'),
+        url('NakaryonsGifts-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

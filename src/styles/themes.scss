@@ -1,0 +1,126 @@
+// :root {
+//     --onbackground: #fff;
+//     --onforeground: rgb(23, 9, 57);
+//     --bodybg: rgb(15, 15, 15);
+//     --cardbg: rgb(20, 20, 20);
+//     --panelbg: rgb(28, 28, 28);
+//     --inputbg: rgb(50, 50, 50);
+//     --primary: rgb(131, 78, 185);
+//     --accent: rgb(36, 163, 134);
+//     --accentrgb: 0, 204, 157;
+//     --secondaryaccent: rgb(0, 170, 204);
+//     --translucent: rgba(255, 255, 255, 0.3);
+//     --moretranslucent: rgba(255, 255, 255, 0.1);
+//     --lesstranslucent: rgba(255, 255, 255, 0.6);
+
+//     --red: #fe5a51;
+//     --purple: #834eb9;
+//     --lightgreen: rgb(0, 204, 157);
+//     --lightblue: rgb(0, 170, 204);
+//     --yellow: #e9ab00;
+//     --darkblue: #434be4;
+//     --darkgreen: #0f8183;
+//     --pink: #ca3cc7;
+//     --brown: rgb(80, 42, 16);
+//     --shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+// }
+
+// body {
+//     &.light {
+//         --onbackground: #000000;
+//         --onforeground: rgb(255, 255, 255);
+//         --bodybg: rgb(201, 201, 201);
+//         --cardbg: rgb(238, 238, 238);
+//         --panelbg: rgb(226, 226, 226);
+//         --inputbg: rgb(231, 231, 231);
+//     }
+// }
+
+//LIGHT
+// :root {
+//     --onforeground: #fff;
+//     --onbackground: rgb(20, 6, 54);
+//     --bodybg: rgb(225, 225, 225);
+//     --cardbg: rgb(230, 230, 230);
+//     --panelbg: rgb(255, 255, 255);
+//     --inputbg: rgb(203, 203, 203);
+//     --primary: rgb(131, 78, 185);
+//     --accent: rgb(0, 204, 157);
+//     --accentrgb: 0, 204, 157;
+//     --secondaryaccent: rgb(0, 170, 204);
+//     --translucent: rgba(0, 0, 0, 0.3);
+//     --moretranslucent: rgba(0, 0, 0, 0.1);
+//     --lesstranslucent: rgba(0, 0, 0, 0.6);
+//     --darkener: rgba(0, 0, 0, 0);
+
+//     --red: #fe5a51;
+//     --purple: #834eb9;
+//     --lightgreen: rgb(0, 204, 157);
+//     --lightblue: rgb(0, 170, 204);
+//     --yellow: #e9ab00;
+//     --darkblue: #434be4;
+//     --darkgreen: #0f8183;
+//     --pink: #ca3cc7;
+//     --brown: rgb(80, 42, 16);
+
+//     --shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+// }
+
+:root {
+    --onbackground: #fff;
+    --onforeground: rgb(20, 6, 54);
+    --bodybg: rgb(9, 5, 27);
+    --cardbg: rgb(16, 12, 35);
+    --panelbg: rgb(17, 7, 40);
+    --inputbg: rgb(79, 74, 107);
+    --primary: rgb(131, 78, 185);
+    --accent: rgb(0, 204, 157);
+    --accentrgb: 0, 204, 157;
+    --secondaryaccent: rgb(0, 170, 204);
+    --translucent: rgba(255, 255, 255, 0.3);
+    --moretranslucent: rgba(255, 255, 255, 0.1);
+    --lesstranslucent: rgba(255, 255, 255, 0.6);
+    --darkener: rgba(0, 0, 0, 0.3);
+
+    --red: #fe5a51;
+    --purple: #834eb9;
+    --lightgreen: rgb(0, 204, 157);
+    --lightblue: rgb(0, 170, 204);
+    --yellow: #e9ab00;
+    --darkblue: #434be4;
+    --darkgreen: #0f8183;
+    --pink: #ca3cc7;
+    --brown: rgb(80, 42, 16);
+
+    --shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+
+// :root {
+//     --onbackground: #fff;
+//     --onforeground: rgb(23, 9, 57);
+//     --bodybg: rgb(49, 35, 114);
+//     --cardbg: rgb(23, 9, 57);
+//     --panelbg: rgb(33, 14, 79);
+//     --inputbg: rgb(115, 108, 150);
+//     --primary: rgb(131, 78, 185);
+//     --accent: rgb(0, 204, 157);
+//     --accentrgb: 0, 204, 157;
+//     --secondaryaccent: rgb(0, 170, 204);
+//     --translucent: rgba(255, 255, 255, 0.3);
+//     --moretranslucent: rgba(255, 255, 255, 0.1);
+//     --lesstranslucent: rgba(255, 255, 255, 0.6);
+
+//     --red: #fe5a51;
+//     --purple: #834eb9;
+//     --lightgreen: rgb(0, 204, 157);
+//     --lightblue: rgb(0, 170, 204);
+//     --yellow: #e9ab00;
+//     --darkblue: #434be4;
+//     --darkgreen: #0f8183;
+//     --pink: #ca3cc7;
+//     --brown: rgb(80, 42, 16);
+
+//     --shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+// }
