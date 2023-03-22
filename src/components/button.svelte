@@ -74,5 +74,18 @@
 				}
 			}
 		}
+		&.outline {
+			background-color: transparent;
+			border-color: var(--inputbg);
+			color: var(--onbackground);
+			&.accent {
+				border-color: var(--accent);
+				// color: var(--accent)
+			}
+			&.blue {
+				border-color: var(--lightblue);
+				// color: var(--lightblue)
+			}
+		}
 	}
 </style>

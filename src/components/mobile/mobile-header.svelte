@@ -137,6 +137,7 @@
 					display: grid;
 					height: 48px;
 					grid-template-columns: 125px 1fr;
+					// grid-template-rows: 50px;
 					gap: 0.3rem;
 					background-color: var(--cardbg);
 					border-radius: 18px;

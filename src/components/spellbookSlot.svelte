@@ -39,7 +39,7 @@
 		padding: 1rem 1.3rem;
 		border-radius: 24px;
 		position: relative;
-		box-shadow: 0 3px 5px rgba(10, 10, 10, 0.2);
+		// box-shadow: 0 3px 5px rgba(10, 10, 10, 0.2);
 		.inner {
 			display: grid;
 			grid-template-columns: 60px 1fr;

@@ -23,10 +23,10 @@
 
 <style lang="scss">
 	.ui-active_tab_bar {
-		width: calc(100% - 1rem);
+		width: calc(100% - 1.4rem);
 		border-radius: 12px;
 		position: fixed;
-		left: 0.5rem;
+		left: 0.7rem;
 		overflow: hidden;
 		pointer-events: auto;
 		transition: .3s;

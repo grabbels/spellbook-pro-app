@@ -27,6 +27,20 @@
 		justify-content: center;
 		align-items: center;
 		padding-top: 0.2rem;
+		background-color: var(--lightbg);
+		padding: 0.3rem 0;
+		position: relative;
+		&:after {
+			top: .3rem;
+			left: .3rem;
+			right: .3rem;
+			bottom: .3rem;
+			position: absolute;
+			content: '';
+			background-color: transparent;
+			transition: .2s;
+			border-radius: 18px;
+		}
 		.button_inner {
 			display: flex;
 			flex-direction: column;
@@ -54,7 +68,13 @@
 				font-weight: 400;
 			}
 		}
+		&:active {
+			&:after {
+				background-color: var(--moretranslucent);
+			}
+		}
 		&.active {
+			
 			.button_inner {
 				opacity: 1;
 				i,
@@ -62,6 +82,12 @@
 					color: var(--accent);
 				}
 			}
+		}
+		&:first-of-type {
+			border-radius: 18px 0 0 18px;
+		}
+		&:last-of-type {
+			border-radius: 0 18px 18px 0;
 		}
 	}
 </style>

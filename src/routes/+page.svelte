@@ -1,8 +1,8 @@
 <script>
 	import AddSpellsMenu from '../components/addSpellsMenu.svelte';
 	import MobileHeader from '../components/mobile/mobile-header.svelte';
-	import MobileTabbar from '../components/mobile/tab-bar.svelte';
-	import MobileActiveTabbar from '../components/mobile/activeTab-bar.svelte';
+	import MobileTabbar from '../components/mobile/mobile-tab-bar.svelte';
+	import MobileActiveTabbar from '../components/mobile/mobile-activeTab-bar.svelte';
 	import Modal from '../components/modal.svelte';
 	import QuickSearchPanel from '../components/quickSearchPanel.svelte';
 	import SmokeScreen from '../components/smokeScreen.svelte';
@@ -58,11 +58,12 @@
 
 {#if $modalCall}
 	<Modal />
-	{#if $modalCall !== 'spellbook'}
+	{#if $modalCall === 'spellbook'}
+		<SmokeScreen solid />
+	{:else}
 		<SmokeScreen />
 	{/if}
 {/if}
-
 <div
 	out:fly={{ duration: 300, y: 20 }}
 	in:fly={{ duration: 300, y: 20, delay: 300 }}

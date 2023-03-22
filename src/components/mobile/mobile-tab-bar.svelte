@@ -1,7 +1,7 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { page, tabBarHeight } from '../../stores';
-	import Tab from './tab.svelte';
+	import Tab from './mobile-tab.svelte';
 </script>
 
 <div class="ui-mobile_tabbar" bind:clientHeight={$tabBarHeight}>
@@ -15,10 +15,11 @@
 	.ui-mobile_tabbar {
 		width: 100%;
 		position: fixed;
-		background-color: var(--panelbg);
+		// background-color: var(--panelbg);
 		bottom: 0;
 		left: 0;
-		padding-bottom: max(var(--safe-area-inset-bottom), .5rem);
+		padding: .3rem .7rem max(calc(var(--safe-area-inset-bottom) + .3rem), .5rem);
+		// padding-bottom: max(var(--safe-area-inset-bottom), .5rem);
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 		z-index: 10;
@@ -30,7 +31,7 @@
 			right: -1rem;
 			top: 0;
 			bottom: -1rem;
-			background-color: var(--panelbg);
+			// background-color: var(--panelbg);
 			z-index: -1;
 		}
 	}

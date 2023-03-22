@@ -72,6 +72,7 @@
     --bodybg: rgb(9, 5, 27);
     --cardbg: rgb(16, 12, 35);
     --panelbg: rgb(17, 7, 40);
+    --lightbg: rgb(23, 12, 49);
     --inputbg: rgb(79, 74, 107);
     --primary: rgb(131, 78, 185);
     --accent: rgb(0, 204, 157);
@@ -93,6 +94,38 @@
     --brown: rgb(80, 42, 16);
 
     --shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+body {
+    &.light {
+        --onbackground: #000000;
+        --onforeground: rgb(255, 255, 255);
+        --bodybg: rgb(243, 239, 246);
+        --cardbg: rgb(255, 255, 255);
+        --panelbg: rgb(255, 255, 255);
+        --lightbg: rgb(235, 234, 255);
+        --inputbg: rgb(79, 74, 107);
+        --primary: rgb(131, 78, 185);
+        --accent: rgb(66, 203, 171);
+        --accentrgb: 0, 204, 157;
+        --secondaryaccent: rgb(0, 170, 204);
+        --translucent: rgba(255, 255, 255, 0.3);
+        --moretranslucent: rgba(255, 255, 255, 0.1);
+        --lesstranslucent: rgba(255, 255, 255, 0.6);
+        --darkener: rgba(0, 0, 0, 0.3);
+
+        --red: #fe5a51;
+        --purple: #834eb9;
+        --lightgreen: rgb(0, 204, 157);
+        --lightblue: rgb(0, 170, 204);
+        --yellow: #e9ab00;
+        --darkblue: #434be4;
+        --darkgreen: #0f8183;
+        --pink: #ca3cc7;
+        --brown: rgb(80, 42, 16);
+
+        --shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
 }
 
 

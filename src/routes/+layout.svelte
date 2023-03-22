@@ -4,11 +4,15 @@
 	import '@fontsource/kanit/400.css';
 	import '@fontsource/kanit/500.css';
 	import 'remixicon/fonts/remixicon.css';
-
+	import { KeepAwake } from '@capacitor-community/keep-awake';
+	const keepAwake = async () => {
+		await KeepAwake.keepAwake();
+	};
+	keepAwake();
 	//mobile-only components
-	import MobileActiveTabbar from '../components/mobile/activeTab-bar.svelte';
+	import MobileActiveTabbar from '../components/mobile/mobile-activeTab-bar.svelte';
 	import MobileHeader from '../components/mobile/mobile-header.svelte';
-	import MobileTabbar from '../components/mobile/tab-bar.svelte';
+	import MobileTabbar from '../components/mobile/mobile-tab-bar.svelte';
 	import MobileTabpanel from '../components/mobile/mobile-tabpanel.svelte';
 	//components
 	import Modal from '../components/modal.svelte';
