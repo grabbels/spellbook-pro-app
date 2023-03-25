@@ -12,12 +12,12 @@
 		class:hidden={$tabPanelOpen}
 	>
 		<div class="inner">
-			<p>Active tab book title</p>
-			<div class="icon">
+			<div class="icon" style="">
 				<i class="ri-book-open-line" />
 			</div>
+			<p>Active tab book title</p>
 		</div>
-		<div class="book_color_line" style="background-color: var(--pink)" />
+		<!-- <div class="book_color_line" style="background-color: var(--pink)" /> -->
 	</button>
 {/if}
 
@@ -29,8 +29,10 @@
 		left: 0.7rem;
 		overflow: hidden;
 		pointer-events: auto;
-		transition: .3s;
+		transition: 0.3s;
 		opacity: 1;
+		height: 48px;
+		box-sizing: border-box;
 		&:after {
 			content: '';
 			left: 0;
@@ -57,7 +59,7 @@
 		.inner {
 			z-index: 1;
 			display: grid;
-			grid-template-columns: 1fr auto;
+			grid-template-columns: auto 1fr;
 			// padding: 0.8rem;
 			p {
 				margin: auto;
@@ -65,12 +67,16 @@
 				color: white;
 			}
 			.icon {
-				height: 47px;
+				height: calc(48px - 0.4rem);
+				width: calc(48px - 0.4rem);
+				margin-left: 0.2rem;
 				aspect-ratio: 1 / 1;
 				background-color: var(--moretranslucent);
 				display: flex;
 				justify-content: center;
 				align-items: center;
+				border-radius: 12px;
+				// margin: 1rem;
 				i {
 					font-size: 1.2rem;
 					color: white;

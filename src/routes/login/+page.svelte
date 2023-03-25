@@ -1,84 +1,90 @@
 <script>
+	import Login from '../../components/login.svelte';
 	import SafeViewPadding from '../../components/safeViewPadding.svelte';
-	import Panel from '../../components/panel.svelte';
-	import BookAnimation from '../../components/bookAnimation.svelte';
-	import Button from '../../components/button.svelte';
-	import { goto } from '$app/navigation';
-	import { fly } from 'svelte/transition';
-	import { visualViewport } from '../../stores';
-    import Icon from '$lib/icon-small.png'
-    let focus, emailField, passwordField;
-	async function handleLogin() {
-		console.log('handle login');
-	}
+	import Shift from '$lib/shift-bg.png';
+	import { fade } from 'svelte/transition';
+	import CenterContainer from '../../components/centerContainer.svelte';
 </script>
 
 <SafeViewPadding>
-	<div
-		class="login_form"
-		out:fly={{ duration: 300, y: 20 }}
-		in:fly={{ duration: 300, y: 20, delay: 300 }}
-        style="height: {$visualViewport.height}px"
-	>
-		<div class="inner">
-				<div class="book_wrap" style="overflow: hidden; transition: .3s; height: {focus ? '0px' : '150px'}; transform: scale({focus ? '0' : '1'}); opacity: {focus ? '0' : '1'}">
-                    <img src="{Icon}" alt="">
-                </div>
-			<h1>Spellbook<span>Pro</span></h1>
-			<Panel>
-				<h2>Log in</h2>
-				<form on:submit|preventDefault={() => handleLogin()}>
-					<input on:focus={()=>focus = true} on:blur={()=>focus = false} bind:this={emailField} required placeholder="E-mail" type="email" />
-					<input on:focus={()=>focus = true} on:blur={()=>focus = false} bind:this={passwordField} required placeholder="Password" type="password" />
-					<div style="text-align: right"><Button submit text="Log in" type="fill accent" /></div>
-				</form>
-			</Panel>
-			<p>
-				No account yet? <button class="href" on:click={() => goto('/onboarding')}
-					>Create an account</button
-				>.
-			</p>
-		</div>
+	<CenterContainer>
+    <div style="padding: 1rem">
+		<Login />
 	</div>
+    </CenterContainer>
 </SafeViewPadding>
+<div class="shift-bg" transition:fade>
+	<div class="rotate">
+		<div class="shift" style="background-image: url({Shift})" />
+		<div class="shift" style="background-image: url({Shift})" />
+		<div class="shift" style="background-image: url({Shift})" />
+		<div class="shift" style="background-image: url({Shift})" />
+		<div class="shift" style="background-image: url({Shift})" />
+		<div class="shift" style="background-image: url({Shift})" />
+	</div>
+</div>
 
-<!-- <div class="background" />
-<div class="isolate">
-	<div class="noise" />
-	<div class="overlay" />
-</div> -->
 <style lang="scss">
-	.login_form {
-		height: 100%;
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: .5rem;
-		.inner {
-			display: flex;
-			justify-content: center;
-			align-items: center;
-			flex-direction: column;
-			// padding-bottom: 8rem;
-			h1 {
-				margin-top: .5rem;
-				margin-bottom: 2rem;
-				span {
-					vertical-align: super;
-					font-size: 1.2rem;
-					font-weight: 300;
-					margin-left: 0.2rem;
+	.shift-bg {
+		position: absolute;
+		z-index: -1;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		overflow: hidden;
+		background-color: var(--bodybg);
+		opacity: 0.2;
+		// filter: contrast(0.8);
+		filter: blur(2px);
+		.rotate {
+			transform: rotate(20deg);
+			position: absolute;
+			top: 0;
+			// left: -50px;
+			width: 100%;
+			height: 100%;
+			// filter: blur(1px);
+			.shift {
+				// display: inline-block;
+				width: 378px;
+				height: 1994px;
+				height: 200%;
+				background-size: contain;
+				background-repeat: repeat-y;
+				// transform: rotate(20deg);
+				position: absolute;
+				left: 0;
+				top: -50%;
+				background-position: 0 0%;
+				animation-name: shift;
+				animation-timing-function: linear;
+				animation-iteration-count: infinite;
+				animation-duration: 45s;
+				@keyframes shift {
+					to {
+						background-position: 0 997px;
+					}
+				}
+				&:nth-child(1) {
+					transform: translate(-250%, -10%);
+				}
+				&:nth-child(2) {
+					transform: translate(-150%, -5%);
+				}
+				&:nth-child(3) {
+					transform: translate(-50%, 0%);
+				}
+				&:nth-child(4) {
+					transform: translate(50%, 5%);
+				}
+				&:nth-child(5) {
+					transform: translate(150%, 10%);
+				}
+				&:nth-child(6) {
+					transform: translate(250%, 15%);
 				}
 			}
-			p {
-				margin-top: 1rem;
-			}
-            img {
-                width: 150px;
-                border-radius: 24px;
-            }
 		}
 	}
 </style>

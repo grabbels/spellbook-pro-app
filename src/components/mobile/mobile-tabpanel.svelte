@@ -93,8 +93,8 @@
 			</button>
 		</div>
 		<div class="buttons">
-			<Button text="New book" icon="ri-add-line" type="fill accent" on:click={()=> {$modalCall = 'new'; $tabPanelOpen = false}}/>
-			<Button text="Library" icon="ri-book-mark-line" type="fill blue" on:click={()=> {$tabPanelOpen = false; $page = 'browse'}}/>
+			<Button text="New book" icon="ri-add-line" type="fill accent" on:click={()=> {$modalCall = 'new'}}/>
+			<Button text="Library" icon="ri-book-mark-line" type="fill blue" on:click={()=> {$tabPanelOpen = false; $page = 'library'}}/>
 		</div>
 	</div>
 </div>

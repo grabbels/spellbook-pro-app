@@ -35,7 +35,7 @@
 		padding: 1rem;
 		margin-bottom: 0.3rem;
 		background-color: var(--cardbg);
-		margin: 0.6rem;
+		margin: .4rem .8rem;
 		padding: 1rem 1.3rem;
 		border-radius: 24px;
 		position: relative;

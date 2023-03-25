@@ -10,6 +10,8 @@
 	import Browse from '../views/browse.svelte';
 	import Library from '../views/library.svelte';
 	import Spellbook from '../views/spellbook.svelte';
+	import { goto } from '$app/navigation';
+
 	import {
 		addSpellsMenuOpen,
 		horizontalSwipe,
@@ -20,7 +22,9 @@
 		visualViewport
 	} from '../stores';
 	import MobileTabpanel from '../components/mobile/mobile-tabpanel.svelte';
-	import { fly } from 'svelte/transition';
+	import { crossfade, fade, fly, scale, slide } from 'svelte/transition';
+	import { user } from '../stores-persist';
+	import { onMount } from 'svelte';
 
 	let touchStart, touchEnd, touchPos, touchMove, direction, screenWidth, mainContent;
 
@@ -54,16 +58,13 @@
 			}
 		}
 	}
+	onMount(() => {
+		if (!$user) {
+			goto('/onboarding');
+		}
+	});
 </script>
 
-{#if $modalCall}
-	<Modal />
-	{#if $modalCall === 'spellbook'}
-		<SmokeScreen solid />
-	{:else}
-		<SmokeScreen />
-	{/if}
-{/if}
 <div
 	out:fly={{ duration: 300, y: 20 }}
 	in:fly={{ duration: 300, y: 20, delay: 300 }}
@@ -78,6 +79,7 @@
 >
 	{#key $page}
 		<div
+			in:fade={{ duration: 200 }}
 			bind:clientWidth={screenWidth}
 			class="page"
 			on:touchmove={(e) => handleTouchMove(e)}
@@ -106,7 +108,7 @@
 	class="fixed_ui"
 	style="{$horizontalSwipe
 		? 'transition: 0s; transform: translateX(' + $horizontalSwipe * 100 + '%)'
-		: ''}; touch-action: none"
+		: ''}; touch-action: none;"
 	out:fly={{ duration: 300, y: 20 }}
 	in:fly={{ duration: 300, y: 20, delay: 300 }}
 >
@@ -115,9 +117,8 @@
 	<MobileHeader />
 	<MobileTabbar />
 	<MobileActiveTabbar />
+	<MobileTabpanel />
 </div>
-
-<MobileTabpanel />
 
 <style lang="scss">
 	.fixed_ui {
@@ -127,9 +128,12 @@
 		right: 0;
 		bottom: 0;
 		transform-origin: center;
-		transition: 0.35s;
+		transition: transform 0.35s;
 		pointer-events: none;
 		transition-timing-function: cubic-bezier(0.3, 0, 0.3, 1);
+		z-index: 2;
+		// overflow-y: hidden;
+		touch-action: none;
 		&.back {
 			transform: scale(0.98);
 		}
@@ -139,11 +143,16 @@
 	}
 	.main_content {
 		padding: 0 0.3rem;
+		height: 100vh;
 		transform-origin: center;
 		transition: 0.35s;
+		overflow-x: hidden;
 		overflow-y: auto;
-		height: 100%;
+		position: relative;
+		// height: 100%;
+		width: 100vw;
 		transition-timing-function: cubic-bezier(0.3, 0, 0.3, 1);
+		pointer-events: auto;
 		&.back {
 			transform: scale(0.98);
 			height: 100vh;
@@ -152,6 +161,7 @@
 		}
 		&.right {
 			transform: translateX(100%);
+			pointer-events: none;
 		}
 	}
 </style>

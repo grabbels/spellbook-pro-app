@@ -54,8 +54,8 @@
 			width: 100%;
             overflow: hidden;
             position: relative;
-			ul {
-				padding-top: 50px;
+			ul.results{
+				// padding-top: 50px;
                 padding-bottom: 1rem;
                 overflow: hidden;
                 overflow-y: auto;

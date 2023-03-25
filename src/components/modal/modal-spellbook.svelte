@@ -1,9 +1,9 @@
 <script>
-	import { lookupBook } from '../../stores';
+	import { bookToEdit, lookupBook } from '../../stores';
+	import { user } from '../../stores-persist';
 	import Button from '../button.svelte';
 	import Pill from '../pill.svelte';
 	import SpellCard from '../spellCard.svelte';
-
 	let sortedSpellsList;
 
 	if ($lookupBook.list) {
@@ -39,13 +39,23 @@
 <p>{$lookupBook.description}</p>
 <div class="buttons">
 	<div><Button text="Open" icon="ri-folder-open-line" type="fill accent" /></div>
-	{#if $lookupBook.published === true}
-		<div><Button text="Publish" icon="ri-share-line" type="fill blue" /></div>
-	{:else if $lookupBook.published === false}
-		<div><Button text="Unpublish" icon="ri-share-line" type="outline blue" /></div>
+	{#if $user.id === $lookupBook.user_id}
+		{#if $lookupBook.published === true}
+			<div><Button text="Publish" icon="ri-share-line" type="fill blue" /></div>
+		{:else if $lookupBook.published === false}
+			<div><Button text="Unpublish" icon="ri-share-line" type="outline blue" /></div>
+		{/if}
+
+		<div>
+			<Button
+				text="Edit"
+				icon="ri-edit-2-line"
+				type="fill"
+				on:click={() => ($bookToEdit = $lookupBook)}
+			/>
+		</div>
+		<div><Button text="Delete" icon="ri-delete-bin-line" type="fill red" /></div>
 	{/if}
-	<div><Button text="Edit" icon="ri-edit-2-line" type="fill" /></div>
-	<div><Button text="Delete" icon="ri-delete-bin-line" type="fill red" /></div>
 </div>
 <div class="spells">
 	{#each sortedSpellsList as list, i}

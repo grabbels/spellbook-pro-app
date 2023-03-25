@@ -87,6 +87,7 @@
 
 <style lang="scss">
 	.card {
+		text-align: left;
 		.block.pills {
 			margin-bottom: 0.3rem;
 			display: flex;
@@ -134,7 +135,7 @@
 			border-radius: 0;
 			position: relative;
 			overflow: hidden;
-			margin: .6rem;
+			margin: .4rem .8rem;
 			padding: .5rem .8rem;
 			border-radius: 24px;
 			.card_inner {

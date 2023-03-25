@@ -46,7 +46,7 @@
 </script>
 
 <div style="--bookcolor: {bookColor ? bookColor : 'var(--white)'}">
-	<h2><i class="ri-bookmark-line" /> New spellbook</h2>
+	<h2><i class="ri-bookmark-{bookColor ? 'fill' : 'line'}" /> New spellbook</h2>
 	<form on:submit|preventDefault={() => handleSubmit()}>
 		<!-- <label for="title">Book name</label>
 		<input bind:value={bookName} id="name" type="text" /> -->
@@ -102,6 +102,27 @@
 				</ul>
 			</div>
 		</div>
+		<div class="column">
+			<label for="color">Color</label>
+			<div class="color_picker">
+				<input type="radio" bind:group={bookColor} name="color" id="purple" value="var(--purple)">
+				<label for="purple" name="color" id="purple" style="background-color: var(--purple)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="red" value="var(--red)">
+				<label for="red" id="red" style="background-color: var(--red)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="lightgreen" value="var(--lightgreen)">
+				<label for="lightgreen" id="lightgreen" style="background-color: var(--lightgreen)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="lightblue" value="var(--lightblue)">
+				<label for="lightblue" id="lightblue" style="background-color: var(--lightblue)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="yellow" value="var(--yellow)">
+				<label for="yellow" id="yellow" style="background-color: var(--yellow)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="darkblue" value="var(--darkblue)">
+				<label for="darkblue" id="darkblue" style="background-color: var(--darkblue)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="darkgreen" value="var(--darkgreen)">
+				<label for="darkgreen" id="darkgreen" style="background-color: var(--darkgreen)"></label>
+				<input type="radio" bind:group={bookColor} name="color" id="pink" value="var(--pink)">
+				<label for="pink" id="pink" style="background-color: var(--purppinkle)"></label>
+			</div>
+		</div>
 	</form>
 </div>
 
@@ -127,6 +148,7 @@
 		display: flex;
 		gap: 0.5rem;
 		flex-direction: column;
+		margin-bottom: .5rem;
 		label,
 		input {
 			margin-bottom: 0;
@@ -156,6 +178,25 @@
 			white-space: nowrap;
 			display: flex;
 			gap: 0.2rem;
+		}
+	}
+	.color_picker {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(45px, 1fr));
+		gap: .3rem;
+		position: relative;
+		label {
+			aspect-ratio: 1 / 1;
+			border-radius: 6px;
+			cursor: pointer;
+			border: 2px solid transparent;
+			transition: .1s;
+		}
+		input {
+			display: none;
+			&:checked + label {
+				border-color: var(--onbackground);
+			}
 		}
 	}
 </style>

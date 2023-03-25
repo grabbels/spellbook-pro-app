@@ -29,6 +29,7 @@
 		z-index: 100;
 		background-color: rgba(0, 0, 0, 0.7);
 		backdrop-filter: contrast(.8);
+		pointer-events: none;
 		&.solid {
 			background-color: var(--panelbg);
 		}

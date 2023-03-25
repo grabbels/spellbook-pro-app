@@ -3,9 +3,12 @@
 	import { page } from '../../stores';
 	export let name;
 	export let icon = 'ri-checkbox-blank-circle-line';
+	let activeTab;
+	$: console.log(activeTab)
+	$: $page === 'spellbook' ? activeTab = 'one' : $page === 'library' ? activeTab = 'two' : $page === 'browse' ? activeTab = 'three' : $page === 'account' ? activeTab = 'four' : '';
 </script>
 
-<button on:touchstart on:click class="tab" class:active={$page === name.toLowerCase()}>
+<button on:touchstart on:click class="tab {activeTab}" class:active={$page === name.toLowerCase()}>
 	<div class="button_inner">
 		<div class="icon">
 			{#if $page === name.toLowerCase()}
@@ -30,15 +33,16 @@
 		background-color: var(--lightbg);
 		padding: 0.3rem 0;
 		position: relative;
+		transition: .1s;
 		&:after {
-			top: .3rem;
-			left: .3rem;
-			right: .3rem;
-			bottom: .3rem;
+			top: 0.3rem;
+			left: 0.3rem;
+			right: 0.3rem;
+			bottom: 0.3rem;
 			position: absolute;
 			content: '';
 			background-color: transparent;
-			transition: .2s;
+			transition: 0.2s;
 			border-radius: 18px;
 		}
 		.button_inner {
@@ -63,18 +67,22 @@
 
 			p {
 				margin: 0;
-				font-size: 0.8rem;
+				font-size: 0.7rem;
 				transition: 0.15s;
 				font-weight: 400;
 			}
 		}
+
 		&:active {
-			&:after {
-				background-color: var(--moretranslucent);
+			
+			// &:after {
+			// 	background-color: var(--moretranslucent);
+			// }
+			.button_inner {
+				transform: scale(1.05);
 			}
 		}
 		&.active {
-			
 			.button_inner {
 				opacity: 1;
 				i,
@@ -88,6 +96,38 @@
 		}
 		&:last-of-type {
 			border-radius: 0 18px 18px 0;
+			&:after {
+				content: '';
+				position: absolute;
+				left: 0.3rem;
+				top: 0.3rem;
+				bottom: 0.3rem;
+				right: 0.3rem;
+				background-color: var(--moretranslucent);
+				border-radius: 18px;
+				pointer-events: none;
+				opacity: .7;
+			}
+			&.one {
+				&:after {
+					transform: translateX(calc(-300% - 1.8rem));
+				}
+			}
+			&.two {
+				&:after {
+					transform: translateX(calc(-200% - 1.2rem));
+				}
+			}
+			&.three {
+				&:after {
+					transform: translateX(calc(-100% - 0.6rem));
+				}
+			}
+			&.four {
+				&:after {
+					transform: 0;
+				}
+			}
 		}
 	}
 </style>

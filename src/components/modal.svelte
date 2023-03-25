@@ -6,10 +6,11 @@
 	import SpellCard from './spellCard.svelte';
 	import Noise from '$lib/noise.svg';
 	import ModalSpellbook from './modal/modal-spellbook.svelte';
-	import ModalNew from './modal/modal-new.svelte';
+	import ModalNew from './modal/modal-new-edit.svelte';
+	import ModalTerms from './modal/modal-terms.svelte';
 
 	let fullScreen = false;
-	let fullscreenModalCalls = ['login', 'spellbook', 'new'];
+	let fullscreenModalCalls = ['login', 'spellbook', 'new', 'edit'];
 	let modalOuterAnimationArgs;
 	let modalContainerAnimationArgs;
 
@@ -68,8 +69,11 @@
 				{#if $modalCall === 'spellbook'}
 					<ModalSpellbook />
 				{/if}
-				{#if $modalCall === 'new'}
+				{#if $modalCall === 'new' || $modalCall === 'edit'}
 					<ModalNew />
+				{/if}
+				{#if $modalCall === 'terms'}
+					<ModalTerms />
 				{/if}
 			</div>
 		</div>
@@ -161,6 +165,7 @@
 				align-items: center;
 				justify-content: flex-start;
 				overflow-y: auto;
+				border-radius: 0;
 				.inner {
 					.modal_content {
 						padding-top: calc(var(--safe-area-inset-top) + 1.5rem);

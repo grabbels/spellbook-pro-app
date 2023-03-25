@@ -14,6 +14,8 @@
 				? 'ri-checkbox-circle-line'
 				: text.split('#')[1] == 'info'
 				? 'ri-information-line'
+				: text.split('#')[1] == 'error'
+				? 'ri-error-warning-line'
 				: ''}
 		/>
 		<p>
@@ -44,12 +46,15 @@
 			i {
 				font-size: 1.2rem;
 				vertical-align: -4px;
-				margin-right: 0.3rem;
+				margin-right: 0.4rem;
 				&.ri-checkbox-circle-line {
 					color: var(--lightgreen);
 				}
 				&.ri-information-line {
 					color: var(--lightblue);
+				}
+				&.ri-error-warning-line {
+					color: var(--red);
 				}
 			}
 			p {

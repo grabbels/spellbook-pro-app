@@ -1,5 +1,5 @@
 <script>
-	import { fade } from 'svelte/transition';
+	import { fade, fly } from 'svelte/transition';
 	import {
 		addSpellsMenuOpen,
 		headerHeight,
@@ -135,13 +135,21 @@
 			.header_content {
 				.wrapper {
 					display: grid;
-					height: 48px;
+					height: 54px;
 					grid-template-columns: 125px 1fr;
 					// grid-template-rows: 50px;
 					gap: 0.3rem;
 					background-color: var(--cardbg);
 					border-radius: 18px;
 					overflow: hidden;
+					transition: .2s;
+				}
+			}
+			&.scrolled {
+				.header_content {
+					.wrapper {
+						height: 48px;
+					}
 				}
 			}
 		}

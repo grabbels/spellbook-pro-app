@@ -3,11 +3,37 @@
 	export let text;
 	export let submit = false;
 	export let icon = '';
+	export let right = false;
+	export let invisible = false;
+	export let disabled = false;
+	let buttonWidth,buttonHeight;
+	export let loading = false;
 </script>
 
-<button on:click type={submit ? 'submit' : ''} class={type}
-	>{#if icon}<i class={icon} />{/if}{text}</button
+<button
+	bind:clientWidth={buttonWidth}
+	bind:clientHeight={buttonHeight}
+	on:click
+	type={submit ? 'submit' : ''}
+	class={type}
+	class:right
+	class:invisible
+	class:disabled
+	class:loading={loading}
+	style={loading ? 'width:' + buttonWidth + 'px; height:' + buttonHeight + 'px' : ''}
 >
+	{#if loading === true}
+		<div class="loading"><i class="ri-loader-5-line" /></div>
+	{:else}
+		{#if icon && !right}
+			<i class={icon} />
+		{/if}
+		{text}
+		{#if icon && right}
+			<i class={icon} />
+		{/if}
+	{/if}
+</button>
 
 <style lang="scss">
 	button {
@@ -20,7 +46,26 @@
 		min-width: 80px;
 		text-align: center;
 		white-space: nowrap;
-
+		position: relative;
+		// &:after {
+		// 	content: '';
+		// 	position: absolute;
+		// 	left: -2px;
+		// 	top: -2px;
+		// 	right: -2px;
+		// 	bottom: -2px;
+		// 	opacity: 0;
+		// 	transition: .2s;
+		// 	// z-index: -1;
+		// 	background-color: rgba(0,0,0,.3);
+		// }
+		&.loading {
+			pointer-events: none;
+			filter: brightness(.8);
+		}
+		&:active {
+			transform: scale(0.95);
+		}
 		&:first-child {
 			border-radius: 18px 0 0 18px;
 		}
@@ -34,9 +79,29 @@
 			border-radius: 18px;
 		}
 		i {
-			vertical-align: -3.5px;
+			vertical-align: -4px;
 			font-size: 1.1rem;
 			margin-right: 0.2rem;
+		}
+		.loading {
+			animation-name: rotate;
+			animation-duration: 1s;
+			animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+			animation-iteration-count: infinite;
+			margin-top: -.1rem;
+			i {
+				font-size: 1.5rem;
+			}
+			@keyframes rotate {
+				to {transform: rotate(360deg)}
+			}
+		}
+		&.right {
+			padding: 0.6rem 0.5rem 0.6rem 0.8rem;
+			i {
+				margin-right: 0;
+				margin-left: 0.2rem;
+			}
 		}
 		&.fill {
 			background-color: var(--inputbg);
@@ -86,6 +151,9 @@
 				border-color: var(--lightblue);
 				// color: var(--lightblue)
 			}
+		}
+		&.disabled {
+			pointer-events: none;
 		}
 	}
 </style>

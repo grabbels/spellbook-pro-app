@@ -1,14 +1,68 @@
 <script>
+	//variables and functions
+	import {
+		addSpellsMenuOpen,
+		bookToEdit,
+		horizontalSwipe,
+		lookupSpell,
+		modalCall,
+		noScroll,
+		notification,
+		online,
+		platform,
+		quickQuery,
+		quickSearchPanelOpen,
+		screenWidth,
+		scrollY,
+		tabPanelOpen,
+		visualViewport,
+		zoomOutModifier
+	} from '../stores';
+	import { onMount } from 'svelte';
+	import { goto } from '$app/navigation';
+	import SmokeScreen from '../components/smokeScreen.svelte';
+	import DevTools from '../components/devTools.svelte';
+	import AddSpellsMenu from '../components/addSpellsMenu.svelte';
+	import { localUserLibrary, user } from '../stores-persist';
+	import { dummyLibrary } from '../dummyLibrary';
+	import { page } from '$app/stores';
+	import Notification from '../components/notification.svelte';
+
+	import { Capacitor } from '@capacitor/core';
+	$platform = Capacitor.getPlatform();
+
 	//css
 	import '@fontsource/kanit/300.css';
 	import '@fontsource/kanit/400.css';
 	import '@fontsource/kanit/500.css';
 	import 'remixicon/fonts/remixicon.css';
-	import { KeepAwake } from '@capacitor-community/keep-awake';
-	const keepAwake = async () => {
-		await KeepAwake.keepAwake();
-	};
-	keepAwake();
+
+	// http://localhost:5173/?confirm-verification=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJlbWFpbCI6ImRldkBzZW1oYWsuZGV2IiwiZXhwIjoxNjgwMzYwODc4LCJpZCI6IjZoOXRkamtvM2V3M2ZkdCIsInR5cGUiOiJhdXRoUmVjb3JkIn0.Aq-mztHb4YT3MjsLPa-YrYwU8_eUsIWtMbx1S-JKfgA
+	//pocketbase
+	import PocketBase from 'pocketbase';
+	const pb = new PocketBase('https://db.spellbook.pro');
+	console.log(pb.authStore);
+
+	//check for href data
+
+	async function refreshAuth() {
+		try {
+			const authData = await pb.collection('users').authRefresh();
+			if (authData.record) {
+				$user = authData.record;
+				console.log($user);
+			} else {
+				$user = null;
+			}
+		} catch (error) {
+			console.log(error);
+			$user = null;
+		}
+	}
+
+	// import { User } from 'svelte-pocketbase';
+
+	// console.log(user.email);
 	//mobile-only components
 	import MobileActiveTabbar from '../components/mobile/mobile-activeTab-bar.svelte';
 	import MobileHeader from '../components/mobile/mobile-header.svelte';
@@ -18,44 +72,35 @@
 	import Modal from '../components/modal.svelte';
 	import QuickSearchPanel from '../components/quickSearchPanel.svelte';
 	import { Body } from 'svelte-body';
-	//variables and functions
-	import {
-		addSpellsMenuOpen,
-		horizontalSwipe,
-		lookupSpell,
-		modalCall,
-		noScroll,
-		notification,
-		quickQuery,
-		quickSearchPanelOpen,
-		screenWidth,
-		scrollY,
-		tabPanelOpen,
-		user,
-		visualViewport,
-		zoomOutModifier
-	} from '../stores';
-	import { onMount } from 'svelte';
-	import SmokeScreen from '../components/smokeScreen.svelte';
-	import DevTools from '../components/devTools.svelte';
-	import AddSpellsMenu from '../components/addSpellsMenu.svelte';
-	import { localUserLibrary } from '../stores-persist';
-	import { dummyLibrary } from '../dummyLibrary';
-	import { goto } from '$app/navigation';
-	import { page } from '$app/stores';
-	import Notification from '../components/notification.svelte';
 
 	$localUserLibrary = dummyLibrary;
 
 	//onMount
 	onMount(() => {
-		if (!$user) {
-			// goto('/login');
-		}
 		$visualViewport = window.visualViewport;
 		window.visualViewport.addEventListener('resize', () => {
 			$visualViewport = window.visualViewport;
 		});
+
+		//check if online and user and route accordingly
+		if ($page.url.searchParams) {
+			let params = $page.url.searchParams;
+			if (params.get('confirm-verification')) {
+				console.log('register verification');
+			}
+		}
+		if ($user) {
+			if ($online) {
+				// goto('/')
+			} else {
+				$notification =
+					'Your device is offline. You can still use the app but your library will not sync until you come back online#info';
+			}
+		} else {
+			if ($online) {
+				refreshAuth();
+			}
+		}
 	});
 
 	$: if ($quickSearchPanelOpen === false) {
@@ -63,6 +108,10 @@
 	}
 	$: if (!$modalCall) {
 		$lookupSpell = '';
+	}
+
+	$: if ($bookToEdit) {
+		$modalCall = 'edit';
 	}
 	let interfaceBack;
 	let mainContent;
@@ -81,24 +130,36 @@
 		}
 	}
 	// $: console.log($zoomOutModifier * 0.03)
-	console.log($page.route.id);
+	// console.log($page.route.id);
 	// $modalCall = 'login'
 </script>
 
 <!-- <DevTools /> -->
 <slot />
-
+{#if $modalCall}
+	{#key $modalCall}
+		<Modal />
+		{#if $modalCall === 'spellbook'}
+			<SmokeScreen solid />
+		{:else}
+			<SmokeScreen />
+		{/if}
+	{/key}
+{/if}
 {#if $notification}
 	<Notification />
 {/if}
 
-<svelte:window on:keydown={(e) => handleKeydown(e)} bind:innerWidth={$screenWidth} />
+<svelte:window
+	bind:online={$online}
+	on:keydown={(e) => handleKeydown(e)}
+	bind:innerWidth={$screenWidth}
+/>
 
 <!-- <Body class={$modalCall || $quickSearchPanelOpen || $noScroll ? 'noscroll' : ''} /> -->
 <Body
-	style="height: {$visualViewport.height}px"
 	class="{$page.route.id.replace('/', '')} {$addSpellsMenuOpen || $quickSearchPanelOpen
-		? 'touch-action: none'
+		? 'touch-action: none; overflow: hidden'
 		: ''}"
 />
 
@@ -123,6 +184,7 @@
 
 	* {
 		box-sizing: border-box;
+		font-family: 'Kanit';
 	}
 
 	body {
@@ -132,10 +194,15 @@
 		line-height: 1.15;
 		-webkit-font-smoothing: antialiased;
 		-moz-osx-font-smoothing: grayscale;
-		// height: 100vh;
-		overflow: hidden;
-		transition: 1s;
 		height: 100vh;
+		overflow: hidden;
+		touch-action: none;
+		position: relative;
+		// width: 100vw;
+		// touch-action: none;
+		// transition: 1s;
+		// height: 100vh;
+		user-select: none;
 		* {
 			box-sizing: border-box;
 		}
@@ -146,6 +213,9 @@
 	.noscroll {
 		overflow: hidden;
 		height: 100vh;
+	}
+	strong {
+		font-weight: 500;
 	}
 	h1,
 	h2,
@@ -184,6 +254,7 @@
 		cursor: pointer;
 		&.href {
 			text-decoration: underline;
+			display: inline;
 		}
 	}
 	input,
@@ -205,7 +276,8 @@
 			border-color: var(--accent);
 		}
 	}
-	input {
+	input:not([type='checkbox']) {
+		height: 54px;
 		&.search {
 			padding-left: 2rem;
 			&:before {
@@ -232,7 +304,7 @@
 		color: var(--onbackground);
 	}
 	form {
-		input,
+		input:not([type='checkbox']),
 		textarea,
 		select,
 		.input {
