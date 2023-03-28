@@ -66,19 +66,18 @@
 	});
 </script>
 
-
-	<div
-		out:fly={{ duration: 300, y: 20 }}
-		in:fly={{ duration: 300, y: 20, delay: 300 }}
-		class="main_content"
-		class:right={$addSpellsMenuOpen}
-		on:scroll={(e) => ($scrollY = e.target.scrollTop)}
-		bind:this={mainContent}
-		class:back={$quickSearchPanelOpen || $modalCall}
-		style="{$horizontalSwipe
-			? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
-			: ''};"
-	>
+<div
+	out:fly={{ duration: 300, y: 20 }}
+	in:fly={{ duration: 300, y: 20, delay: 300 }}
+	class="main_content"
+	class:right={$addSpellsMenuOpen}
+	on:scroll={(e) => ($scrollY = e.target.scrollTop)}
+	bind:this={mainContent}
+	class:back={$quickSearchPanelOpen || $modalCall}
+	style="{$horizontalSwipe
+		? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
+		: ''};"
+>
 	{#key $view}
 		<div
 			in:fade={{ duration: 200 }}
@@ -98,8 +97,8 @@
 				<Settings />
 			{/if}
 		</div>
-		{/key}
-	</div>
+	{/key}
+</div>
 <div
 	class:right={$addSpellsMenuOpen}
 	class:back={$modalCall}

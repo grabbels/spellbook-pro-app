@@ -21,7 +21,6 @@
 				$modalCall = 'spell';
 			}
 		}}
-		transition:fade={{ duration: fadeDuration }}
 	>
 		<div class="card_inner">
 			<div class="block title">

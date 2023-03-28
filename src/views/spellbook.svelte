@@ -1,9 +1,7 @@
 <script>
-	import { onMount } from 'svelte';
-	import Button from '../components/button.svelte';
 	import SafeViewPadding from '../components/safeViewPadding.svelte';
 	import SpellCard from '../components/spellCard.svelte';
-	import { addSpellsMenuOpen, headerHeight, view } from '../stores';
+	import { addSpellsMenuOpen, view } from '../stores';
 	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../stores-persist';
 
 	let spellList;
