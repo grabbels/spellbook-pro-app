@@ -82,5 +82,19 @@
                 padding: 0 .1rem 0;
             }
 		}
+		&.green {
+			background-color: var(--lightgreen);
+			color: var(--onforeground);
+			i {
+				color: var(--onforeground);
+			}
+		}
+		&.blue {
+			background-color: var(--lightblue);
+			color: var(--onforeground);
+			i {
+				color: var(--onforeground);
+			}
+		}
 	}
 </style>

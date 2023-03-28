@@ -19,7 +19,7 @@
 		// background-color: var(--panelbg);
 		bottom: 0;
 		left: 0;
-		padding: 0.3rem 0.7rem max(calc(var(--safe-area-inset-bottom) + 0.3rem), 0.5rem);
+		padding: 0.3rem 0.7rem max(calc(var(--safe-area-inset-bottom) + 0.3rem), 1rem);
 		// padding-bottom: max(var(--safe-area-inset-bottom), .5rem);
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;

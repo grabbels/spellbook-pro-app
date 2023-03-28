@@ -66,7 +66,9 @@
 					/>
 				</div>
 			</button>
+			
 		</div>
+		<h4>Open spellbooks</h4>
 		<div class="tabs">
 			{#each $openBooksIdsArray as openSpellbookId}
 				{@const bookIndexInLibrary = $localUserLibrary
@@ -74,13 +76,14 @@
 					.indexOf(openSpellbookId)}
 				{@const spellbook =
 					$localUserLibrary[bookIndexInLibrary]}
-				<button class="tab" on:click={()=>{
+				<button class="tab" style="--bookcolor: {$localUserLibrary[bookIndexInLibrary].color}" class:active={$activeBookIndex === bookIndexInLibrary} on:click={()=>{
 					$activeBookIndex = bookIndexInLibrary;
 					$tabPanelOpen = false;
+					console.log()
 				}}>
 					<div class="tab_inner">
 						<div class="title">
-							{spellbook.name}
+							<span>{spellbook.name.toString().replaceAll(',', ' ')}</span>
 							<div class="close"><button><i class="ri-close-line" /></button></div>
 						</div>
 					</div>
@@ -125,8 +128,12 @@
 		.inner {
 			padding: 0 1rem 1rem;
 			display: grid;
-			grid-template-rows: 45px 1fr;
+			grid-template-rows: 45px auto 1fr;
 			height: 100%;
+			h4 {
+				text-align: center;
+				margin: -.3rem 0 1rem
+			}
 			.handle {
 				button {
 					width: 100%;
@@ -161,19 +168,46 @@
 			}
 			.tabs {
 				grid-template-columns: 1fr 1fr;
-				grid-auto-rows: 180px;
+				grid-auto-rows: 200px;
 				display: grid;
 				grid-gap: 0.5rem;
 				.tab {
-					background-color: var(--moretranslucent);
-					border-radius: 18px;
+					// background-color: var(--moretranslucent);
+					border-radius: 12px;
 					overflow: hidden;
 					height: 100%;
+					display: flex;
+					align-items: flex-start;
+					border: 2px solid transparent;
+					position: relative;
+					&:after {
+						content: '';
+						position: absolute;
+						left: 0;
+						top: 0;
+						right: 0;
+						bottom: 0;
+						background-color: var(--bookcolor);
+						z-index: -1;
+						opacity: .2;
+					}
 					.tab_inner {
 						.title {
-							padding: 0.5rem;
+							padding: .7rem 1rem;
 							height: auto;
+							text-transform: capitalize;
+							display: grid;
+							grid-template-columns: 1fr 16px;
+							gap: .3rem;
+							font-weight: 400;
+							i {
+								font-size: 1.3rem;
+								opacity: .5;
+							}
 						}
+					}
+					&.active {
+						border-color: var(--bookcolor);
 					}
 				}
 			}

@@ -16,15 +16,15 @@
 			</div> -->
 		</div>
 		<div style="align-self:center; margin-top: -.4rem">
-			<h2>{data.name}</h2>
+			<h2>{data.name.toString().replaceAll(',', ' ')}</h2>
 			<div class="pills">
 				<Pill
-					type="fill small"
+					type="fill small green"
 					text={'Level ' + data.level}
 					icon="ri-user-star-line"
 					label="Character level"
 				/>
-				<Pill type="fill small" text={data.class} icon="ri-contacts-line" label="Character level" />
+				<Pill type="fill small blue" text={data.class} icon="ri-contacts-line" label="Character level" />
 			</div>
 		</div>
 	</div>
@@ -52,6 +52,7 @@
 			h2 {
 				font-size: 1.2rem;
 				margin-bottom: 0.5rem;
+				text-transform: capitalize;
 			}
 			i {
 				font-size: 3rem;

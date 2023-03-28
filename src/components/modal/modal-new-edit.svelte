@@ -1,11 +1,21 @@
 <script>
-	import { modalCall, notification, view } from '../../stores';
+	import { bookToEdit, modalCall, notification, view } from '../../stores';
 	import { activeBookIndex, localUserLibrary, openBooksIdsArray, user } from '../../stores-persist';
 	import { allowedTags } from '../../tags';
 	import Button from '../button.svelte';
 	import Tag from '../tag.svelte';
 	import WordInput from '../wordInput.svelte';
-	let bookClass, bookColor, bookDescription, bookLevel, bookName;
+	let bookClass, bookColor, bookLevel, bookName;
+	let bookTags = [];
+
+	if ($bookToEdit) {
+		bookClass = bookClass ? $bookToEdit.class : ''
+		bookColor = bookColor ? $bookToEdit.color : ''
+		bookLevel = bookLevel ? $bookToEdit.level : ''
+		bookName = bookName ? $bookToEdit.name : []
+		bookTags = bookTags ? $bookToEdit.tags : []
+	}
+
 	let tagSearch = '';
 	let tagResults = [];
 	let newTag = '';
@@ -16,7 +26,7 @@
 		}, 2000);
 	}
 
-	let bookTags = [];
+	
 	let words = ['awesome', 'epic', 'evil', 'sorcerer', 'wizard', 'bbeg', 'npc'];
 	let classes = [
 		'Artificer',
@@ -40,7 +50,7 @@
 		if (bookName.length && bookClass && bookColor && bookLevel) {
 			let newBook = {
 				id: $user.id + '-' + Date.now(),
-				name: bookName.toString().replaceAll(',', ' '),
+				name: bookName,
 				tags: bookTags,
 				class: bookClass,
 				color: bookColor,
@@ -81,11 +91,13 @@
 </script>
 
 <div style="--bookcolor: {bookColor ? bookColor : 'var(--white)'}">
-	<h2><i class="ri-bookmark-{bookColor ? 'fill' : 'line'}" /> New spellbook</h2>
+	<h2><i class="ri-bookmark-{bookColor ? 'fill' : 'line'}" /> {$bookToEdit ? 'Edit spellbook' : 'New spellbook'}</h2>
+	{#if !$bookToEdit}
 	<p style="opacity: .7">
 		Give your new spellbook some details to recognize it by. Don't worry, you can change all these
 		later!
 	</p>
+	{/if}
 	<!-- <label for="title">Book name</label>
 		<input bind:value={bookName} id="name" type="text" /> -->
 	<!-- <label for="name">Name</label>

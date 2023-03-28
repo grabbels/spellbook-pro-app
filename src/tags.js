@@ -77,6 +77,7 @@ export const allowedTags = [
 	'Dangerous',
 	'Dark',
 	'Dead',
+	'Bladesinger',
 	'Deep gnome',
 	'Defeated',
 	'Defiant',
