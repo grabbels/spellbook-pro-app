@@ -2,8 +2,8 @@
 	import Button from './button.svelte';
 	import { goto } from '$app/navigation';
 	import { notification } from '../stores';
-
 	import PocketBase from 'pocketbase';
+	import { user } from '../stores-persist';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	// console.log($pbStore);
 	let email, password;
@@ -16,7 +16,8 @@
 				try {
 					const authData = await pb.collection('users').authWithPassword(email, password);
 					if (authData) {
-						console.log(authData);						
+						console.log(authData);		
+						$user = authData.record				
 						goto('/')
 						loadingLogin = false;
 					}

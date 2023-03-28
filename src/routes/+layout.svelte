@@ -10,10 +10,14 @@
 		notification,
 		online,
 		platform,
+		confirm,
 		quickQuery,
 		quickSearchPanelOpen,
 		screenWidth,
 		scrollY,
+		spellList,
+		view,
+		syncStatus,
 		tabPanelOpen,
 		visualViewport,
 		zoomOutModifier
@@ -23,41 +27,166 @@
 	import SmokeScreen from '../components/smokeScreen.svelte';
 	import DevTools from '../components/devTools.svelte';
 	import AddSpellsMenu from '../components/addSpellsMenu.svelte';
-	import { localUserLibrary, user } from '../stores-persist';
-	import { dummyLibrary } from '../dummyLibrary';
+	import {
+		activeBookIndex,
+		localLastSyncTime,
+		localUserLibrary,
+		spells,
+		unsyncedChanges,
+		user
+	} from '../stores-persist';
+	// import { dummyLibrary } from '../dummyLibrary';
 	import { page } from '$app/stores';
 	import Notification from '../components/notification.svelte';
-
 	import { Capacitor } from '@capacitor/core';
 	$platform = Capacitor.getPlatform();
-
 	//css
 	import '@fontsource/kanit/300.css';
 	import '@fontsource/kanit/400.css';
 	import '@fontsource/kanit/500.css';
+	import '@fontsource/roboto-mono';
 	import 'remixicon/fonts/remixicon.css';
-
 	// http://localhost:5173/?confirm-verification=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJlbWFpbCI6ImRldkBzZW1oYWsuZGV2IiwiZXhwIjoxNjgwMzYwODc4LCJpZCI6IjZoOXRkamtvM2V3M2ZkdCIsInR5cGUiOiJhdXRoUmVjb3JkIn0.Aq-mztHb4YT3MjsLPa-YrYwU8_eUsIWtMbx1S-JKfgA
 	//pocketbase
 	import PocketBase from 'pocketbase';
 	const pb = new PocketBase('https://db.spellbook.pro');
-	console.log(pb.authStore);
-
 	//check for href data
 
+	// console.log($localUserLibrary.map(v => ({...v, isActive: true})))
+	$: console.log($localUserLibrary)
 	async function refreshAuth() {
+		console.log('refreshAuth');
 		try {
 			const authData = await pb.collection('users').authRefresh();
 			if (authData.record) {
 				$user = authData.record;
-				console.log($user);
+				syncLibrary(authData.record);
 			} else {
 				$user = null;
+				goto('/onboarding');
 			}
 		} catch (error) {
 			console.log(error);
 			$user = null;
 		}
+	}
+
+	console.log($activeBookIndex);
+	// pushSpells()
+	async function pushSpells() {
+		console.log($spells);
+		for (let i = 0; i < $spells.length; i++) {
+			const data = {
+				casting_time: $spells[i].casting_time,
+				classes: $spells[i].classes,
+				components: $spells[i].components,
+				description: $spells[i].description,
+				duration: $spells[i].duration,
+				level: $spells[i].level,
+				name: $spells[i].name,
+				range: $spells[i].range,
+				ritual: $spells[i].ritual,
+				school: $spells[i].school,
+				tags: $spells[i].tags,
+				type: $spells[i].type,
+				save: $spells[i].save,
+				attack: $spells[i].attack,
+				higher_levels: $spells[i].higher_levels
+			};
+
+			try {
+				const record = await pb.collection('spells').create(data);
+				console.log(record);
+			} catch (error) {
+				console.log(error);
+			}
+		}
+	}
+	// pullSpells()
+	async function pullSpells() {
+		const records = await pb.collection('spells').getFullList({});
+		console.log(records);
+	}
+	// removeSpells()
+	async function removeSpells() {
+		// you can also fetch all records at once via getFullList
+		const records = await pb.collection('spells').getFullList({
+			sort: '-created'
+		});
+		for (let i = 0; i < records.length; i++) {
+			await pb.collection('spells').delete(records[i].id);
+		}
+	}
+
+	async function syncLibrary(record) {
+		// $syncStatus = 'working';
+		// let remoteLastSyncTime;
+		// if (record) {
+		// 	//this means the sync was triggered by the auth refresh which means the app was just started
+		// 	if ($unsyncedChanges === true) {
+		// 		//the local library has been modified locally and wasn't synced before closing the app last time, possibly due to being offline
+		// 		//the library needs to be pushed to the database
+		// 		pushToCloud();
+		// 	}
+		// 	remoteLastSyncTime = record.last_sync_time;
+		// 	if (remoteLastSyncTime > $localLastSyncTime) {
+		// 		//the remote sync time is newer than the local last sync time which means the user's library was modified from another device and needs to be pulled to this device
+		// 		$localUserLibrary = record.list;
+		// 		$localLastSyncTime = remoteLastSyncTime;
+		// 		//done
+		// 		$syncStatus = 'done';
+		// 	}
+		// } else {
+		// 	try {
+		// 		const record = await pb.collection('users').getOne($user.id, {});
+		// 		if (record) {
+		// 			if ($unsyncedChanges === true) {
+		// 				//the local library has been modified locally and wasn't synced before closing the app last time, possibly due to being offline
+		// 				//the library needs to be pushed to the database
+		// 				if (remoteLastSyncTime > $localLastSyncTime) {
+		// 					//remote library is newer but local library has unsaved changes
+		// 					//CONFLICT
+		// 				} else {
+		// 					pushToCloud();
+		// 				}
+		// 			} else {
+		// 				remoteLastSyncTime = record.last_sync_time;
+		// 				if (remoteLastSyncTime > $localLastSyncTime) {
+		// 					//remote sync time is newer than local sync time which means library has been modified on another device
+		// 					//remote library needs to be pulled
+		// 					$localUserLibrary = record.list;
+		// 					$localLastSyncTime = remoteLastSyncTime;
+		// 					//done
+		// 					$syncStatus = 'done';
+		// 				}
+		// 			}
+		// 		}
+		// 	} catch (error) {
+		// 		console.log(error);
+		// 	}
+		// }
+	}
+
+	async function pushToCloud() {
+		// let currentTime = Date.now();
+		// try {
+		// 	const data = {
+		// 		library: $localUserLibrary,
+		// 		last_sync_time: currentTime
+		// 	};
+		// 	const record = await pb.collection('users').update($user.id, data);
+		// 	if (record) {
+		// 		let currentTime = Date.now();
+		// 		$localLastSyncTime = currentTime;
+		// 		//done
+		// 		$unsyncedChanges === false;
+		// 		$syncStatus = 'done';
+		// 	}
+		// } catch (error) {
+		// 	console.log(error);
+		// 	//done
+		// 	$syncStatus = 'error';
+		// }
 	}
 
 	// import { User } from 'svelte-pocketbase';
@@ -72,8 +201,9 @@
 	import Modal from '../components/modal.svelte';
 	import QuickSearchPanel from '../components/quickSearchPanel.svelte';
 	import { Body } from 'svelte-body';
+	import Confirm from '../components/confirm.svelte';
 
-	$localUserLibrary = dummyLibrary;
+	// $localUserLibrary = dummyLibrary;
 
 	//onMount
 	onMount(() => {
@@ -90,8 +220,10 @@
 			}
 		}
 		if ($user) {
+			console.log($user);
 			if ($online) {
 				// goto('/')
+				syncLibrary();
 			} else {
 				$notification =
 					'Your device is offline. You can still use the app but your library will not sync until you come back online#info';
@@ -130,11 +262,11 @@
 		}
 	}
 	// $: console.log($zoomOutModifier * 0.03)
-	// console.log($page.route.id);
+	// console.log($view.route.id);
 	// $modalCall = 'login'
 </script>
 
-<!-- <DevTools /> -->
+<DevTools />
 <slot />
 {#if $modalCall}
 	{#key $modalCall}
@@ -148,6 +280,9 @@
 {/if}
 {#if $notification}
 	<Notification />
+{/if}
+{#if $confirm}
+	<Confirm />
 {/if}
 
 <svelte:window
@@ -261,6 +396,7 @@
 	select,
 	.input {
 		// all: unset;
+
 		color: var(--onbackground);
 		cursor: pointer;
 		min-height: 48px;
@@ -288,6 +424,8 @@
 		}
 	}
 	select {
+		height: 52px;
+		box-sizing: border-box;
 		&:after {
 			position: absolute;
 			content: '>';
@@ -303,22 +441,31 @@
 		font-size: 1rem;
 		color: var(--onbackground);
 	}
-	form {
-		input:not([type='checkbox']),
-		textarea,
-		select,
-		.input {
-			margin-bottom: 0.5rem;
-			width: 100%;
+	input:not([type='checkbox']),
+	textarea,
+	select,
+	.input {
+		font-family: 'Roboto Mono';
+		&::placeholder {
+			font-family: 'Roboto Mono';
 		}
-		input,
-		select {
-			height: 48px;
-		}
-		label {
-			margin-bottom: 0.2rem;
-			display: inline-block;
-			color: var(--inputbg);
+		margin-bottom: 0.5rem;
+		width: 100%;
+		height: 52px;
+	}
+	input,
+	select {
+		height: 52px;
+	}
+	label {
+		margin-bottom: 0.2rem;
+		display: inline-block;
+		color: var(--inputbg);
+	}
+	input {
+		&:disabled {
+			// color: var(--translucent);
+			background-color: var(--moretranslucent);
 		}
 	}
 </style>

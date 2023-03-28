@@ -76,7 +76,7 @@
 				{#if type === 'embed' || (type === 'list' && $localUserPreferences.spellDescription === true)}
 					<div class="block description">
 						<div class="description_inner">
-							<p>{@html data.description}</p>
+							{@html data.description}
 						</div>
 					</div>
 				{/if}

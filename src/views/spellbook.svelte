@@ -1,42 +1,61 @@
 <script>
+	import { onMount } from 'svelte';
 	import Button from '../components/button.svelte';
 	import SafeViewPadding from '../components/safeViewPadding.svelte';
 	import SpellCard from '../components/spellCard.svelte';
-	import { addSpellsMenuOpen, headerHeight } from '../stores';
-	import { localUserLibrary } from '../stores-persist';
-	let spellList = $localUserLibrary[0].list;
-	// let spellList;
+	import { addSpellsMenuOpen, headerHeight, view } from '../stores';
+	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../stores-persist';
 
-	$: $localUserLibrary, (spellList = $localUserLibrary[0].list);
+	let spellList;
+	let sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
 
-	let sortedSpellsList;
+	$: if ($localUserLibrary && $activeBookIndex >= 0 && $openBooksIdsArray && $openBooksIdsArray.length) {
+		spellList = $localUserLibrary[$localUserLibrary.map((object) => object.id).indexOf($openBooksIdsArray[$activeBookIndex])].list;
+	}
 
 	$: spellList, sortSpells();
 
 	function sortSpells() {
 		console.log('sorting');
 		sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
-		for (let i = 0; i < spellList.length; i++) {
-			sortedSpellsList[spellList[i].level].push(spellList[i]);
+		console.log(spellList)
+		if (spellList) {
+			for (let i = 0; i < spellList.length; i++) {
+				sortedSpellsList[spellList[i].level].push(spellList[i]);
+			}
 		}
 	}
 </script>
 
 <SafeViewPadding header>
 	<div class="list_wrapper">
-		{#each sortedSpellsList as list}
-			{#if list.length > 0}
-				{@const currentLevel = sortedSpellsList.indexOf(list)}
-				<h4 id={currentLevel}>
-					{currentLevel === 0 ? 'Cantrips' : 'Level ' + currentLevel}
-				</h4>
-				<div class="list">
-					{#each list as spell}
-						<SpellCard type="list" data={spell} />
-					{/each}
-				</div>
+		{#if $openBooksIdsArray && $openBooksIdsArray.length > 0 && $activeBookIndex <= 0}
+			{#if spellList && spellList.length > 0}
+				{#each sortedSpellsList as list}
+					{#if list.length > 0}
+						{@const currentLevel = sortedSpellsList.indexOf(list)}
+						<h4 id={currentLevel}>
+							{currentLevel === 0 ? 'Cantrips' : 'Level ' + currentLevel}
+						</h4>
+						<div class="list">
+							{#each list as spell}
+								<SpellCard type="list" data={spell} />
+							{/each}
+						</div>
+					{/if}
+				{/each}
+			{:else}
+				<p style="margin: 2rem">
+					A whole lot of nothing. <button class="href" on:click={() => ($addSpellsMenuOpen = true)}
+						>Add some spells</button
+					> to this spellbook!
+				</p>
 			{/if}
-		{/each}
+		{:else}
+			<p style="margin: 2rem">
+				<button class="href" on:click={() => ($view = 'library')}>Open a spellbook</button> to get started!
+			</p>
+		{/if}
 	</div>
 </SafeViewPadding>
 
@@ -62,7 +81,7 @@
 			// width: 100px;
 			top: calc(var(--safe-area-inset-top) + 3.7rem);
 			z-index: 1;
-			font-size: .9rem;
+			font-size: 0.9rem;
 		}
 		.list {
 			display: grid;

@@ -6,37 +6,38 @@
 	import Modal from '../components/modal.svelte';
 	import QuickSearchPanel from '../components/quickSearchPanel.svelte';
 	import SmokeScreen from '../components/smokeScreen.svelte';
-	import Account from '../views/account.svelte';
+	import Settings from '../views/settings.svelte';
 	import Browse from '../views/browse.svelte';
 	import Library from '../views/library.svelte';
 	import Spellbook from '../views/spellbook.svelte';
 	import { goto } from '$app/navigation';
-
 	import {
 		addSpellsMenuOpen,
 		horizontalSwipe,
 		modalCall,
-		page,
+		view,
 		quickSearchPanelOpen,
 		scrollY,
-		visualViewport
+		visualViewport,
+		confirm
 	} from '../stores';
 	import MobileTabpanel from '../components/mobile/mobile-tabpanel.svelte';
 	import { crossfade, fade, fly, scale, slide } from 'svelte/transition';
 	import { user } from '../stores-persist';
 	import { onMount } from 'svelte';
-
+	import SyncStatus from '../components/syncStatus.svelte';
+	import Confirm from '../components/confirm.svelte';
 	let touchStart, touchEnd, touchPos, touchMove, direction, screenWidth, mainContent;
-
+	$: console.log($view);
 	function handleTouchStart(e) {
-		if ($page === 'spellbook') {
+		if ($view === 'spellbook') {
 			touchMove = true;
 			touchStart = e.touches[0].clientX;
 			// console.log(touchStart / screenWidth);
 		}
 	}
 	function handleTouchMove(e) {
-		if (touchStart / screenWidth < 0.12 && $page === 'spellbook') {
+		if (touchStart / screenWidth < 0.12 && $view === 'spellbook') {
 			if (e.touches[0].clientX > touchStart) {
 				$horizontalSwipe = Math.max(
 					0,
@@ -47,7 +48,7 @@
 		}
 	}
 	function handleTouchEnd(e) {
-		if ($page === 'spellbook') {
+		if ($view === 'spellbook') {
 			if ($horizontalSwipe > 0.4) {
 				$addSpellsMenuOpen = true;
 				touchStart = 0;
@@ -65,43 +66,40 @@
 	});
 </script>
 
-<div
-	out:fly={{ duration: 300, y: 20 }}
-	in:fly={{ duration: 300, y: 20, delay: 300 }}
-	class="main_content"
-	class:right={$addSpellsMenuOpen}
-	on:scroll={(e) => ($scrollY = e.target.scrollTop)}
-	bind:this={mainContent}
-	class:back={$quickSearchPanelOpen || $modalCall}
-	style="{$horizontalSwipe
-		? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
-		: ''};"
->
-	{#key $page}
+
+	<div
+		out:fly={{ duration: 300, y: 20 }}
+		in:fly={{ duration: 300, y: 20, delay: 300 }}
+		class="main_content"
+		class:right={$addSpellsMenuOpen}
+		on:scroll={(e) => ($scrollY = e.target.scrollTop)}
+		bind:this={mainContent}
+		class:back={$quickSearchPanelOpen || $modalCall}
+		style="{$horizontalSwipe
+			? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
+			: ''};"
+	>
+	{#key $view}
 		<div
 			in:fade={{ duration: 200 }}
 			bind:clientWidth={screenWidth}
-			class="page"
+			class="page {$view}"
 			on:touchmove={(e) => handleTouchMove(e)}
 			on:touchstart={(e) => handleTouchStart(e)}
 			on:touchend={(e) => handleTouchEnd(e)}
 		>
-			{#if $page === 'spellbook'}
+			{#if $view === 'spellbook'}
 				<Spellbook />
-			{/if}
-			{#if $page === 'library'}
+			{:else if $view === 'library'}
 				<Library />
-			{/if}
-			{#if $page === 'browse'}
+			{:else if $view === 'browse'}
 				<Browse />
-			{/if}
-			{#if $page === 'account'}
-				<Account />
+			{:else if $view === 'settings'}
+				<Settings />
 			{/if}
 		</div>
-	{/key}
-</div>
-
+		{/key}
+	</div>
 <div
 	class:right={$addSpellsMenuOpen}
 	class:back={$modalCall}
@@ -118,6 +116,8 @@
 	<MobileTabbar />
 	<MobileActiveTabbar />
 	<MobileTabpanel />
+
+	<!-- <SyncStatus/> -->
 </div>
 
 <style lang="scss">

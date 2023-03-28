@@ -1,11 +1,11 @@
 <script>
-	import { bookToEdit, lookupBook } from '../../stores';
-	import { user } from '../../stores-persist';
+	import { openSpellbook } from '../../functions';
+	import { bookToEdit, confirm, lookupBook } from '../../stores';
+	import { activeBookIndex, openBooksIdsArray, user } from '../../stores-persist';
 	import Button from '../button.svelte';
 	import Pill from '../pill.svelte';
 	import SpellCard from '../spellCard.svelte';
 	let sortedSpellsList;
-
 	if ($lookupBook.list) {
 		sortSpells();
 	}
@@ -36,9 +36,13 @@
 		label="Character level"
 	/>
 </div>
-<p>{$lookupBook.description}</p>
+<!-- <p>{$lookupBook.description}</p> -->
 <div class="buttons">
-	<div><Button text="Open" icon="ri-folder-open-line" type="fill accent" /></div>
+	<div>
+		<Button text="Open" icon="ri-folder-open-line" type="fill accent" on:click={() => {
+			openSpellbook($lookupBook.id)
+		}} />
+	</div>
 	{#if $user.id === $lookupBook.user_id}
 		{#if $lookupBook.published === true}
 			<div><Button text="Publish" icon="ri-share-line" type="fill blue" /></div>
@@ -54,7 +58,7 @@
 				on:click={() => ($bookToEdit = $lookupBook)}
 			/>
 		</div>
-		<div><Button text="Delete" icon="ri-delete-bin-line" type="fill red" /></div>
+		<div><Button text="Delete" icon="ri-delete-bin-line" type="fill red" on:click={()=> $confirm = ['Are you sure you want to delete this spellbook?', {text: 'Cancel', type: 'outline', action: 'cancel'}, {text: 'Delete', icon: 'ri-delete-bin-line', type: 'fill red', action: 'delete-spellbook'}]} /></div>
 	{/if}
 </div>
 <div class="spells">
@@ -67,6 +71,8 @@
 				{/each}
 			</ul>
 		{/if}
+	{:else}
+	<p style="opacity: .7">This spellbook has no spells</p>
 	{/each}
 </div>
 

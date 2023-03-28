@@ -1,12 +1,13 @@
 <script>
 	import { fly } from 'svelte/transition';
-	import { page, tabBarHeight, tabPanelOpen } from '../../stores';
+	import { view, tabBarHeight, tabPanelOpen } from '../../stores';
+	import { activeBookIndex, localUserLibrary } from '../../stores-persist';
 </script>
 
-{#if $page.toLowerCase() === 'spellbook'}
+{#if $view.toLowerCase() === 'spellbook'}
 	<button
 		class="ui-active_tab_bar"
-		style="bottom: calc({$tabBarHeight}px + .5rem); background-color: var(--pink)"
+		style="bottom: calc({$tabBarHeight}px + .5rem); background-color: {$localUserLibrary && $activeBookIndex !== '' && $activeBookIndex != null && $activeBookIndex != -1 ? $localUserLibrary[$activeBookIndex].color : 'var(--purple)'}"
 		transition:fly={{ y: 50, duration: 250 }}
 		on:click={() => ($tabPanelOpen = true)}
 		class:hidden={$tabPanelOpen}
@@ -15,7 +16,13 @@
 			<div class="icon" style="">
 				<i class="ri-book-open-line" />
 			</div>
-			<p>Active tab book title</p>
+			<p>
+				{#if $localUserLibrary && $activeBookIndex !== '' && $activeBookIndex != null && $activeBookIndex != -1}
+					{$localUserLibrary[$activeBookIndex].name}
+				{:else}
+					<span style="opacity: .5">No open spellbook</span>
+				{/if}
+			</p>
 		</div>
 		<!-- <div class="book_color_line" style="background-color: var(--pink)" /> -->
 	</button>

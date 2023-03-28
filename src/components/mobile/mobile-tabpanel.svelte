@@ -1,5 +1,6 @@
 <script>
-	import { modalCall, page, tabPanelOpen, visualViewport, zoomOutModifier } from '../../stores';
+	import { modalCall, view, tabPanelOpen, visualViewport, zoomOutModifier } from '../../stores';
+	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../../stores-persist';
 	import Button from '../button.svelte';
 	let touchStart, touchEnd, currentPos, direction, touchDrag, panelHeight;
 	function handleTouchStart(e) {
@@ -67,34 +68,43 @@
 			</button>
 		</div>
 		<div class="tabs">
-			<button class="tab">
-				<div class="tab_inner">
-					<div class="title">
-						Drew - curse of the sea sorcerer
-						<div class="close"><button><i class="ri-close-line" /></button></div>
+			{#each $openBooksIdsArray as openSpellbookId}
+				{@const bookIndexInLibrary = $localUserLibrary
+					.map((object) => object.id)
+					.indexOf(openSpellbookId)}
+				{@const spellbook =
+					$localUserLibrary[bookIndexInLibrary]}
+				<button class="tab" on:click={()=>{
+					$activeBookIndex = bookIndexInLibrary;
+					$tabPanelOpen = false;
+				}}>
+					<div class="tab_inner">
+						<div class="title">
+							{spellbook.name}
+							<div class="close"><button><i class="ri-close-line" /></button></div>
+						</div>
 					</div>
-				</div>
-			</button>
-			<button class="tab">
-				<div class="tab_inner">
-					<div class="title">
-						Drew - curse of the sea sorcerer
-						<div class="close"><button><i class="ri-close-line" /></button></div>
-					</div>
-				</div>
-			</button>
-			<button class="tab">
-				<div class="tab_inner">
-					<div class="title">
-						Drew - curse of the sea sorcerer
-						<div class="close"><button><i class="ri-close-line" /></button></div>
-					</div>
-				</div>
-			</button>
+				</button>
+			{/each}
 		</div>
 		<div class="buttons">
-			<Button text="New book" icon="ri-add-line" type="fill accent" on:click={()=> {$modalCall = 'new'}}/>
-			<Button text="Library" icon="ri-book-mark-line" type="fill blue" on:click={()=> {$tabPanelOpen = false; $page = 'library'}}/>
+			<Button
+				text="New book"
+				icon="ri-add-line"
+				type="fill accent"
+				on:click={() => {
+					$modalCall = 'new';
+				}}
+			/>
+			<Button
+				text="Library"
+				icon="ri-book-mark-line"
+				type="fill blue"
+				on:click={() => {
+					$tabPanelOpen = false;
+					$view = 'library';
+				}}
+			/>
 		</div>
 	</div>
 </div>
@@ -111,7 +121,7 @@
 		box-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
 		border-radius: 18px 18px 0 0;
 		pointer-events: auto;
-		
+
 		.inner {
 			padding: 0 1rem 1rem;
 			display: grid;
@@ -174,7 +184,7 @@
 				right: 1rem;
 				display: grid;
 				grid-template-columns: 1fr 1fr;
-				gap: .3rem;
+				gap: 0.3rem;
 			}
 		}
 	}

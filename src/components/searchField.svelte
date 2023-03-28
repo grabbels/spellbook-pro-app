@@ -22,6 +22,10 @@
 			padding-left: 2rem;
 			margin-bottom: 0;
 			height: 100%;
+			font-family: 'Kanit';
+			&::placeholder {
+				font-family: 'Kanit';
+			}
 			&.right {
 				border-radius: 0 18px 18px 0;
 			}

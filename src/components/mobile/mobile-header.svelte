@@ -4,31 +4,45 @@
 		addSpellsMenuOpen,
 		headerHeight,
 		modalCall,
-		page,
+		view,
 		quickQuery,
 		quickSearchPanelOpen,
 		scrollY
 	} from '../../stores';
+	import { activeBookIndex, localUserLibrary } from '../../stores-persist';
 	import Button from '../button.svelte';
 	import SearchField from '../searchField.svelte';
+	
 </script>
 
 <div
 	class="ui-mobile_header"
 	class:scrolled={$scrollY > 0}
 	class:quicksearch={$quickSearchPanelOpen}
-	class:columns={$page.toLowerCase() === 'spellbook'}
+	class:columns={$view.toLowerCase() === 'spellbook'}
 	bind:clientHeight={$headerHeight}
 >
 	<div class="header_content">
-		{#if $page.toLowerCase() === 'spellbook'}
+		{#if $view.toLowerCase() === 'spellbook'}
 			<div class="wrapper">
-				<Button
-					text="Add spells"
-					icon="ri-add-line"
-					type="fill accent"
-					on:click={() => ($addSpellsMenuOpen = true)}
-				/>
+				{#if $localUserLibrary && $activeBookIndex !== '' && $activeBookIndex !== null}
+					<Button
+						text="Add spells"
+						icon="ri-add-line"
+						type="fill accent"
+						left
+						on:click={() => ($addSpellsMenuOpen = true)}
+					/>
+				{:else}
+					<Button
+						text="Library"
+						icon="ri-book-mark-line"
+						type="fill blue"
+						left
+						on:click={() => ($view = 'library')}
+					/>
+				{/if}
+
 				<div class="input_wrapper">
 					<!-- <input
 						type="text"
@@ -58,7 +72,7 @@
 			</div>
 		{:else}
 			<h1>
-				{$page.replace(/^(\w)(.+)/, (match, p1, p2) => p1.toUpperCase() + p2.toLowerCase())}
+				{$view.replace(/^(\w)(.+)/, (match, p1, p2) => p1.toUpperCase() + p2.toLowerCase())}
 			</h1>
 		{/if}
 	</div>
@@ -75,7 +89,7 @@
 		z-index: 20;
 		pointer-events: auto;
 		.header_content {
-			padding: max(var(--safe-area-inset-top), 1rem) 0.3rem 0;
+			padding: max(var(--safe-area-inset-top), 1rem) 1rem 0;
 			transition: 0.2s;
 
 			h1 {
@@ -87,6 +101,7 @@
 				position: relative;
 				transform-origin: center top;
 				transition: 0.3s;
+
 				// input {
 				// 	width: 100%;
 				// 	border: 2px solid transparent;
@@ -142,7 +157,7 @@
 					background-color: var(--cardbg);
 					border-radius: 18px;
 					overflow: hidden;
-					transition: .2s;
+					transition: 0.2s;
 				}
 			}
 			&.scrolled {
@@ -151,11 +166,6 @@
 						height: 48px;
 					}
 				}
-			}
-		}
-		&.scrolled {
-			.header_content {
-				padding: max(var(--safe-area-inset-top), 1rem) 1rem 0;
 			}
 		}
 		&.quicksearch {

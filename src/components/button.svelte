@@ -4,6 +4,7 @@
 	export let submit = false;
 	export let icon = '';
 	export let right = false;
+	export let left = false;
 	export let invisible = false;
 	export let disabled = false;
 	let buttonWidth,buttonHeight;
@@ -19,6 +20,7 @@
 	class:right
 	class:invisible
 	class:disabled
+	class:left
 	class:loading={loading}
 	style={loading ? 'width:' + buttonWidth + 'px; height:' + buttonHeight + 'px' : ''}
 >
@@ -154,6 +156,9 @@
 		}
 		&.disabled {
 			pointer-events: none;
+		}
+		&.left {
+			border-radius: 18px 0 0 18px;
 		}
 	}
 </style>

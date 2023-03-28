@@ -1,23 +1,22 @@
 <script>
 	import { crossfade, fade } from 'svelte/transition';
-	import { page } from '../../stores';
+	import { view } from '../../stores';
 	export let name;
 	export let icon = 'ri-checkbox-blank-circle-line';
 	let activeTab;
-	$: console.log(activeTab)
-	$: $page === 'spellbook' ? activeTab = 'one' : $page === 'library' ? activeTab = 'two' : $page === 'browse' ? activeTab = 'three' : $page === 'account' ? activeTab = 'four' : '';
+	$: $view === 'spellbook' ? activeTab = 'one' : $view === 'library' ? activeTab = 'two' : $view === 'browse' ? activeTab = 'three' : $view === 'settings' ? activeTab = 'four' : '';
 </script>
 
-<button on:touchstart on:click class="tab {activeTab}" class:active={$page === name.toLowerCase()}>
+<button on:touchstart on:click class="tab {activeTab}" class:active={$view === name.toLowerCase()}>
 	<div class="button_inner">
 		<div class="icon">
-			{#if $page === name.toLowerCase()}
+			{#if $view === name.toLowerCase()}
 				<i transition:fade={{ duration: 100 }} class={icon.replace('line', 'fill')} />
 			{:else}
 				<i transition:fade={{ duration: 100 }} class={icon} />
 			{/if}
 		</div>
-		<!-- <i class={$page === name.toLowerCase() ? icon.replace('line', 'fill') : icon} /> -->
+		<!-- <i class={$view === name.toLowerCase() ? icon.replace('line', 'fill') : icon} /> -->
 		<p>{name}</p>
 	</div>
 </button>

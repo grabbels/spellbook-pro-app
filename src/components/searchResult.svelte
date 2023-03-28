@@ -1,11 +1,19 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { addSpellsMenuOpen, lookupSpell, modalCall, notification, quickQuery, quickSearchPanelOpen } from '../stores';
-	import { localUserLibrary } from '../stores-persist';
+	import {
+		addSpellsMenuOpen,
+		lookupSpell,
+		modalCall,
+		notification,
+		quickQuery,
+		quickSearchPanelOpen
+	} from '../stores';
+	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../stores-persist';
 	import CenterContainer from './centerContainer.svelte';
 	import Schoolicon from './schoolicon.svelte';
 	export let data;
 	export let type = '';
+
 </script>
 
 {#if data === 'noresult'}
@@ -26,9 +34,10 @@
 					$quickQuery = '';
 					$quickSearchPanelOpen = false;
 				} else if (type === 'add') {
-					console.log($localUserLibrary[0].list)
-					$localUserLibrary[0].list = [...$localUserLibrary[0].list, data]
-					$notification = 'Spell added.#positive'
+					let index = $localUserLibrary.map((object) => object.id).indexOf($openBooksIdsArray[$activeBookIndex]);
+					$localUserLibrary[index].list = [...$localUserLibrary[index].list, data];
+					$localUserLibrary = $localUserLibrary
+					$notification = 'Spell added.#positive';
 					// $addSpellsMenuOpen = false;
 				}
 			}}

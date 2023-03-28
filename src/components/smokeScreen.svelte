@@ -29,7 +29,8 @@
 		z-index: 100;
 		background-color: rgba(0, 0, 0, 0.7);
 		backdrop-filter: contrast(.8);
-		pointer-events: none;
+		// pointer-events: none;
+		// backdrop-filter: blur(10px);
 		&.solid {
 			background-color: var(--panelbg);
 		}

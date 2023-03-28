@@ -33,7 +33,7 @@
 				data={book}
 			/>
 		{:else}
-			<p>You have no saved spellbooks.</p>
+			<p style="margin: 1rem">You have no saved spellbooks yet.</p>
 		{/each}
 	</div>
 </SafeViewPadding>
