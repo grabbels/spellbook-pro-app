@@ -32,13 +32,14 @@
 
 <style lang="scss">
 	button {
-		padding: 1rem;
 		margin-bottom: 0.3rem;
 		background-color: var(--cardbg);
-		margin: .4rem .8rem;
-		padding: 1rem 1.3rem;
+		// margin: .4rem .8rem;
+		padding: 1.5rem 1.3rem;
 		border-radius: 24px;
 		position: relative;
+		width: 100%;
+		box-sizing: border-box;
 		// box-shadow: 0 3px 5px rgba(10, 10, 10, 0.2);
 		.inner {
 			display: grid;

@@ -8,6 +8,7 @@
 	import ModalSpellbook from './modal/modal-spellbook.svelte';
 	import ModalNew from './modal/modal-new-edit.svelte';
 	import ModalTerms from './modal/modal-terms.svelte';
+	import ModalChangelog from './modal/modal-changelog.svelte';
 
 	let fullScreen = false;
 	let fullscreenModalCalls = ['login', 'spellbook', 'new', 'edit'];
@@ -74,6 +75,9 @@
 				{/if}
 				{#if $modalCall === 'terms'}
 					<ModalTerms />
+				{/if}
+				{#if $modalCall === 'changelog'}
+					<ModalChangelog />
 				{/if}
 			</div>
 		</div>

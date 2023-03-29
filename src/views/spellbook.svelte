@@ -1,25 +1,23 @@
 <script>
 	import SafeViewPadding from '../components/safeViewPadding.svelte';
 	import SpellCard from '../components/spellCard.svelte';
-	import { addSpellsMenuOpen, view } from '../stores';
+	import { addSpellsMenuOpen, sortedSpellsList, spellList, view } from '../stores';
 	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../stores-persist';
-
-	let spellList;
-	let sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
+	// $sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
 
 	$: if ($localUserLibrary && $activeBookIndex >= 0 && $openBooksIdsArray && $openBooksIdsArray.length) {
-		spellList = $localUserLibrary[$localUserLibrary.map((object) => object.id).indexOf($openBooksIdsArray[$activeBookIndex])].list;
+		$spellList = $localUserLibrary[$localUserLibrary.map((object) => object.id).indexOf($openBooksIdsArray[$activeBookIndex])].list;
 	}
 
-	$: spellList, sortSpells();
+	$: $spellList, sortSpells();
 
 	function sortSpells() {
 		console.log('sorting');
-		sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
-		console.log(spellList)
-		if (spellList) {
-			for (let i = 0; i < spellList.length; i++) {
-				sortedSpellsList[spellList[i].level].push(spellList[i]);
+		$sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
+		console.log($spellList)
+		if ($spellList) {
+			for (let i = 0; i < $spellList.length; i++) {
+				$sortedSpellsList[$spellList[i].level].push($spellList[i]);
 			}
 		}
 	}
@@ -28,16 +26,16 @@
 <SafeViewPadding header>
 	<div class="list_wrapper">
 		{#if $openBooksIdsArray && $openBooksIdsArray.length > 0 && $activeBookIndex <= 0}
-			{#if spellList && spellList.length > 0}
-				{#each sortedSpellsList as list}
+			{#if $spellList && $spellList.length > 0}
+				{#each $sortedSpellsList as list, i}
 					{#if list.length > 0}
-						{@const currentLevel = sortedSpellsList.indexOf(list)}
+						{@const currentLevel = $sortedSpellsList.indexOf(list)}
 						<h4 id={currentLevel}>
 							{currentLevel === 0 ? 'Cantrips' : 'Level ' + currentLevel}
 						</h4>
 						<div class="list">
-							{#each list as spell}
-								<SpellCard type="list" data={spell} />
+							{#each list as spell, i}
+								<SpellCard id={currentLevel + `${i}`} type="list" data={spell} />
 							{/each}
 						</div>
 					{/if}
@@ -50,7 +48,7 @@
 				</p>
 			{/if}
 		{:else}
-			<p style="margin: 2rem">
+			<p style="margin: 4rem 2rem 2rem">
 				<button class="href" on:click={() => ($view = 'library')}>Open a spellbook</button> to get started!
 			</p>
 		{/if}

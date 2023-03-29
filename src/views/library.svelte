@@ -10,20 +10,8 @@
 	let searchActive;
 </script>
 
-<SafeViewPadding>
-	<div class="buttons" class:search_active={searchActive}>
-		<Button text="New book" icon="ri-add-line" type="fill blue" on:click={()=>{
-			$modalCall = 'new'
-		}} />
-		<SearchField
-			placeholder="Search library..."
-			bind:value={query}
-			on:focus={() => searchActive = true}
-			on:focusout={() => searchActive = false}
-			right
-		/>
-	</div>
-	<div>
+<SafeViewPadding header>
+	<div style="margin-top: 4rem">
 		{#each $localUserLibrary as book}
 			<SpellbookSlot
 				on:click={() => {
@@ -33,22 +21,15 @@
 				data={book}
 			/>
 		{:else}
-			<p style="margin: 1rem">You have no saved spellbooks yet.</p>
+			<p style="margin: 1rem; text-align: center">You have no saved spellbooks yet.</p>
 		{/each}
 	</div>
 </SafeViewPadding>
 
 <style lang="scss">
-	div.buttons {
-		padding: 0 1rem;
-		margin-bottom: 0.5rem;
-		display: grid;
-		grid-template-columns: 120px 1fr;
-		gap: 0.3rem;
-		transition: .2s;
-		&.search_active {
-			grid-template-columns: 0 1fr;
-			gap: 0;
-		}
+	div {
+		width: 100%;
+		position: relative;
+		padding: .8rem;
 	}
 </style>

@@ -5,10 +5,10 @@
 </script>
 
 <div class="ui-mobile_tabbar" bind:clientHeight={$tabBarHeight}>
-	<Tab on:touchstart={() => ($view = 'spellbook')} name="Spellbook" icon="ri-book-open-line" />
-	<Tab on:touchstart={() => ($view = 'library')} name="Library" icon="ri-book-mark-line" />
-	<Tab on:touchstart={() => ($view = 'browse')} name="Browse" icon="ri-layout-masonry-line" />
-	<Tab on:touchstart={() => ($view = 'settings')} name="Settings" icon="ri-settings-line" />
+	<Tab on:touchstart={() => ($view = 'spellbook')} on:click={() => ($view = 'spellbook')} name="Spellbook" icon="ri-book-open-line" />
+	<Tab on:touchstart={() => ($view = 'library')} on:click={() => ($view = 'library')} name="Library" icon="ri-book-mark-line" />
+	<Tab on:touchstart={() => ($view = 'browse')} on:click={() => ($view = 'browse')} name="Browse" icon="ri-layout-masonry-line" />
+	<Tab on:touchstart={() => ($view = 'settings')} on:click={() => ($view = 'settings')} name="Settings" icon="ri-settings-line" />
 
 </div>
 

@@ -1,19 +1,50 @@
 <script>
 	import { fade, fly } from 'svelte/transition';
-	import { deleteSpellbook } from '../functions';
-	import { confirm, lookupBook, modalCall } from '../stores';
-	import { localUserLibrary } from '../stores-persist';
+	import { deleteSpellbook, resetUserData } from '../functions';
+	import { confirm, lookupBook, modalCall, notification } from '../stores';
+	import {
+		activeBookIndex,
+		localLastSyncTime,
+		localUserLibrary,
+		openBooksIdsArray,
+		user
+	} from '../stores-persist';
 	import Button from './button.svelte';
+	import PocketBase from 'pocketbase';
+	const pb = new PocketBase('https://db.spellbook.pro');
+	import { goto } from '$app/navigation';
+	let confirmText;
+	let type;
 	// let test = 'Are you sure you want to delete this spellbook?#Cancel:outline#Delete:fill.red'
 	let buttons = $confirm.slice(1);
-    let text = $confirm[0]
+	if (buttons[0].type === 'type') {
+		type = buttons[0];
+		buttons = buttons.slice(1);
+	}
+	let text = $confirm[0];
 	console.log($confirm);
-	
+
+	// let test = [
+	// 	'Are you sure you want to delete all your spellbooks?',
+	// 	{ text: 'DELETE', type: 'type', action: 'confirm' },
+	// 	{ text: 'Cancel', type: 'outline', action: 'cancel' },
+	// 	{ text: 'Delete', icon: 'ri-delete-bin-line', type: 'fill red', action: 'reset-library' }
+	// ];
 </script>
 
 <div transition:fade={{ duration: 200 }} class="confirm_wrapper">
-	<div in:fly={{ y: 10, duration: 200, delay: 100 }} out:fly={{ y: 10, duration: 200 }} class="confirm_modal">
+	<div
+		in:fly={{ y: 10, duration: 200, delay: 100 }}
+		out:fly={{ y: 10, duration: 200 }}
+		class="confirm_modal"
+	>
 		<p>{text}</p>
+		{#if type}
+			<label for="confirm-text" style="margin-bottom: .5rem"
+				>To confirm this action, type {type.text} below:</label
+			>
+			<input id="confirm-text" type="text" bind:value={confirmText} />
+		{/if}
 		<div class="buttons">
 			{#each buttons as button}
 				<div>
@@ -25,10 +56,42 @@
 							if (button.action == 'cancel') {
 								$confirm = '';
 							} else if (button.action == 'delete-spellbook') {
-								deleteSpellbook($lookupBook.id)
+								deleteSpellbook($lookupBook.id);
 								$confirm = '';
 								$lookupBook = '';
 								$modalCall = '';
+							} else if (button.action == 'reset-library') {
+								if (confirmText === type.text) {
+									$localUserLibrary = [];
+									$confirm = '';
+								} else {
+									$notification =
+										"Type 'DELETE' in the textbox to confirm resetting your library.#info";
+								}
+							} else if (button.action == 'delete-account') {
+								if (confirmText === type.text) {
+									//DELETE ACCOUNT
+									async () => {
+										await pb.collection('users').delete($user.id);
+										resetUserData();
+										$confirm = '';
+										goto('/onboarding');
+									};
+								} else {
+									$notification =
+										"Type 'DELETE' in the textbox to confirm deleting your account.#info";
+								}
+							} else if (button.action == 'logout') {
+								pb.authStore.clear();
+								resetUserData();
+								$confirm = '';
+								goto('/onboarding');
+							} else if (button.action == 'publish-book') {
+								
+								$confirm = '';
+							} else if (button.action == 'unpublish-book') {
+								
+								$confirm = '';
 							}
 						}}
 					/>
@@ -40,7 +103,7 @@
 
 <style lang="scss">
 	.confirm_wrapper {
-		z-index: 10000;
+		z-index: 999;
 		top: 0;
 		left: 0;
 		bottom: 0;
@@ -66,6 +129,9 @@
 				div {
 					display: inline-block;
 				}
+			}
+			input {
+				margin-bottom: 0;
 			}
 		}
 	}

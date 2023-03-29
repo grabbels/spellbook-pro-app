@@ -23,4 +23,5 @@ export const platform = writable('');
 export const online = writable(null);
 export const syncStatus = writable('');
 export const confirm = writable('');
+export const sortedSpellsList = writable([[], [], [], [], [], [], [], [], [], []]);
 

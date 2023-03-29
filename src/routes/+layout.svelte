@@ -383,6 +383,9 @@
 		font-size: 1rem;
 		margin-bottom: 0.8rem;
 		line-height: 1.4;
+		&.small {
+			font-size: .9rem;
+		}
 	}
 	button {
 		all: unset;

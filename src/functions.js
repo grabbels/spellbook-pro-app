@@ -1,5 +1,5 @@
 import { lookupBook, modalCall, view } from './stores';
-import { activeBookIndex, localUserLibrary, openBooksIdsArray } from './stores-persist';
+import { activeBookIndex, localLastSyncTime, localUserLibrary, openBooksIdsArray } from './stores-persist';
 import { goto } from '$app/navigation';
 import { get } from 'svelte/store';
 
@@ -56,4 +56,12 @@ export function closeSpellbookById(closeId) {
 	function close() {
 		openBooksIdsArray.update((value) => value.filter((x) => x !== closeId));
 	}
+}
+
+export function resetUserData() {
+	activeBookIndex.set(null);
+	openBooksIdsArray.set([]);
+	localUserLibrary.set([]);
+	localLastSyncTime.set(0)
+	user.set('');
 }

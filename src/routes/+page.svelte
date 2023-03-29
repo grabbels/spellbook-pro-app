@@ -27,6 +27,7 @@
 	import { onMount } from 'svelte';
 	import SyncStatus from '../components/syncStatus.svelte';
 	import Confirm from '../components/confirm.svelte';
+	import BookmarksScrollbar from '../components/bookmarks-scrollbar.svelte';
 	let touchStart, touchEnd, touchPos, touchMove, direction, screenWidth, mainContent;
 	$: console.log($view);
 	function handleTouchStart(e) {
@@ -69,7 +70,7 @@
 <div
 	out:fly={{ duration: 300, y: 20 }}
 	in:fly={{ duration: 300, y: 20, delay: 300 }}
-	class="main_content"
+	class="main_content {$view}"
 	class:right={$addSpellsMenuOpen}
 	on:scroll={(e) => ($scrollY = e.target.scrollTop)}
 	bind:this={mainContent}
@@ -115,6 +116,9 @@
 	<MobileTabbar />
 	<MobileActiveTabbar />
 	<MobileTabpanel />
+	{#if $view === 'spellbook'}
+		<BookmarksScrollbar />
+	{/if}
 
 	<!-- <SyncStatus/> -->
 </div>
@@ -147,11 +151,18 @@
 		transition: 0.35s;
 		overflow-x: hidden;
 		overflow-y: auto;
+		scroll-behavior: smooth;
 		position: relative;
 		// height: 100%;
 		width: 100vw;
 		transition-timing-function: cubic-bezier(0.3, 0, 0.3, 1);
 		pointer-events: auto;
+		&.spellbook {
+			&::-webkit-scrollbar {
+				display: none;
+				scrollbar-width: none; /* Firefox */
+			}
+		}
 		&.back {
 			transform: scale(0.98);
 			height: 100vh;

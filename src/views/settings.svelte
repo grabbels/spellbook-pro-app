@@ -6,9 +6,10 @@
 	import PocketBase from 'pocketbase';
 	import { localLastSyncTime, user } from '../stores-persist';
 	import ListButton from '../components/listButton.svelte';
-	import { online, visualViewport } from '../stores';
+	import { confirm, modalCall, online, visualViewport } from '../stores';
 	import { fly } from 'svelte/transition';
 	import OptionsPanel from '../components/optionsPanel.svelte';
+	import Icon from '$lib/icon-outline.svg';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	let optionsCall, nickname, email, theme, close;
 	$: if (close === true) {
@@ -20,8 +21,8 @@
 		email = $user.email;
 	}
 	function formatDate(date, format) {
-	//
-}
+		//
+	}
 	// import goto from '$app/navigation'
 </script>
 
@@ -43,6 +44,14 @@
 			on:click={() => (optionsCall = 'spellsheet')}
 		/>
 		<ListButton text="Sync" icon="ri-refresh-line" on:click={() => (optionsCall = 'sync')} />
+		<div style="margin-top:2rem; text-align: center; opacity: .3">
+			<img src={Icon} alt="" style="display: inline-block; margin-bottom: .5rem; opacity: .5" />
+			<p class="small">
+				Spellbook Pro 1.0.0. <button class="href" on:click={() => ($modalCall = 'changelog')}
+					>Changelog.</button
+				>
+			</p>
+		</div>
 	</ul>
 </SafeViewPadding>
 
@@ -74,8 +83,62 @@
 						<div><Button icon="ri-lock-password-line" text="Change password" type="fill" /></div>
 					</form>
 					<div class="buttons">
-						<Button text="Reset library" icon="ri-restart-line" type="outline" />
-						<Button text="Delete account" icon="ri-delete-bin-line" type="outline" />
+						<div>
+							<Button
+								text="Log out"
+								icon="ri-logout-circle-line"
+								type="outline"
+								on:click={() =>
+									($confirm = [
+										'Are you sure you want to log out?',
+										{ text: 'Cancel', type: 'outline', action: 'cancel' },
+										{
+											text: 'Log out',
+											icon: 'ri-logout-circle-line',
+											type: 'fill blue',
+											action: 'logout'
+										}
+									])}
+							/>
+						</div>
+						<div>
+							<Button
+								text="Reset library"
+								icon="ri-restart-line"
+								type="outline"
+								on:click={() =>
+									($confirm = [
+										'Are you sure you want to delete all your spellbooks?',
+										{ text: 'DELETE', type: 'type', action: 'confirm' },
+										{ text: 'Cancel', type: 'outline', action: 'cancel' },
+										{
+											text: 'Delete',
+											icon: 'ri-delete-bin-line',
+											type: 'fill red',
+											action: 'reset-library'
+										}
+									])}
+							/>
+						</div>
+						<div>
+							<Button
+								text="Delete account"
+								icon="ri-delete-bin-line"
+								type="outline"
+								on:click={() =>
+									($confirm = [
+										'Are you sure you want to delete your account?',
+										{ text: 'DELETE', type: 'type', action: 'confirm' },
+										{ text: 'Cancel', type: 'outline', action: 'cancel' },
+										{
+											text: 'Delete',
+											icon: 'ri-delete-bin-line',
+											type: 'fill red',
+											action: 'reset-library'
+										}
+									])}
+							/>
+						</div>
 					</div>
 				</div>
 			{:else if optionsCall === 'interface'}
@@ -130,7 +193,7 @@
 
 								<p>Last sync: {new Date($localLastSyncTime).toUTCString()}</p>
 								<div class="buttons">
-									<Button text="Sync now" icon="ri-refresh-line" type="fill"/>
+									<Button text="Sync now" icon="ri-refresh-line" type="fill" />
 								</div>
 							</div>
 						</div>
@@ -146,7 +209,9 @@
 		padding: 1rem;
 		width: 100%;
 	}
-
+	img {
+		width: 60px;
+	}
 	.options_inner {
 		padding: 2rem;
 		.title_wrap {
@@ -180,7 +245,7 @@
 				margin-bottom: 1rem;
 			}
 			p {
-				margin-top: .3rem;
+				margin-top: 0.3rem;
 			}
 			.icon {
 				display: inline-block;
@@ -203,6 +268,9 @@
 			margin-top: 1rem;
 			display: flex;
 			flex-direction: column;
+			div {
+				margin-bottom: 0.5rem;
+			}
 		}
 	}
 </style>

@@ -47,5 +47,6 @@
 		transition: 0.3s;
 		right: 0;
 		background-color: var(--bodybg);
+		overflow-y: auto;
 	}
 </style>

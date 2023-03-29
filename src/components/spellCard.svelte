@@ -1,11 +1,13 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { lookupSpell, modalCall } from '../stores';
-	import { localUserPreferences } from '../stores-persist';
+	import { lookupSpell, modalCall, spellList } from '../stores';
+	import { localUserLibrary, localUserPreferences } from '../stores-persist';
+	import Button from './button.svelte';
 	import Pill from './pill.svelte';
 	import Schoolicon from './schoolicon.svelte';
 	export let type;
 	export let data;
+	export let id = '';
 
 	let fadeDuration = 0;
 
@@ -15,6 +17,7 @@
 {#if data}
 	<button
 		class="card {type}"
+		id={id}
 		on:click={() => {
 			if (type !== 'small') {
 				$lookupSpell = data;
@@ -78,6 +81,20 @@
 							{@html data.description}
 						</div>
 					</div>
+					<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
+						{#if $spellList.findIndex((p) => p.id == data.id)}
+							<Button
+								text="Remove spell"
+								icon="ri-close-line"
+								type="outline translucent"
+								on:click={()=>{
+									
+								}}
+							/>
+						{:else}
+							<Button text="Add to spellbook" icon="ri-add-line" type="fill" on:click />
+						{/if}
+					</div>
 				{/if}
 			{/if}
 		</div>
@@ -134,8 +151,8 @@
 			border-radius: 0;
 			position: relative;
 			overflow: hidden;
-			margin: .4rem .8rem;
-			padding: .5rem .8rem;
+			margin: 0.4rem 0.8rem;
+			padding: 0.5rem 0.8rem;
 			border-radius: 24px;
 			.card_inner {
 				margin: 0 0.5rem;

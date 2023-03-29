@@ -153,6 +153,14 @@
 				border-color: var(--lightblue);
 				// color: var(--lightblue)
 			}
+			&.red {
+				border-color: var(--red);
+			}
+			&.translucent {
+				color: var(--onbackground);
+				border-color: var(--onbackground);
+				opacity: .3;
+			}
 		}
 		&.disabled {
 			pointer-events: none;
