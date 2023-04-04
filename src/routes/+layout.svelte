@@ -1,5 +1,18 @@
 <script>
 	//variables and functions
+	import spellsDatabase from '../spells.json';
+	import {
+		activeOpenBookId,
+		lastLocalSpellsPull,
+		localLastSyncTime,
+		localPendingChanges,
+		localPreviousLibrary,
+		localUserLibrary,
+		openBooksIdsArray,
+		spells,
+		unsyncedChanges,
+		user
+	} from '../stores-persist';
 	import {
 		addSpellsMenuOpen,
 		bookToEdit,
@@ -20,21 +33,31 @@
 		syncStatus,
 		tabPanelOpen,
 		visualViewport,
-		zoomOutModifier
+		zoomOutModifier,
+		passwordResetToken,
+		lookupBookId,
+		filterPanelOpen
 	} from '../stores';
+
+	//ERROR/FAULT DETECTION IN LOCAL STORAGE
+	if (!Object.keys($localUserLibrary).length && $openBooksIdsArray.length) {
+		$openBooksIdsArray = [];
+	}
+	// console.log()
+	for (let i = 0; i < $openBooksIdsArray.length; i++) {
+		if (!JSON.stringify($localUserLibrary).includes($openBooksIdsArray[i])) {
+			$openBooksIdsArray.splice(i, 1);
+			$openBooksIdsArray = $openBooksIdsArray;
+		}
+	}
+
 	import { onMount } from 'svelte';
+	// import DeepDiff from 'deep-diff';
 	import { goto } from '$app/navigation';
 	import SmokeScreen from '../components/smokeScreen.svelte';
 	import DevTools from '../components/devTools.svelte';
 	import AddSpellsMenu from '../components/addSpellsMenu.svelte';
-	import {
-		activeBookIndex,
-		localLastSyncTime,
-		localUserLibrary,
-		spells,
-		unsyncedChanges,
-		user
-	} from '../stores-persist';
+
 	// import { dummyLibrary } from '../dummyLibrary';
 	import { page } from '$app/stores';
 	import Notification from '../components/notification.svelte';
@@ -46,6 +69,9 @@
 	import '@fontsource/kanit/500.css';
 	import '@fontsource/roboto-mono';
 	import 'remixicon/fonts/remixicon.css';
+
+	// import { diff, detailedDiff } from 'deep-object-diff';
+	import { diff, applyDiff } from 'deep-diff';
 	// http://localhost:5173/?confirm-verification=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJlbWFpbCI6ImRldkBzZW1oYWsuZGV2IiwiZXhwIjoxNjgwMzYwODc4LCJpZCI6IjZoOXRkamtvM2V3M2ZkdCIsInR5cGUiOiJhdXRoUmVjb3JkIn0.Aq-mztHb4YT3MjsLPa-YrYwU8_eUsIWtMbx1S-JKfgA
 	//pocketbase
 	import PocketBase from 'pocketbase';
@@ -53,7 +79,6 @@
 	//check for href data
 
 	// console.log($localUserLibrary.map(v => ({...v, isActive: true})))
-	$: console.log($localUserLibrary)
 	async function refreshAuth() {
 		console.log('refreshAuth');
 		try {
@@ -71,123 +96,165 @@
 		}
 	}
 
-	console.log($activeBookIndex);
-	// pushSpells()
-	async function pushSpells() {
-		console.log($spells);
-		for (let i = 0; i < $spells.length; i++) {
-			const data = {
-				casting_time: $spells[i].casting_time,
-				classes: $spells[i].classes,
-				components: $spells[i].components,
-				description: $spells[i].description,
-				duration: $spells[i].duration,
-				level: $spells[i].level,
-				name: $spells[i].name,
-				range: $spells[i].range,
-				ritual: $spells[i].ritual,
-				school: $spells[i].school,
-				tags: $spells[i].tags,
-				type: $spells[i].type,
-				save: $spells[i].save,
-				attack: $spells[i].attack,
-				higher_levels: $spells[i].higher_levels
-			};
-
-			try {
-				const record = await pb.collection('spells').create(data);
-				console.log(record);
-			} catch (error) {
-				console.log(error);
-			}
-		}
-	}
 	// pullSpells()
 	async function pullSpells() {
 		const records = await pb.collection('spells').getFullList({});
 		console.log(records);
+		$spells = records;
+		$lastLocalSpellsPull = Date.now();
 	}
 	// removeSpells()
-	async function removeSpells() {
-		// you can also fetch all records at once via getFullList
-		const records = await pb.collection('spells').getFullList({
-			sort: '-created'
-		});
-		for (let i = 0; i < records.length; i++) {
-			await pb.collection('spells').delete(records[i].id);
+	// async function removeSpells() {
+	// 	// you can also fetch all records at once via getFullList
+	// 	const records = await pb.collection('spells').getFullList({
+	// 		sort: '-created'
+	// 	});
+	// 	for (let i = 0; i < records.length; i++) {
+	// 		await pb.collection('spells').delete(records[i].id);
+	// 	}
+	// }
+
+	let library = {
+		qifyezl9wou7dmh_1680335337728: {
+			id: 'qifyezl9wou7dmh_1680335337728',
+			name: ['test', 'of', 'the', 'sea', 'sorcerer', '/', 'bard'],
+			tags: ['awesome', 'epic', 'sorcerer'],
+			class: 'sorcerer',
+			icon: 'windy',
+			color: 'var(--lightblue)',
+			level: 12,
+			published: false,
+			user: 'Grabbels',
+			user_id: 'qifyezl9wou7dmh',
+			list: [
+				'3obr2uhwd3cdrpz',
+				'j1zd0rj72f5wm63',
+				'vd1yra5uezj2g7i',
+				'soyep2e6qgtni87',
+				'oliik4e35udgzbd',
+				'q9mm43ya4ejnrdv',
+				'p4awpt2d2h1irf7',
+				'debmc63a7sr25fv'
+			]
+		},
+		qifyezl9wou7dmh_1680337230653: {
+			id: 'qifyezl9wou7dmh_1680337230653',
+			name: ['sneaky', 'spellthief', '/', 'bladesinger'],
+			tags: [],
+			class: 'wizard',
+			icon: 'criminal',
+			color: 'var(--red)',
+			level: 11,
+			published: false,
+			user: 'Grabbels',
+			user_id: 'qifyezl9wou7dmh',
+			list: [
+				'9luehf4s8y8uxwl',
+				'u4atyg7l3cxl1t8',
+				'61dfxrltx2l0ury',
+				'hmaljfx0macp387',
+				'li68kf5h7s42wr3',
+				's8t81664a14tbpx'
+			]
 		}
-	}
+	};
 
-	async function syncLibrary(record) {
-		// $syncStatus = 'working';
-		// let remoteLastSyncTime;
-		// if (record) {
-		// 	//this means the sync was triggered by the auth refresh which means the app was just started
-		// 	if ($unsyncedChanges === true) {
-		// 		//the local library has been modified locally and wasn't synced before closing the app last time, possibly due to being offline
-		// 		//the library needs to be pushed to the database
-		// 		pushToCloud();
-		// 	}
-		// 	remoteLastSyncTime = record.last_sync_time;
-		// 	if (remoteLastSyncTime > $localLastSyncTime) {
-		// 		//the remote sync time is newer than the local last sync time which means the user's library was modified from another device and needs to be pulled to this device
-		// 		$localUserLibrary = record.list;
-		// 		$localLastSyncTime = remoteLastSyncTime;
-		// 		//done
-		// 		$syncStatus = 'done';
-		// 	}
-		// } else {
-		// 	try {
-		// 		const record = await pb.collection('users').getOne($user.id, {});
-		// 		if (record) {
-		// 			if ($unsyncedChanges === true) {
-		// 				//the local library has been modified locally and wasn't synced before closing the app last time, possibly due to being offline
-		// 				//the library needs to be pushed to the database
-		// 				if (remoteLastSyncTime > $localLastSyncTime) {
-		// 					//remote library is newer but local library has unsaved changes
-		// 					//CONFLICT
-		// 				} else {
-		// 					pushToCloud();
-		// 				}
-		// 			} else {
-		// 				remoteLastSyncTime = record.last_sync_time;
-		// 				if (remoteLastSyncTime > $localLastSyncTime) {
-		// 					//remote sync time is newer than local sync time which means library has been modified on another device
-		// 					//remote library needs to be pulled
-		// 					$localUserLibrary = record.list;
-		// 					$localLastSyncTime = remoteLastSyncTime;
-		// 					//done
-		// 					$syncStatus = 'done';
-		// 				}
-		// 			}
-		// 		}
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-		// }
-	}
+	// trackLibraryChanges();
+	// $: $localUserLibrary, trackLibraryChanges();
 
-	async function pushToCloud() {
-		// let currentTime = Date.now();
-		// try {
-		// 	const data = {
-		// 		library: $localUserLibrary,
-		// 		last_sync_time: currentTime
-		// 	};
-		// 	const record = await pb.collection('users').update($user.id, data);
-		// 	if (record) {
-		// 		let currentTime = Date.now();
-		// 		$localLastSyncTime = currentTime;
-		// 		//done
-		// 		$unsyncedChanges === false;
-		// 		$syncStatus = 'done';
-		// 	}
-		// } catch (error) {
-		// 	console.log(error);
-		// 	//done
-		// 	$syncStatus = 'error';
-		// }
-	}
+	// function trackLibraryChanges() {
+	// console.log(diff($localPreviousLibrary, $localUserLibrary));
+	// let modLib = applyDiff($localPreviousLibrary, $localUserLibrary)
+	// console.log(modLib);
+
+	// $localPendingChanges = detailedDiff($localPendingChanges, $localUserLibrary)
+	// }
+
+	// console.log(DeepDiff.diff(library, $localUserLibrary));
+
+	// async function syncLibrary(record) {
+	// 	let toBePushedLibrary;
+	// 	try {
+	// 		const record = await pb.collection('users').getOne($user.id);
+	// 		toBePushedLibrary = record.library;
+	// 		if (record.library == $localUserLibrary) {
+	// 			//cloud library is identical to local library, no sync neccessary
+	// 		} else if (record) {
+	// 			afterPull(record, toBePushedLibrary);
+	// 		}
+	// 	} catch (error) {
+	// 		console.log(error);
+	// 	}
+
+	// 	function afterPull(record, toBePushedLibrary) {
+	// 		if (Object.keys(localPendingChanges).length) {
+	// 			for (const id in localPendingChanges) {
+	// 				// console.log(localPendingChanges[id])
+	// 				console.log(id);
+	// 				if (!record.library[id]) {
+	// 					//new local record not in cloud, needs to push in its entirety
+	// 					toBePushedLibrary[id] = localPendingChanges[id];
+	// 				} else {
+	// 					for (const key in localPendingChanges[id]) {
+	// 						if (key === 'delete') {
+	// 							delete toBePushedLibrary[id];
+	// 						} else if (key === 'list') {
+	// 							for (const key in localPendingChanges[id].list) {
+	// 								if (key === 'add') {
+	// 									let toBeAddedSpells = localPendingChanges[id].list.add;
+	// 									for (let i = 0; i < toBeAddedSpells; i++) {
+	// 										toBePushedLibrary[id].list = [
+	// 											...toBePushedLibrary[id].list,
+	// 											toBeAddedSpells[i]
+	// 										];
+	// 									}
+	// 								} else if (key === 'remove') {
+	// 									let toBeRemovedSpells = localPendingChanges[id].list.remove;
+	// 									for (let i = 0; i < toBeRemovedSpells; i++) {
+	// 										toBePushedLibrary[id].list = toBePushedLibrary[id].list.filter(
+	// 											(o) => o != toBeRemovedSpells[i]
+	// 										);
+	// 									}
+	// 								}
+	// 							}
+	// 						} else if (
+	// 							key === 'name' ||
+	// 							key === 'tags' ||
+	// 							key === 'class' ||
+	// 							key === 'icon' ||
+	// 							key === 'color' ||
+	// 							key === 'level' ||
+	// 							key === 'published'
+	// 						) {
+	// 							console.log(id);
+	// 							//partial changes that will directly overwrite to the cloud
+	// 							toBePushedLibrary[id][key] = $localUserLibrary[id][key];
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+
+	// 			let lastPushedChanges = localPendingChanges;
+	// 			pushToCloud(lastPushedChanges, toBePushedLibrary);
+	// 		}
+	// 	}
+
+	// 	//
+
+	// 	async function pushToCloud(lastPushedChanges, toBePushedLibrary) {
+	// 		const data = {
+	// 			library: toBePushedLibrary,
+	// 			last_sync_time: Date.now(),
+	// 			last_pushed_changes: lastPushedChanges
+	// 		};
+	// 		try {
+	// 			const record = await pb.collection('users').update($user.id, data);
+	// 			console.log(record);
+	// 		} catch (error) {
+	// 			console.log(error.data);
+	// 		}
+	// 	}
+	// }
 
 	// import { User } from 'svelte-pocketbase';
 
@@ -202,6 +269,7 @@
 	import QuickSearchPanel from '../components/quickSearchPanel.svelte';
 	import { Body } from 'svelte-body';
 	import Confirm from '../components/confirm.svelte';
+	import FuncAddSpell from '../components/functions/func-addSpell.svelte';
 
 	// $localUserLibrary = dummyLibrary;
 
@@ -215,16 +283,23 @@
 		//check if online and user and route accordingly
 		if ($page.url.searchParams) {
 			let params = $page.url.searchParams;
-			if (params.get('confirm-verification')) {
+			if (params.get('confirm-password-reset')) {
+				console.log('password reset');
+				$passwordResetToken = params.get('confirm-password-reset');
+				goto('/password-reset');
+			} else if (params.get('confirm-verification')) {
 				console.log('register verification');
 			}
 		}
 		if ($user) {
-			console.log($user);
 			if ($online) {
 				// goto('/')
-				syncLibrary();
+				// syncLibrary();
+				if ($spells.length < 1 || $lastLocalSpellsPull + 604800000 < Date.now()) {
+					pullSpells();
+				}
 			} else {
+				$spells = spellsDatabase;
 				$notification =
 					'Your device is offline. You can still use the app but your library will not sync until you come back online#info';
 			}
@@ -251,6 +326,19 @@
 	// 	// interfaceBack = true
 	// } else {
 	// }
+
+	$: $openBooksIdsArray, checkActiveOpenBook();
+	function checkActiveOpenBook() {
+		if (!$openBooksIdsArray.includes($activeOpenBookId)) {
+			//open books array does not include the active open book id, that has to change
+			if ($openBooksIdsArray.length > 0) {
+				$activeOpenBookId = $openBooksIdsArray[0];
+			} else {
+				$activeOpenBookId = '';
+			}
+		}
+	}
+
 	function handleKeydown(e) {
 		// console.log(e);
 		if (e.key == 'Escape') {
@@ -258,7 +346,17 @@
 			$quickQuery = '';
 			$quickSearchPanelOpen = false;
 			$addSpellsMenuOpen = false;
+			$tabPanelOpen = false;
 			document.activeElement.blur();
+		}
+	}
+
+	$: $modalCall, checkEmptyModalCall();
+
+	function checkEmptyModalCall() {
+		if ($modalCall == '') {
+			$bookToEdit = '';
+			$lookupBookId = '';
 		}
 	}
 	// $: console.log($zoomOutModifier * 0.03)
@@ -266,16 +364,15 @@
 	// $modalCall = 'login'
 </script>
 
+<!-- GLOBAL FUNCTIONS -->
+<FuncAddSpell/>
+<!---->
+
 <DevTools />
 <slot />
 {#if $modalCall}
 	{#key $modalCall}
 		<Modal />
-		{#if $modalCall === 'spellbook'}
-			<SmokeScreen solid />
-		{:else}
-			<SmokeScreen />
-		{/if}
 	{/key}
 {/if}
 {#if $notification}
@@ -384,7 +481,7 @@
 		margin-bottom: 0.8rem;
 		line-height: 1.4;
 		&.small {
-			font-size: .9rem;
+			font-size: 0.9rem;
 		}
 	}
 	button {
@@ -463,7 +560,7 @@
 	label {
 		margin-bottom: 0.2rem;
 		display: inline-block;
-		color: var(--inputbg);
+		color: var(--lesstranslucent);
 	}
 	input {
 		&:disabled {

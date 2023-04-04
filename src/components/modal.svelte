@@ -1,6 +1,6 @@
 <script>
 	import { fly, scale } from 'svelte/transition';
-	import { lookupSpell, modalCall } from '../stores';
+	import { bookToEdit, lookupSpell, modalCall } from '../stores';
 	import Close from './close.svelte';
 	import ModalLogin from './modal/modal-login.svelte';
 	import SpellCard from './spellCard.svelte';
@@ -55,6 +55,7 @@
 					on:click={() => {
 						$modalCall = '';
 						$lookupSpell = '';
+						$bookToEdit = '';
 					}}
 				/>
 			</div>

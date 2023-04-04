@@ -4,12 +4,19 @@
 	import SafeViewPadding from '../components/safeViewPadding.svelte';
 	import { goto } from '$app/navigation';
 	import PocketBase from 'pocketbase';
-	import { localLastSyncTime, user } from '../stores-persist';
+	import {
+		lastLocalSpellsPull,
+		lastSyncTry,
+		localLastSyncTime,
+		localUserLibrary,
+		user
+	} from '../stores-persist';
 	import ListButton from '../components/listButton.svelte';
-	import { confirm, modalCall, online, visualViewport } from '../stores';
-	import { fly } from 'svelte/transition';
+	import { confirm, manualSync, modalCall, notification, online, visualViewport } from '../stores';
+	import { fade, fly } from 'svelte/transition';
 	import OptionsPanel from '../components/optionsPanel.svelte';
 	import Icon from '$lib/icon-outline.svg';
+	import SyncStatus from '../components/syncStatus.svelte';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	let optionsCall, nickname, email, theme, close;
 	$: if (close === true) {
@@ -49,9 +56,13 @@
 			<p class="small">
 				Spellbook Pro 1.0.0. <button class="href" on:click={() => ($modalCall = 'changelog')}
 					>Changelog.</button
-				>
+				><br />Spells database last pull: {new Date($lastLocalSpellsPull)
+					.toJSON()
+					.slice(0, 16)
+					.replace('T', ' ')} UTC
 			</p>
 		</div>
+		<ListButton text="Donate" icon="ri-hand-heart-line" on:click={() => (optionsCall = 'donate')} />
 	</ul>
 </SafeViewPadding>
 
@@ -80,7 +91,18 @@
 					<form on:submit|preventDefault>
 						<label for="password">Password</label>
 						<!-- <input id="email" type="email" bind:value={email} disabled> -->
-						<div><Button icon="ri-lock-password-line" text="Change password" type="fill" /></div>
+						<div>
+							<Button
+								icon="ri-lock-password-line"
+								text="Request password change"
+								type="fill"
+								on:click={async () => {
+									await pb.collection('users').requestPasswordReset($user.email);
+									$notification =
+										'A link to change your password has been sent to your registered email-address.#info';
+								}}
+							/>
+						</div>
 					</form>
 					<div class="buttons">
 						<div>
@@ -182,18 +204,19 @@
 						<div>
 							<div class="status">
 								<h4>Sync status</h4>
-
-								{#if $online}
-									<div class="icon"><i class="ri-cloud-line" /></div>
-									<p><strong>Online</strong></p>
-								{:else}
-									<div class="icon"><i class="ri-cloud-off-line" /></div>
-									<p><strong>Offline</strong></p>
-								{/if}
-
-								<p>Last sync: {new Date($localLastSyncTime).toUTCString()}</p>
+								<SyncStatus large/>
+								{#key $lastSyncTry}
+									<p in:fade>
+										Last sync: {new Date($lastSyncTry).toUTCString().replace('GMT', 'UTC')}
+									</p>
+								{/key}
 								<div class="buttons">
-									<Button text="Sync now" icon="ri-refresh-line" type="fill" />
+									<Button
+										text="Sync now"
+										icon="ri-refresh-line"
+										type="fill"
+										on:click={() => ($manualSync = true)}
+									/>
 								</div>
 							</div>
 						</div>

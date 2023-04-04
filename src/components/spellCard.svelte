@@ -1,7 +1,12 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { lookupSpell, modalCall, spellList } from '../stores';
-	import { localUserLibrary, localUserPreferences } from '../stores-persist';
+	import { addSpell, lookupSpell, modalCall, notification, spellList } from '../stores';
+	import {
+		activeOpenBookId,
+		localUserLibrary,
+		localUserPreferences,
+		openBooksIdsArray
+	} from '../stores-persist';
 	import Button from './button.svelte';
 	import Pill from './pill.svelte';
 	import Schoolicon from './schoolicon.svelte';
@@ -17,7 +22,8 @@
 {#if data}
 	<button
 		class="card {type}"
-		id={id}
+		{id}
+		data-id={data.id}
 		on:click={() => {
 			if (type !== 'small') {
 				$lookupSpell = data;
@@ -61,9 +67,9 @@
 				<div class="block pills" style="margin-bottom: .7rem">
 					<Pill
 						type="small {type === 'embed' ? 'fill' : 'discreet'}"
-						text={data.school}
+						text={data.type}
 						icon="ri-book-2-line"
-						label="School of magic"
+						label="Level and school of magic"
 					/>
 					{#if data.save}
 						<Pill
@@ -82,17 +88,27 @@
 						</div>
 					</div>
 					<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
-						{#if $spellList.findIndex((p) => p.id == data.id)}
+						{#if $spellList.includes(data.id)}
 							<Button
 								text="Remove spell"
 								icon="ri-close-line"
 								type="outline translucent"
-								on:click={()=>{
-									
+								on:click={() => {
+									$localUserLibrary[$activeOpenBookId].list = $localUserLibrary[
+										$activeOpenBookId
+									].list.filter((o) => o !== data.id);
+									$modalCall = '';
 								}}
 							/>
 						{:else}
-							<Button text="Add to spellbook" icon="ri-add-line" type="fill" on:click />
+							<Button
+								text="Add to spellbook"
+								icon="ri-add-line"
+								type="fill"
+								on:click={() => {
+									$addSpell = data.id 
+								}}
+							/>
 						{/if}
 					</div>
 				{/if}

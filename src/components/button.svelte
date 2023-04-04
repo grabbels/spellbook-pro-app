@@ -14,7 +14,7 @@
 <button
 	bind:clientWidth={buttonWidth}
 	bind:clientHeight={buttonHeight}
-	on:click
+	on:click|stopPropagation
 	type={submit ? 'submit' : ''}
 	class={type}
 	class:right
@@ -140,6 +140,14 @@
 					filter: drop-shadow(0 0 5px rgba(var(--accentrgb), 0.8));
 				}
 			}
+		}
+		&.yellow {
+			background-color: var(--yellow);
+			color: var(--onforeground);
+		}
+		&.darkblue {
+			background-color: var(--darkblue);
+			color: var(--onbackground);
 		}
 		&.outline {
 			background-color: transparent;

@@ -1,14 +1,8 @@
 <script>
 	import { fade, fly } from 'svelte/transition';
 	import { deleteSpellbook, resetUserData } from '../functions';
-	import { confirm, lookupBook, modalCall, notification } from '../stores';
-	import {
-		activeBookIndex,
-		localLastSyncTime,
-		localUserLibrary,
-		openBooksIdsArray,
-		user
-	} from '../stores-persist';
+	import { confirm, lookupBookId, modalCall, notification } from '../stores';
+	import { localLastSyncTime, localPendingChanges, localUserLibrary, openBooksIdsArray, user } from '../stores-persist';
 	import Button from './button.svelte';
 	import PocketBase from 'pocketbase';
 	const pb = new PocketBase('https://db.spellbook.pro');
@@ -56,10 +50,14 @@
 							if (button.action == 'cancel') {
 								$confirm = '';
 							} else if (button.action == 'delete-spellbook') {
-								deleteSpellbook($lookupBook.id);
-								$confirm = '';
-								$lookupBook = '';
+								// deleteSpellbook($lookupBookId);
+								$openBooksIdsArray = $openBooksIdsArray.filter((o) => o !== $lookupBookId);
 								$modalCall = '';
+								delete $localUserLibrary[$lookupBookId];
+								$localUserLibrary = $localUserLibrary
+								$lookupBookId = '';
+								$confirm = '';
+								
 							} else if (button.action == 'reset-library') {
 								if (confirmText === type.text) {
 									$localUserLibrary = [];
@@ -87,10 +85,8 @@
 								$confirm = '';
 								goto('/onboarding');
 							} else if (button.action == 'publish-book') {
-								
 								$confirm = '';
 							} else if (button.action == 'unpublish-book') {
-								
 								$confirm = '';
 							}
 						}}

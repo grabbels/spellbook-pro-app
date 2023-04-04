@@ -1,13 +1,13 @@
 <script>
-	import { modalCall, view, tabPanelOpen, visualViewport, zoomOutModifier } from '../../stores';
-	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../../stores-persist';
+	import { modalCall, view, tabPanelOpen, visualViewport, zoomOutModifier, notification } from '../../stores';
+	import { activeOpenBookId, localUserLibrary, openBooksIdsArray } from '../../stores-persist';
 	import Button from '../button.svelte';
+	import Pill from '../pill.svelte';
 	let touchStart, touchEnd, currentPos, direction, touchDrag, panelHeight;
 	function handleTouchStart(e) {
 		touchStart = e.touches[0].screenY;
 		touchDrag = true;
 	}
-
 	function handleTouchMove(e) {
 		if (e.touches[0].screenY > touchStart) {
 			currentPos = e.touches[0].screenY - touchStart;
@@ -15,10 +15,8 @@
 		} else {
 			currentPos = 0;
 		}
-
 		touchEnd = e.touches[0].screenY;
 	}
-
 	function handleTouchEnd(e) {
 		touchDrag = false;
 		if (touchEnd > touchStart + 200) {
@@ -66,28 +64,43 @@
 					/>
 				</div>
 			</button>
-			
 		</div>
 		<h4>Open spellbooks</h4>
 		<div class="tabs">
 			{#each $openBooksIdsArray as openSpellbookId}
-				{@const bookIndexInLibrary = $localUserLibrary
-					.map((object) => object.id)
-					.indexOf(openSpellbookId)}
-				{@const spellbook =
-					$localUserLibrary[bookIndexInLibrary]}
-				<button class="tab" style="--bookcolor: {$localUserLibrary[bookIndexInLibrary].color}" class:active={$activeBookIndex === bookIndexInLibrary} on:click={()=>{
-					$activeBookIndex = bookIndexInLibrary;
-					$tabPanelOpen = false;
-					console.log()
-				}}>
+			 {#if JSON.stringify($localUserLibrary).includes(openSpellbookId)}
+				<button
+					on:click={() => {
+						$activeOpenBookId = openSpellbookId;
+						$tabPanelOpen = false;
+					}}
+					class="tab"
+					class:active={openSpellbookId === $activeOpenBookId}
+					style="--bookcolor: {$localUserLibrary[openSpellbookId].color}"
+				>
 					<div class="tab_inner">
 						<div class="title">
-							<span>{spellbook.name.toString().replaceAll(',', ' ')}</span>
+							<div class="icon">
+								<i class="ri-{$localUserLibrary[openSpellbookId].icon}-fill" />
+							</div>
+							<span>{$localUserLibrary[openSpellbookId].name.toString().replaceAll(',', ' ')}</span>
 							<div class="close"><button><i class="ri-close-line" /></button></div>
 						</div>
+						<!-- <div class="pills">
+							<Pill
+								text={$localUserLibrary[openSpellbookId].class}
+								icon="ri-contacts-line"
+								type="small fill"
+							/>
+							<Pill
+								text="Level {$localUserLibrary[openSpellbookId].level}"
+								icon="ri-user-star-line"
+								type="small fill"
+							/>
+						</div> -->
 					</div>
 				</button>
+				{/if}
 			{/each}
 		</div>
 		<div class="buttons">
@@ -96,7 +109,11 @@
 				icon="ri-add-line"
 				type="fill accent"
 				on:click={() => {
-					$modalCall = 'new';
+					if (Object.keys($localUserLibrary).length < 12) {
+						$modalCall = 'new';
+					} else {
+						$notification = 'You have reached the maximum of 12 spellbooks.#info';
+					}
 				}}
 			/>
 			<Button
@@ -132,7 +149,7 @@
 			height: 100%;
 			h4 {
 				text-align: center;
-				margin: -.3rem 0 1rem
+				margin: -0.3rem 0 1rem;
 			}
 			.handle {
 				button {
@@ -167,19 +184,23 @@
 				}
 			}
 			.tabs {
-				grid-template-columns: 1fr 1fr;
-				grid-auto-rows: 200px;
+				grid-template-columns: 1fr;
+				grid-auto-rows: max-content;
 				display: grid;
-				grid-gap: 0.5rem;
-				.tab {
+				grid-gap: 0.3rem;
+				button.tab {
 					// background-color: var(--moretranslucent);
 					border-radius: 12px;
 					overflow: hidden;
 					height: 100%;
 					display: flex;
-					align-items: flex-start;
-					border: 2px solid transparent;
+					align-items: center;
+					// border: 2px solid transparent;
 					position: relative;
+					transition: 0.15s;
+					box-sizing: border-box;
+					// padding: 2px;
+					// min-height: 100px;
 					&:after {
 						content: '';
 						position: absolute;
@@ -189,25 +210,54 @@
 						bottom: 0;
 						background-color: var(--bookcolor);
 						z-index: -1;
-						opacity: .2;
+						opacity: 0.2;
 					}
 					.tab_inner {
+						width: 100%;
+						padding: 0.7rem;
 						.title {
-							padding: .7rem 1rem;
 							height: auto;
 							text-transform: capitalize;
 							display: grid;
-							grid-template-columns: 1fr 16px;
-							gap: .3rem;
+							grid-template-columns: 16px 1fr 16px;
+							align-items: center;
+							gap: 0.3rem;
 							font-weight: 400;
-							i {
-								font-size: 1.3rem;
-								opacity: .5;
+							width: 100%;
+							span {
+								text-align: center;
+								display: inline-block;
+								// margin-top: -px;
+								// line-height: 1;
 							}
+							i {
+								// height: 20px;
+								// width: 20px;
+								display: inline-block;
+							}
+							.icon {
+								i {
+									color: var(--bookcolor);
+									font-size: 1.3rem;
+								}
+							}
+							.close {
+								i {
+									font-size: 1.3rem;
+									opacity: 0.5;
+								}
+							}
+						}
+						.pills {
+							display: flex;
+							width: 100%;
+							justify-content: space-around;
+							gap: 0.2rem;
 						}
 					}
 					&.active {
-						border-color: var(--bookcolor);
+						border: 2px solid var(--bookcolor);
+						// background-color: var(--bookcolor);
 					}
 				}
 			}

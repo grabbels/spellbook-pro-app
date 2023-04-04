@@ -85,6 +85,7 @@
 		&.green {
 			background-color: var(--lightgreen);
 			color: var(--onforeground);
+			text-transform: capitalize;
 			i {
 				color: var(--onforeground);
 			}

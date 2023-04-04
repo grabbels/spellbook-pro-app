@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { modalCall } from '../stores';
+	import { filterPanelOpen, modalCall, tabPanelOpen } from '../stores';
 	export let solid;
 	let fadeDuration;
 	if (solid) {
@@ -14,7 +14,11 @@
 	class:solid
 	in:fade={{ duration: fadeDuration }}
 	out:fade={{ duration: 200 }}
-	on:click={() => ($modalCall = '')}
+	on:click={() => {
+		$modalCall = '';
+		$tabPanelOpen = false;
+		$filterPanelOpen = false;
+	}}
 />
 
 <style lang="scss">
@@ -29,6 +33,8 @@
 		z-index: 100;
 		background-color: rgba(0, 0, 0, 0.7);
 		backdrop-filter: contrast(.8);
+		z-index: 200;
+		pointer-events: auto;
 		// pointer-events: none;
 		// backdrop-filter: blur(10px);
 		&.solid {

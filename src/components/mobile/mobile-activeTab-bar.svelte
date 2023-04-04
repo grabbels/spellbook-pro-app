@@ -1,18 +1,13 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { view, tabBarHeight, tabPanelOpen } from '../../stores';
-	import { activeBookIndex, localUserLibrary } from '../../stores-persist';
+	import { activeOpenBookId, localUserLibrary, openBooksIdsArray } from '../../stores-persist';
 </script>
 
 {#if $view.toLowerCase() === 'spellbook'}
 	<button
 		class="ui-active_tab_bar"
-		style="bottom: calc({$tabBarHeight}px + .5rem); --bookcolor: {$localUserLibrary &&
-		$activeBookIndex !== '' &&
-		$activeBookIndex != null &&
-		$activeBookIndex != -1
-			? $localUserLibrary[$activeBookIndex].color
-			: 'var(--purple)'}"
+		style="bottom: calc({$tabBarHeight}px + .5rem); --bookcolor: {$localUserLibrary[$activeOpenBookId] ? $localUserLibrary[$activeOpenBookId].color : 'var(--purple)'}"
 		transition:fly={{ y: 50, duration: 250 }}
 		on:click={() => ($tabPanelOpen = true)}
 		class:hidden={$tabPanelOpen}
@@ -23,8 +18,8 @@
 			</div>
 			<div class="name_wrap">
 				<p>
-					{#if $localUserLibrary && $activeBookIndex !== '' && $activeBookIndex != null && $activeBookIndex != -1}
-						{$localUserLibrary[$activeBookIndex].name.toString().replaceAll(',', ' ')}
+					{#if Object.keys($localUserLibrary).length && $activeOpenBookId}
+						{$localUserLibrary[$activeOpenBookId].name.toString().replaceAll(',', ' ')}
 					{:else}
 						<span style="opacity: .5">No open spellbook</span>
 					{/if}
@@ -66,7 +61,7 @@
 			position: absolute;
 			background-color: var(--bookcolor);
 			z-index: -1;
-			opacity: .3;
+			opacity: 0.3;
 		}
 		&.hidden {
 			transform: translateY(6rem);
@@ -93,7 +88,7 @@
 				display: flex;
 				justify-content: flex-start;
 				align-items: center;
-				padding: 0 .7rem;
+				padding: 0 0.7rem;
 				overflow: hidden;
 				width: 100%;
 				mask-image: linear-gradient(90deg, black calc(100% - 2rem), transparent calc(100% - 1rem));

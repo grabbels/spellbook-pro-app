@@ -5,7 +5,6 @@
 	import MobileActiveTabbar from '../components/mobile/mobile-activeTab-bar.svelte';
 	import Modal from '../components/modal.svelte';
 	import QuickSearchPanel from '../components/quickSearchPanel.svelte';
-	import SmokeScreen from '../components/smokeScreen.svelte';
 	import Settings from '../views/settings.svelte';
 	import Browse from '../views/browse.svelte';
 	import Library from '../views/library.svelte';
@@ -19,17 +18,27 @@
 		quickSearchPanelOpen,
 		scrollY,
 		visualViewport,
-		confirm
+		confirm,
+		levelInView,
+		sortedSpellsList,
+		zoomOutModifier,
+		spellbookQuery,
+		filterPanelOpen,
+		tabPanelOpen
 	} from '../stores';
 	import MobileTabpanel from '../components/mobile/mobile-tabpanel.svelte';
 	import { crossfade, fade, fly, scale, slide } from 'svelte/transition';
-	import { user } from '../stores-persist';
+	import { localUserLibrary, user } from '../stores-persist';
 	import { onMount } from 'svelte';
-	import SyncStatus from '../components/syncStatus.svelte';
+	// import Sync from '../components/functions/func-sync.svelte';
 	import Confirm from '../components/confirm.svelte';
 	import BookmarksScrollbar from '../components/bookmarks-scrollbar.svelte';
+	import MobileFilterPanel from '../components/mobile/mobile-filterPanel.svelte';
+	import SmokeScreen from '../components/smokeScreen.svelte';
+	import FuncSync from '../components/functions/func-sync.svelte';
+	import SyncStatus from '../components/syncStatus.svelte';
 	let touchStart, touchEnd, touchPos, touchMove, direction, screenWidth, mainContent;
-	$: console.log($view);
+
 	function handleTouchStart(e) {
 		if ($view === 'spellbook') {
 			touchMove = true;
@@ -60,24 +69,37 @@
 			}
 		}
 	}
+
+	function handleScroll() {
+		let elementInView = document
+			.elementFromPoint(10, $visualViewport.height / 2)
+			.closest('div.list');
+		if (elementInView) {
+			$levelInView = elementInView.dataset.level;
+		}
+	}
+
 	onMount(() => {
 		if (!$user) {
 			goto('/onboarding');
 		}
 	});
 </script>
-
+<FuncSync/>
 <div
 	out:fly={{ duration: 300, y: 20 }}
 	in:fly={{ duration: 300, y: 20, delay: 300 }}
 	class="main_content {$view}"
 	class:right={$addSpellsMenuOpen}
-	on:scroll={(e) => ($scrollY = e.target.scrollTop)}
+	on:scroll={(e) => {
+		$scrollY = e.target.scrollTop;
+		$view === 'spellbook' ? handleScroll() : '';
+	}}
 	bind:this={mainContent}
-	class:back={$quickSearchPanelOpen || $modalCall}
+	class:back={$quickSearchPanelOpen || $modalCall || $filterPanelOpen}
 	style="{$horizontalSwipe
 		? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
-		: ''};"
+		: ''} {$zoomOutModifier ? 'transform: scale(' + (1 - $zoomOutModifier * 0.02) + ')' : ''};"
 >
 	{#key $view}
 		<div
@@ -87,11 +109,14 @@
 			on:touchmove={(e) => handleTouchMove(e)}
 			on:touchstart={(e) => handleTouchStart(e)}
 			on:touchend={(e) => handleTouchEnd(e)}
+			style={$spellbookQuery ? 'height: ' + $visualViewport.height + 'px' : ''}
 		>
 			{#if $view === 'spellbook'}
 				<Spellbook />
 			{:else if $view === 'library'}
-				<Library />
+				{#key $localUserLibrary}
+					<Library />
+				{/key}
 			{:else if $view === 'browse'}
 				<Browse />
 			{:else if $view === 'settings'}
@@ -116,11 +141,21 @@
 	<MobileTabbar />
 	<MobileActiveTabbar />
 	<MobileTabpanel />
+	<MobileFilterPanel />
 	{#if $view === 'spellbook'}
-		<BookmarksScrollbar />
+		{#key $sortedSpellsList}
+			<BookmarksScrollbar />
+		{/key}
+	{/if}
+	{#if $modalCall || $tabPanelOpen || $filterPanelOpen}
+		{#if $modalCall === 'spellbook'}
+			<SmokeScreen solid />
+		{:else}
+			<SmokeScreen />
+		{/if}
 	{/if}
 
-	<!-- <SyncStatus/> -->
+	<SyncStatus/>
 </div>
 
 <style lang="scss">

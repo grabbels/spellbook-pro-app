@@ -1,13 +1,14 @@
 <script>
+	import { fade } from 'svelte/transition';
+	import { localUserLibrary } from '../stores-persist';
 	import Pill from './pill.svelte';
-
-	export let data;
+	export let id;
 </script>
 
-<button on:click style="--bookcolor: {data.color}">
+<button on:click style="--bookcolor: {$localUserLibrary[id].color}" in:fade={{duration:100}}>
 	<div class="inner">
 		<div>
-			<i class="ri-bookmark-fill" style="color: {data.color}"/>
+			<i class="ri-{$localUserLibrary[id].icon ? $localUserLibrary[id].icon : 'bookmark'}-fill" style="color: {$localUserLibrary[id].color}"/>
 			<!-- <div class="book">
 				<div class="book_inner">
 					<h1>{data.character}</h1>
@@ -16,15 +17,15 @@
 			</div> -->
 		</div>
 		<div style="align-self:center; margin-top: -.4rem">
-			<h2>{data.name.toString().replaceAll(',', ' ')}</h2>
+			<h2>{$localUserLibrary[id].name.toString().replaceAll(',', ' ')}</h2>
 			<div class="pills">
+				<Pill type="fill small green" text={$localUserLibrary[id].class} icon="ri-contacts-line" label="Character level" />
 				<Pill
-					type="fill small green"
-					text={'Level ' + data.level}
+					type="fill small blue"
+					text={'Level ' + $localUserLibrary[id].level}
 					icon="ri-user-star-line"
 					label="Character level"
 				/>
-				<Pill type="fill small blue" text={data.class} icon="ri-contacts-line" label="Character level" />
 			</div>
 		</div>
 	</div>

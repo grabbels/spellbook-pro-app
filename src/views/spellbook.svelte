@@ -1,31 +1,28 @@
 <script>
 	import SafeViewPadding from '../components/safeViewPadding.svelte';
 	import SpellCard from '../components/spellCard.svelte';
-	import { addSpellsMenuOpen, sortedSpellsList, spellList, view } from '../stores';
-	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../stores-persist';
+	import { addSpellsMenuOpen, levelInView, sortedSpellsList, spellList, view } from '../stores';
+	import { activeOpenBookId, localUserLibrary, openBooksIdsArray, spells } from '../stores-persist';
 	// $sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
-
-	$: if ($localUserLibrary && $activeBookIndex >= 0 && $openBooksIdsArray && $openBooksIdsArray.length) {
-		$spellList = $localUserLibrary[$localUserLibrary.map((object) => object.id).indexOf($openBooksIdsArray[$activeBookIndex])].list;
-	}
-
+	$: $spellList = $openBooksIdsArray.includes($activeOpenBookId) && $localUserLibrary[$activeOpenBookId] ? $localUserLibrary[$activeOpenBookId].list : [];
+	
 	$: $spellList, sortSpells();
 
 	function sortSpells() {
-		console.log('sorting');
 		$sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
-		console.log($spellList)
 		if ($spellList) {
 			for (let i = 0; i < $spellList.length; i++) {
-				$sortedSpellsList[$spellList[i].level].push($spellList[i]);
+				$sortedSpellsList[$spells.find((o) => o.id == $spellList[i]).level].push($spellList[i]);
 			}
 		}
 	}
+
+
 </script>
 
-<SafeViewPadding header>
+<SafeViewPadding>
 	<div class="list_wrapper">
-		{#if $openBooksIdsArray && $openBooksIdsArray.length > 0 && $activeBookIndex <= 0}
+		{#if $openBooksIdsArray && $openBooksIdsArray.length > 0 && $activeOpenBookId}
 			{#if $spellList && $spellList.length > 0}
 				{#each $sortedSpellsList as list, i}
 					{#if list.length > 0}
@@ -33,8 +30,9 @@
 						<h4 id={currentLevel}>
 							{currentLevel === 0 ? 'Cantrips' : 'Level ' + currentLevel}
 						</h4>
-						<div class="list">
-							{#each list as spell, i}
+						<div class="list" data-level={currentLevel}>
+							{#each list as spellId, i}
+								{@const spell = $spells.find((o) => o.id == spellId)}
 								<SpellCard id={currentLevel + `${i}`} type="list" data={spell} />
 							{/each}
 						</div>
@@ -88,7 +86,7 @@
 			}
 		}
 		&:first-child {
-			margin-top: 0.7rem;
+			margin-top: 2.5rem;
 		}
 	}
 </style>

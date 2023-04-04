@@ -1,7 +1,7 @@
 <script>
 	import Button from './button.svelte';
 	import { goto } from '$app/navigation';
-	import { notification } from '../stores';
+	import { manualSync, notification } from '../stores';
 	import PocketBase from 'pocketbase';
 	import { user } from '../stores-persist';
 	const pb = new PocketBase('https://db.spellbook.pro');
@@ -19,6 +19,7 @@
 						console.log(authData);		
 						$user = authData.record				
 						goto('/')
+						$manualSync = true;
 						loadingLogin = false;
 					}
 				} catch (error) {

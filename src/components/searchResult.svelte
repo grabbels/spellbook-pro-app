@@ -1,6 +1,8 @@
 <script>
+	import { compute_rest_props } from 'svelte/internal';
 	import { fade } from 'svelte/transition';
 	import {
+	addSpell,
 		addSpellsMenuOpen,
 		lookupSpell,
 		modalCall,
@@ -8,14 +10,13 @@
 		quickQuery,
 		quickSearchPanelOpen
 	} from '../stores';
-	import { activeBookIndex, localUserLibrary, openBooksIdsArray } from '../stores-persist';
+	import { activeOpenBookId, localUserLibrary, openBooksIdsArray } from '../stores-persist';
 	import CenterContainer from './centerContainer.svelte';
 	import Schoolicon from './schoolicon.svelte';
 	export let data;
 	export let type = '';
-
+	let touch = false;
 </script>
-
 {#if data === 'noresult'}
 	<li>
 		<p>No results</p>
@@ -27,18 +28,26 @@
 		transition:fade={{ duration: 200 }}
 	>
 		<button
-			on:click={() => {
+		class:active={touch}
+			on:touchstart={() => (touch = true)}
+			on:touchend={() => {
+				setTimeout(() => {
+					touch = false;
+				}, 50);
+			}}
+			on:click={(e) => {
+				e.target.classList.add('active');
+				setTimeout(() => {
+					e.target.classList.remove('active');
+				}, 1000);
 				if (type === 'lookup') {
 					$modalCall = 'spell';
 					$lookupSpell = data;
 					$quickQuery = '';
 					$quickSearchPanelOpen = false;
 				} else if (type === 'add') {
-					let index = $localUserLibrary.map((object) => object.id).indexOf($openBooksIdsArray[$activeBookIndex]);
-					$localUserLibrary[index].list = [...$localUserLibrary[index].list, data];
-					$localUserLibrary = $localUserLibrary
-					$notification = 'Spell added.#positive';
-					// $addSpellsMenuOpen = false;
+					$addSpell = data.id
+					console.log($addSpell)
 				}
 			}}
 		>
@@ -73,6 +82,18 @@
 			display: grid;
 			grid-template-columns: 40px 1fr;
 			gap: 0.5rem;
+			position: relative;
+			&:after {
+				content: '';
+				position: absolute;
+				left: 0;
+				top: 0;
+				right: 0;
+				bottom: 0;
+				background-color: var(--moretranslucent);
+				// transition: 0.05s;
+				opacity: 0;
+			}
 			h2 {
 				font-size: 1.3rem;
 				margin-bottom: 0.3rem;
@@ -84,6 +105,11 @@
 			i {
 				font-size: 1.5rem;
 				opacity: 0.15;
+			}
+			&:active, &.active {
+				&:after {
+					opacity: 1;
+				}
 			}
 		}
 		&:last-child {

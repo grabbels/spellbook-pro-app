@@ -7,9 +7,13 @@
 		view,
 		quickQuery,
 		quickSearchPanelOpen,
-		scrollY
+		scrollY,
+		notification,
+		spellbookQuery,
+		zoomOutModifier,
+		filterPanelOpen
 	} from '../../stores';
-	import { activeBookIndex, localUserLibrary } from '../../stores-persist';
+	import { activeOpenBookId, localUserLibrary } from '../../stores-persist';
 	import Button from '../button.svelte';
 	import SearchField from '../searchField.svelte';
 </script>
@@ -20,6 +24,7 @@
 	class:quicksearch={$quickSearchPanelOpen}
 	class:columns={$view === 'spellbook' || $view === 'library'}
 	bind:clientHeight={$headerHeight}
+	style={$zoomOutModifier ? 'transform: scale(' + (1 + $zoomOutModifier * 0.02) + ')' : ''}
 >
 	<div class="header_content">
 		<h1>
@@ -27,21 +32,45 @@
 		</h1>
 		<div class="wrapper">
 			{#if $view === 'spellbook'}
-				{#if $localUserLibrary && $activeBookIndex !== '' && $activeBookIndex !== null}
-					<Button
-						text="Add spells"
-						icon="ri-add-line"
-						type="fill accent"
-						left
-						on:click={() => ($addSpellsMenuOpen = true)}
-					/>
+				{#if $localUserLibrary && $activeOpenBookId !== '' && $activeOpenBookId !== null}
+					{#if $scrollY > 0}
+						<!-- {#if $filterPanelOpen === false} -->
+							<Button
+								text="Filter"
+								icon="ri-filter-line"
+								type="fill darkblue"
+								left
+								on:click={() => {
+									$filterPanelOpen = true;
+								}}
+							/>
+						<!-- {:else if $filterPanelOpen === true}
+							<Button
+								text="Close"
+								icon="ri-close-line"
+								type="fill red"
+								left
+								on:click={() => {
+									$filterPanelOpen = false;
+								}}
+							/>
+						{/if} -->
+					{:else}
+						<Button
+							text="Add spells"
+							icon="ri-add-line"
+							type="fill accent"
+							left
+							on:click={() => ($addSpellsMenuOpen = true)}
+						/>
+					{/if}
 				{:else}
 					<Button
 						text="Library"
 						icon="ri-book-mark-line"
 						type="fill blue"
 						left
-						on:click={() => ($view = 'library')}
+						on:click={() => {$view = 'Library'}}
 					/>
 				{/if}
 			{:else if $view === 'library'}
@@ -50,7 +79,13 @@
 					icon="ri-add-line"
 					type="fill accent"
 					left
-					on:click={() => ($modalCall = 'new')}
+					on:click={() => {
+						if (Object.keys($localUserLibrary).length < 13) {
+							$modalCall = 'new';
+						} else {
+							$notification = 'You have reached the maximum of 12 spellbooks.#info';
+						}
+					}}
 				/>
 			{/if}
 			<div class="input_wrapper">
@@ -64,14 +99,15 @@
 					/> -->
 				{#if $view === 'spellbook'}
 					<SearchField
+						noclose
 						placeholder="Quick spell lookup..."
 						on:focus={() => ($quickSearchPanelOpen = true)}
 						on:focusout={() => ($quickSearchPanelOpen = false)}
 						bind:value={$quickQuery}
 						right
 					/>
-				{:else if $view === 'spellbook'}
-					<SearchField placeholder="Search spellbooks..." right />
+				{:else if $view === 'library'}
+					<SearchField placeholder="Search spellbooks..." bind:value={$spellbookQuery} right />
 				{/if}
 				{#if $quickSearchPanelOpen}
 					<button
@@ -104,9 +140,9 @@
 			h1 {
 				text-align: center;
 				font-size: 1.3rem;
-				margin: 0 0 .7rem;
+				margin: 0 0 0.7rem;
 				height: 24px;
-				transition: .3s;
+				transition: 0.3s;
 				overflow: hidden;
 			}
 			.input_wrapper {
@@ -149,6 +185,7 @@
 			.header_content {
 				h1 {
 					height: 0;
+					margin: 0;
 				}
 			}
 		}
@@ -172,7 +209,7 @@
 					height: 54px;
 					grid-template-columns: 125px 1fr;
 					// grid-template-rows: 50px;
-					gap: 0.3rem;
+					gap: 0.2rem;
 					background-color: var(--cardbg);
 					border-radius: 18px;
 					overflow: hidden;

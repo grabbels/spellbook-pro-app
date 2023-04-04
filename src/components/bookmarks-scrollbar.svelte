@@ -1,13 +1,16 @@
 <script>
-	import { sortedSpellsList } from '../stores';
+	import { sortedSpellsList, levelInView } from '../stores';
 	import { Haptics, ImpactStyle } from '@capacitor/haptics';
+	import { localUserLibrary } from '../stores-persist';
 	let levelGroup = [];
 	let spellGroup;
-	let activeLevelGroup;
+	let activeLevelGroup = null;
 	let scrollbarActive = false;
 	let levelGroupPositions = [];
 	let totalSpells = 0;
 	let totalLevels = 0;
+	let scrollTimeOut = false;
+	let previousAnchor;
 
 	$: for (let i = 0; i < $sortedSpellsList.length; i++) {
 		totalSpells = totalSpells + $sortedSpellsList[i].length;
@@ -24,13 +27,19 @@
 	}
 	function handleTouchMove(e) {
 		let element = document.elementFromPoint(e.touches[0].clientX, e.touches[0].clientY);
-
 		if (element) {
 			let elementAnchor = element.dataset.id;
 			if (elementAnchor) {
-                hapticsImpactLight()
-				document.getElementById(elementAnchor).scrollIntoView();
 				activeLevelGroup = element.closest('.sub_scrollbar');
+				if (!scrollTimeOut && elementAnchor !== previousAnchor) {
+					scrollTimeOut = true;
+					hapticsImpactLight();
+					document.getElementById(elementAnchor).scrollIntoView();
+					previousAnchor = elementAnchor;
+					setTimeout(() => {
+						scrollTimeOut = false;
+					}, 100);
+				}
 			}
 		}
 
@@ -54,45 +63,50 @@
 	on:touchmove|preventDefault={(e) => handleTouchMove(e)}
 	on:touchend|preventDefault={(e) => handleTouchEnd(e)}
 >
-	{#each $sortedSpellsList as level, i}
-		{@const levelNumber = i}
+	{#key $localUserLibrary}
+		{#each $sortedSpellsList as level, i}
+			{@const levelNumber = i}
 
-		{#if level.length > 0}
-			<!-- <div
+			{#if level.length > 0}
+				<!-- <div
 				class="sub_scrollbar focus"
 				style="height: {(level.length / totalSpells) * 100}%"
 				bind:this={levelGroup[i]}
 				
 			> -->
-			<div
-				class="sub_scrollbar"
-				style="height: {(level.length / totalSpells) * 100}%"
-				bind:this={levelGroup[i]}
-				class:focus={activeLevelGroup === levelGroup[i]}
-			>
-				{#each level as spell, i}
-					{@const spellNumber = i}
-					<div data-id={levelNumber + `${spellNumber}`} />
-				{/each}
-			</div>
-		{/if}
-	{/each}
+				<div
+					class="sub_scrollbar"
+					style="height: {(level.length / totalSpells) * 100}%"
+					bind:this={levelGroup[i]}
+					class:focus={activeLevelGroup === levelGroup[i]}
+					class:in_view={levelNumber == $levelInView}
+				>
+					{#each level as spell, i}
+						{@const spellNumber = i}
+						<div data-id={levelNumber + `${spellNumber}`} />
+					{/each}
+				</div>
+			{/if}
+		{/each}
+	{/key}
 </div>
 
 <style lang="scss">
 	div.bookmarks_scrollbar {
 		position: absolute;
 		right: 0;
-		top: calc(var(--safe-area-inset-top) + 8rem);
-		bottom: calc(var(--safe-area-inset-bottom) + 8rem);
+		top: calc(var(--safe-area-inset-top) + 6rem);
+		bottom: calc(var(--safe-area-inset-bottom) + 10rem);
 		width: 5px;
 		transition: 0.2s;
 		pointer-events: auto;
 		padding-right: 0.3rem;
+		padding-left: 1.5rem;
 		box-sizing: content-box;
 		display: flex;
 		flex-direction: column;
 		gap: 0.3rem;
+		mix-blend-mode: lighten;
 		&.active {
 			width: 10px;
 			div {
@@ -112,6 +126,9 @@
 			align-items: stretch;
 			justify-content: stretch;
 			pointer-events: none;
+			&.in_view {
+				background-color: var(--lightblue);
+			}
 			&:last-child {
 				margin-bottom: 0;
 			}
@@ -119,11 +136,11 @@
 				background-color: var(--lightblue);
 				width: 25px;
 				margin-left: -15px;
-				border-radius: 10px;
+				// border-radius: 10px;
 				div {
 					&:after {
 						// display: block;
-						opacity: 1;
+						opacity: 0.15;
 					}
 				}
 			}
@@ -135,17 +152,18 @@
 				flex: 1;
 				width: 100vw;
 				border-bottom: var(--onbackground);
+				overflow: hidden;
 				&:after {
 					opacity: 0;
 					transition: 0.3s;
 					content: '';
 					position: absolute;
 					right: 0px;
-					bottom: calc(50% - 2px);
+					bottom: calc(50% - 1px);
 					width: 13px;
 					height: 2px;
 					border-radius: 50vh;
-					background-color: var(--translucent);
+					background-color: var(--bodybg);
 				}
 			}
 		}

@@ -1,12 +1,14 @@
 <script>
-	import { addSpellsMenuOpen, notification, visualViewport } from '../stores';
+	import { addSpellsMenuOpen, horizontalSwipe, notification, visualViewport } from '../stores';
 	import { spells } from '../stores-persist';
 	import SafeViewPadding from './safeViewPadding.svelte';
+	import SearchField from './searchField.svelte';
 	import SearchResult from './searchResult.svelte';
 	let input;
 	let query;
 	let results = [];
 	$: if ($addSpellsMenuOpen) {
+		console.log(input)
 		if (input) {
 			input.focus();
 		}
@@ -37,16 +39,15 @@
 	<SafeViewPadding nooverflow side="bottom">
 		<div class="inner">
 			<div class="input_wrapper">
-				<input
-					bind:this={input}
-					bind:value={query}
-					on:blur={() => handleBlur()}
-					type="text"
+				<SearchField
+					bind:field={input}
 					placeholder="Search spells..."
+					on:blur={() => handleBlur()}
+					bind:value={query}
 				/>
-				<button class="close" on:click={() => ($addSpellsMenuOpen = false)}>
+				<!-- <button class="close" on:click={() => ($addSpellsMenuOpen = false)}>
 					<i class="ri-close-line" />
-				</button>
+				</button> -->
 			</div>
 			<div class="scroll_wrap">
 				<ul>

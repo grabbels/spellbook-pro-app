@@ -86,7 +86,7 @@
 					<span>{word}</span>
 				</li>
 			{/each}
-			{#if value.length < 8 && activeInput === value.length}
+			{#if activeInput === value.length}
 				<!-- svelte-ignore a11y-autofocus -->
 				<li>
 					<input
