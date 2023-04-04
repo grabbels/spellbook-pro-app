@@ -8,7 +8,7 @@
 		lastSyncTry
 	} from '../../stores-persist';
 	import PocketBase from 'pocketbase';
-	import { deepDiff } from 'deep-diff';
+	import deepDiff from 'deep-diff';
 	import { onMount } from 'svelte';
 	const pb = new PocketBase('https://db.spellbook.pro');
 
