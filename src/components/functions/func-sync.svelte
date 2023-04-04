@@ -8,7 +8,7 @@
 		lastSyncTry
 	} from '../../stores-persist';
 	import PocketBase from 'pocketbase';
-	import { diff } from 'deep-diff';
+	import { deepDiff } from 'deep-diff';
 	import { onMount } from 'svelte';
 	const pb = new PocketBase('https://db.spellbook.pro');
 
@@ -70,7 +70,7 @@
 					setTimeout(() => {
 						$syncStatus = 'done';
 					}, 1000);
-				} else if (diff(remoteState.library, $localUserLibrary) == undefined) {
+				} else if (deepDiff(remoteState.library, $localUserLibrary) == undefined) {
 					//remote state is same as local state, do nothing.
 					console.log('sync, no action neccessary.');
 					$localLastSyncTime = remoteState.last_sync_time;
