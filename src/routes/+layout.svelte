@@ -52,7 +52,6 @@
 	}
 
 	import { onMount } from 'svelte';
-	// import DeepDiff from 'deep-diff';
 	import { goto } from '$app/navigation';
 	import SmokeScreen from '../components/smokeScreen.svelte';
 	import DevTools from '../components/devTools.svelte';
@@ -70,8 +69,6 @@
 	import '@fontsource/roboto-mono';
 	import 'remixicon/fonts/remixicon.css';
 
-	// import { diff, detailedDiff } from 'deep-object-diff';
-	import { diff, applyDiff } from 'deep-diff';
 	// http://localhost:5173/?confirm-verification=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJlbWFpbCI6ImRldkBzZW1oYWsuZGV2IiwiZXhwIjoxNjgwMzYwODc4LCJpZCI6IjZoOXRkamtvM2V3M2ZkdCIsInR5cGUiOiJhdXRoUmVjb3JkIn0.Aq-mztHb4YT3MjsLPa-YrYwU8_eUsIWtMbx1S-JKfgA
 	//pocketbase
 	import PocketBase from 'pocketbase';
