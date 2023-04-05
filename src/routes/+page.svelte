@@ -24,7 +24,8 @@
 		zoomOutModifier,
 		spellbookQuery,
 		filterPanelOpen,
-		tabPanelOpen
+		tabPanelOpen,
+		filters
 	} from '../stores';
 	import MobileTabpanel from '../components/mobile/mobile-tabpanel.svelte';
 	import { crossfade, fade, fly, scale, slide } from 'svelte/transition';
@@ -85,7 +86,8 @@
 		}
 	});
 </script>
-<FuncSync/>
+
+<FuncSync />
 <div
 	out:fly={{ duration: 300, y: 20 }}
 	in:fly={{ duration: 300, y: 20, delay: 300 }}
@@ -128,6 +130,7 @@
 <div
 	class:right={$addSpellsMenuOpen}
 	class:back={$modalCall}
+	class:filters={Object.keys($filters).length > 0}
 	class="fixed_ui"
 	style="{$horizontalSwipe
 		? 'transition: 0s; transform: translateX(' + $horizontalSwipe * 100 + '%)'
@@ -155,7 +158,7 @@
 		{/if}
 	{/if}
 
-	<SyncStatus/>
+	<SyncStatus />
 </div>
 
 <style lang="scss">
@@ -178,6 +181,25 @@
 		&.right {
 			transform: translateX(100%);
 		}
+		&:after {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			z-index: 1000;
+			border: 4px solid var(--darkblue);
+			border-radius: 50px;
+			pointer-events: none;
+			opacity: 0;
+			transition: .2s;
+		}
+		&.filters {
+			// &:after {
+			// 	opacity: 1;
+			// }
+		}
 	}
 	.main_content {
 		padding: 0 0.3rem;
@@ -192,6 +214,7 @@
 		width: 100vw;
 		transition-timing-function: cubic-bezier(0.3, 0, 0.3, 1);
 		pointer-events: auto;
+
 		&.spellbook {
 			&::-webkit-scrollbar {
 				display: none;

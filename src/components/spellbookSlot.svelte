@@ -5,7 +5,7 @@
 	export let id;
 </script>
 
-<button on:click style="--bookcolor: {$localUserLibrary[id].color}" in:fade={{duration:100}}>
+<button on:click style="--bookcolor: {$localUserLibrary[id].color}">
 	<div class="inner">
 		<div>
 			<i class="ri-{$localUserLibrary[id].icon ? $localUserLibrary[id].icon : 'bookmark'}-fill" style="color: {$localUserLibrary[id].color}"/>

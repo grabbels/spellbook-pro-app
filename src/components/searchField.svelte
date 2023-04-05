@@ -1,19 +1,34 @@
 <script>
-	import { addSpellsMenuOpen, scrollY } from "../stores";
+	import { addSpellsMenuOpen, scrollY } from '../stores';
 
 	export let placeholder;
 	export let value = '';
 	export let right = false;
+	export let showclose = false;
 	export let field;
-	export let noclose = false
+	export let noclose = false;
 </script>
 
 <form on:submit|preventDefault>
 	<i class="ri-search-line" />
 	<!-- svelte-ignore a11y-autofocus -->
 	<input bind:this={field} type="text" bind:value {placeholder} class:right on:focus on:focusout />
-	{#if value && !noclose}
-	<button class="cancel" on:click={()=> {value = ''; $addSpellsMenuOpen = false}}><i class="ri-close-line"></i></button>
+	{#if showclose}
+		<button
+			class="cancel"
+			on:click={() => {
+				value = '';
+				$addSpellsMenuOpen = false;
+			}}><i class="ri-close-line" /></button
+		>
+	{:else if value && !noclose}
+		<button
+			class="cancel"
+			on:click={() => {
+				value = '';
+				$addSpellsMenuOpen = false;
+			}}><i class="ri-close-line" /></button
+		>
 	{/if}
 </form>
 
@@ -43,7 +58,7 @@
 		}
 		.cancel {
 			position: absolute;
-			right: .5rem;
+			right: 0.5rem;
 			border-radius: 50vh;
 			width: 20px;
 			height: 20px;

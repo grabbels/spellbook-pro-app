@@ -11,7 +11,9 @@
 		notification,
 		spellbookQuery,
 		zoomOutModifier,
-		filterPanelOpen
+		filterPanelOpen,
+		spellList,
+		filters
 	} from '../../stores';
 	import { activeOpenBookId, localUserLibrary } from '../../stores-persist';
 	import Button from '../button.svelte';
@@ -33,12 +35,14 @@
 		<div class="wrapper">
 			{#if $view === 'spellbook'}
 				{#if $localUserLibrary && $activeOpenBookId !== '' && $activeOpenBookId !== null}
-					{#if $scrollY > 0}
+					{#if $spellList.length}
 						<!-- {#if $filterPanelOpen === false} -->
+						
 							<Button
 								text="Filter"
 								icon="ri-filter-line"
-								type="fill darkblue"
+								type="{Object.keys($filters).length > 0 ? 'darkblue' : 'subtle'} fill"
+								iconfill={Object.keys($filters).length > 0}
 								left
 								on:click={() => {
 									$filterPanelOpen = true;
@@ -70,7 +74,7 @@
 						icon="ri-book-mark-line"
 						type="fill blue"
 						left
-						on:click={() => {$view = 'Library'}}
+						on:click={() => {$view = 'library'}}
 					/>
 				{/if}
 			{:else if $view === 'library'}

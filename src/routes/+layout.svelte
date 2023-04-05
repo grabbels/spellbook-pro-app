@@ -36,7 +36,8 @@
 		zoomOutModifier,
 		passwordResetToken,
 		lookupBookId,
-		filterPanelOpen
+		filterPanelOpen,
+		emailConfirmToken
 	} from '../stores';
 
 	//ERROR/FAULT DETECTION IN LOCAL STORAGE
@@ -93,7 +94,9 @@
 		}
 	}
 
-	// pullSpells()
+	if ($spells.length < 1 && $online) {
+		pullSpells();
+	}
 	async function pullSpells() {
 		const records = await pb.collection('spells').getFullList({});
 		console.log(records);
@@ -269,7 +272,11 @@
 	import FuncAddSpell from '../components/functions/func-addSpell.svelte';
 
 	// $localUserLibrary = dummyLibrary;
-
+	async function confirmAccount(token) {
+		await pb.collection('users').confirmVerification(token);
+		$notification = 'Account succesfully verified, you can now log in.#positive';
+		goto('/login');
+	}
 	//onMount
 	onMount(() => {
 		$visualViewport = window.visualViewport;
@@ -286,6 +293,11 @@
 				goto('/password-reset');
 			} else if (params.get('confirm-verification')) {
 				console.log('register verification');
+				confirmAccount();
+			} else if (params.get('confirm-email-change')) {
+				console.log('register verification');
+				$emailConfirmToken = params.get('confirm-email-change');
+				$modalCall = 'confirm-email-change'
 			}
 		}
 		if ($user) {
@@ -362,7 +374,7 @@
 </script>
 
 <!-- GLOBAL FUNCTIONS -->
-<FuncAddSpell/>
+<FuncAddSpell />
 <!---->
 
 <DevTools />
@@ -414,6 +426,10 @@
 	* {
 		box-sizing: border-box;
 		font-family: 'Kanit';
+	}
+
+	.card.filtered {
+		display: none;
 	}
 
 	body {

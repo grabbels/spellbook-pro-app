@@ -44,6 +44,7 @@
 					placeholder="Search spells..."
 					on:blur={() => handleBlur()}
 					bind:value={query}
+					showclose
 				/>
 				<!-- <button class="close" on:click={() => ($addSpellsMenuOpen = false)}>
 					<i class="ri-close-line" />

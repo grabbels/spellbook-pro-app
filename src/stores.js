@@ -26,9 +26,11 @@ export const online = writable(null);
 export const manualSync = writable(null);
 export const syncStatus = writable('');
 export const confirm = writable('');
+export const filters = writable({});
 export const syncing = writable('');
 export const addSpell = writable(null);
 export const passwordResetToken = writable('');
 export const levelInView = writable(null);
+export const emailConfirmToken = writable('');
 export const sortedSpellsList = writable([[], [], [], [], [], [], [], [], [], []]);
 

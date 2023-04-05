@@ -1,6 +1,7 @@
 <script>
 	export let type;
 	export let text;
+	export let iconfill = false;
 	export let submit = false;
 	export let icon = '';
 	export let right = false;
@@ -28,7 +29,7 @@
 		<div class="loading"><i class="ri-loader-5-line" /></div>
 	{:else}
 		{#if icon && !right}
-			<i class={icon} />
+			<i class={iconfill ? icon.replace('line', 'fill') : icon} />
 		{/if}
 		{text}
 		{#if icon && right}
@@ -149,6 +150,22 @@
 			background-color: var(--darkblue);
 			color: var(--onbackground);
 		}
+		&.card {
+			background-color: var(--cardbg);
+			color: var(--onbackground);
+		}
+		&.subtle {
+			background-color: var(--inputbg);
+			color: var(--onbackground);
+		}
+		&.purple {
+			background-color: var(--purple);
+			color: var(--onbackground);
+		}
+		&.translucent {
+			background-color: var(--moretranslucent);
+			color: var(--onbackgroundtranslucent);
+		}
 		&.outline {
 			background-color: transparent;
 			border-color: var(--inputbg);
@@ -169,6 +186,11 @@
 				border-color: var(--onbackground);
 				opacity: .3;
 			}
+			&.darkblue {
+			background-color: var(--bodybg);
+			color: var(--onbackground);
+			border-color: var(--darkblue);
+		}
 		}
 		&.disabled {
 			pointer-events: none;

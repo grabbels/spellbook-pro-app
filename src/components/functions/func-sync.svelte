@@ -1,12 +1,7 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { manualSync, online, syncStatus } from '../../stores';
-	import {
-		localLastSyncTime,
-		localUserLibrary,
-		user,
-		lastSyncTry
-	} from '../../stores-persist';
+	import { localLastSyncTime, localUserLibrary, user, lastSyncTry } from '../../stores-persist';
 	import PocketBase from 'pocketbase';
 	import deepDiff from 'deep-diff';
 	import { onMount } from 'svelte';
@@ -19,20 +14,24 @@
 			$syncStatus = false;
 		}, 2000);
 	}
-	
+
 	$: if ($manualSync) {
 		sync();
-		$manualSync = null
+		$manualSync = null;
 	}
 	$: $localUserLibrary, triggerPush();
 
 	let syncTimeout;
 	function triggerPush() {
-		console.log('I want to sync but I will wait for possible further changes!');
-		clearTimeout(syncTimeout);
-		syncTimeout = setTimeout(() => {
-			sync();
-		}, 6000);
+		if ($online) {
+			// console.log('I want to sync but I will wait for possible further changes!');
+			clearTimeout(syncTimeout);
+			syncTimeout = setTimeout(() => {
+				sync();
+			}, 6000);
+		} else {
+			console.log('offline')
+		}
 	}
 
 	async function sync() {
@@ -63,7 +62,7 @@
 					}
 				} else if (remoteState.last_sync_time > $localLastSyncTime) {
 					//remote state has been pushed from another device, which means it is newer than local, pull
-					console.log('sync, pull remote to local.');
+					// console.log('sync, pull remote to local.');
 					$localUserLibrary = remoteState.library;
 					$localLastSyncTime = remoteState.last_sync_time;
 					$lastSyncTry = Date.now();
@@ -72,14 +71,14 @@
 					}, 1000);
 				} else if (deepDiff(remoteState.library, $localUserLibrary) == undefined) {
 					//remote state is same as local state, do nothing.
-					console.log('sync, no action neccessary.');
+					// console.log('sync, no action neccessary.');
 					$localLastSyncTime = remoteState.last_sync_time;
 					$lastSyncTry = Date.now();
 					setTimeout(() => {
 						$syncStatus = 'done';
 					}, 1000);
 				} else {
-					console.log('sync, push local to remote.');
+					// console.log('sync, push local to remote.');
 					let syncTime = Date.now();
 					const data = {
 						library: $localUserLibrary,

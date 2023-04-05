@@ -18,7 +18,26 @@
 	import Icon from '$lib/icon-outline.svg';
 	import SyncStatus from '../components/syncStatus.svelte';
 	const pb = new PocketBase('https://db.spellbook.pro');
-	let optionsCall, nickname, email, theme, close;
+	let optionsCall, nickname, email, theme, close, nicknameField, emailField, emailPassword;
+	let changeNickname = false;
+	let changeEmail = false;
+	let loadingNickname = false;
+	let loadingEmail = false;
+	$: if (changeNickname) {
+		setTimeout(() => {
+			nicknameField.focus();
+		}, 1);
+	} else {
+		nickname = $user.username;
+	}
+	$: if (changeEmail) {
+		setTimeout(() => {
+			emailField.focus();
+		}, 1);
+	} else {
+		email = $user.email;
+	}
+
 	$: if (close === true) {
 		optionsCall = '';
 		close = false;
@@ -30,7 +49,52 @@
 	function formatDate(date, format) {
 		//
 	}
-	// import goto from '$app/navigation'
+
+	async function handleNicknameChange() {
+		loadingNickname = true;
+		const data = {
+			username: nickname
+		};
+		try {
+			const record = await pb.collection('users').update($user.id, data);
+			if (record) {
+				loadingNickname = false;
+				changeNickname = false;
+				$notification = 'Nickname succesfully changed!#positive';
+				$user.username = record.username;
+				nickname = record.username;
+			}
+		} catch (error) {
+			loadingNickname = false;
+			console.log(error.data);
+			if (error.data.data.username.message) {
+				$notification = error.data.data.username.message + '#error';
+			}
+			$notification = 'Uh oh, Something went wrong.#error';
+		}
+	}
+	async function handleEmailChange() {
+		loadingEmail = true;
+		if (email) {
+			try {
+				await pb.collection('users').requestEmailChange(email);
+				loadingEmail = false;
+				changeEmail = false;
+				$notification =
+					'An email has been sent to your new email address with a link to confirm the change.#info';
+				email = $user.email;
+			} catch (error) {
+				loadingEmail = false;
+				console.log(error.data);
+				// if (error.data.data.username.message) {
+				// 	$notification = error.data.data.email.message + '#error';
+				// }
+				$notification = 'Uh oh, Something went wrong.#error';
+			}
+		} else {
+			$notification = 'Please fill in a valid email address#alert;'
+		}
+	}
 </script>
 
 <SafeViewPadding>
@@ -80,13 +144,79 @@
 					</div>
 					<form on:submit|preventDefault>
 						<label for="nickname">Nickname</label>
-						<input id="nickname" type="text" bind:value={nickname} disabled />
-						<div><Button icon="ri-edit-2-line" text="Change nickname" type="fill" /></div>
+						<input
+							id="nickname"
+							type="text"
+							bind:value={nickname}
+							disabled={changeNickname === false}
+							bind:this={nicknameField}
+						/>
+						<div>
+							{#if changeNickname === false}
+								<Button
+									icon="ri-edit-2-line"
+									text="Change nickname"
+									type="fill"
+									on:click={() => (changeNickname = true)}
+								/>
+							{:else}
+								<Button
+									icon="ri-save-line"
+									text="Save"
+									type="fill"
+									loading={loadingNickname}
+									on:click={() => handleNicknameChange()}
+								/>
+								<Button
+									icon="ri-close-line"
+									text="Cancel"
+									type="outline"
+									on:click={() => (changeNickname = false)}
+								/>
+							{/if}
+						</div>
 					</form>
 					<form on:submit|preventDefault>
 						<label for="email">Email</label>
-						<input id="email" type="email" bind:value={email} disabled />
-						<div><Button icon="ri-edit-2-line" text="Change E-mail" type="fill" /></div>
+						<input
+							id="email"
+							type="email"
+							bind:value={email}
+							disabled={changeEmail === false}
+							bind:this={emailField}
+						/>
+						{#if changeEmail}
+							<input
+								id="emailpassword"
+								type="password"
+								placeholder="Confirm with password"
+								bind:value={emailPassword}
+							/>
+						{/if}
+						<div>
+							{#if changeEmail === false}
+								<Button
+									icon="ri-edit-2-line"
+									text="Change Email"
+									type="fill"
+									on:click={() => (changeEmail = true)}
+								/>
+							{:else}
+								<Button
+									icon="ri-save-line"
+									text="Save"
+									type="fill"
+									loading={loadingEmail}
+									on:click={() => handleEmailChange()}
+								/>
+								<Button
+									icon="ri-close-line"
+									text="Cancel"
+									type="outline"
+									on:click={() => (changeEmail = false)}
+								/>
+							{/if}
+						</div>
 					</form>
 					<form on:submit|preventDefault>
 						<label for="password">Password</label>
@@ -204,10 +334,10 @@
 						<div>
 							<div class="status">
 								<h4>Sync status</h4>
-								<SyncStatus large/>
+								<SyncStatus large />
 								{#key $lastSyncTry}
 									<p in:fade>
-										Last sync: {new Date($lastSyncTry).toUTCString().replace('GMT', 'UTC')}
+										Last sync: {$lastSyncTry == 0 ? 'none' : new Date($lastSyncTry).toUTCString().replace('GMT', 'UTC')}
 									</p>
 								{/key}
 								<div class="buttons">
@@ -220,6 +350,20 @@
 								</div>
 							</div>
 						</div>
+					</div>
+				</div>
+			{:else if optionsCall === 'donate'}
+				<div class="options_inner">
+					<div class="title_wrap">
+						<button on:click={() => (optionsCall = '')}><i class="ri-arrow-left-s-line" /></button>
+						<h2>
+							<h3>settings</h3>
+							Donate
+						</h2>
+						<p>Hi there! I'm Sem, and I made the Spellbook Pro app by myself. The idea was born when I grew more and more frustrated by how when spellcasters are involved, D&D fights drag on for ages for all the wrong reasons. And that's not on the players, but on how much information goes into playing a spellcaster. I started tinkering en before long Spellbook Pro was a reality!</p>
+						<p>From the humble beginnings to the more serious later phase of releasing this app, I always knew I wanted to make this app free to use. I learn(ed) a lot while developing this platform and that's enough for me. <br><strong>Would you like to help me out anyway by providing me with a hot cup of coffee? Feel free to donate any amount you like, thank you!</strong></p>
+						<div style="margin-top: 2rem"><Button text="Donate" icon="ri-heart-fill" type="fill accent"/></div>
+						<p style="margin-top: 1rem">Curious what else I make? Visit <a style="color:var(--onbackground)" href="https://semhak.com">my website</a>!</p>
 					</div>
 				</div>
 			{/if}

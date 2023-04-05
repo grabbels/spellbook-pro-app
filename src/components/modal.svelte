@@ -9,9 +9,10 @@
 	import ModalNew from './modal/modal-new-edit.svelte';
 	import ModalTerms from './modal/modal-terms.svelte';
 	import ModalChangelog from './modal/modal-changelog.svelte';
+	import ModalConfirmEmailChange from './modal/modal-confirmEmailChange.svelte';
 
 	let fullScreen = false;
-	let fullscreenModalCalls = ['login', 'spellbook', 'new', 'edit'];
+	let fullscreenModalCalls = ['login', 'spellbook', 'new', 'edit', 'confirm-email-change'];
 	let modalOuterAnimationArgs;
 	let modalContainerAnimationArgs;
 
@@ -79,6 +80,9 @@
 				{/if}
 				{#if $modalCall === 'changelog'}
 					<ModalChangelog />
+				{/if}
+				{#if $modalCall === 'confirm-email-change'}
+					<ModalConfirmEmailChange />
 				{/if}
 			</div>
 		</div>

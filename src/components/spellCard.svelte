@@ -24,6 +24,10 @@
 		class="card {type}"
 		{id}
 		data-id={data.id}
+		data-range={data.range}
+		data-casting-time={data.casting_time}
+		data-duration={data.duration}
+		data-save={data.save}
 		on:click={() => {
 			if (type !== 'small') {
 				$lookupSpell = data;

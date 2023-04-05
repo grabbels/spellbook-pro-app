@@ -2,7 +2,7 @@
 	import { fly } from 'svelte/transition';
 	import { online, syncStatus } from '../stores';
 	let message;
-	export let large;
+	export let large = false;
 	$: if ($online) {
 		$online === false ? (message = 'offline') : '';
 		setTimeout(() => {
@@ -47,6 +47,7 @@
 		width: 100px;
 		justify-content: flex-end;
 		pointer-events: auto;
+        opacity: .2;
 		// z-index: 100;
 		// overflow: hidden;
 		&:after {
@@ -55,7 +56,7 @@
 			right: 0;
 			height: 20px;
 			width: 20px;
-			background-color: var(--onbackground);
+			
 			border-radius: 50vh;
 		}
 		div {
@@ -96,7 +97,7 @@
 		}
 
 		span {
-			color: var(--onforeground);
+			color: var(--onbackground);
 			font-size: 0.8rem;
 			display: inline-block;
 			width: auto;
@@ -107,7 +108,6 @@
 			top: 0;
 			bottom: 0;
 			border-radius: 50vh 0 0 50vh;
-			background-color: var(--onbackground);
 			padding: 0.3rem 0.7rem 0.35rem 0.4rem;
 			display: flex;
 			align-items: center;
@@ -115,6 +115,7 @@
 		}
 		&.large {
 			position: relative;
+            opacity: 1;
 			transform: 0;
 			left: auto;
 			right: auto;
@@ -129,6 +130,7 @@
 			&:after {
 				height: 100%;
 				width: 100%;
+                background-color: var(--onbackground);
 			}
 			.icon {
 				height: 100%;
