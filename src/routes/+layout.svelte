@@ -421,6 +421,9 @@
 	:root {
 		--safe-area-inset-top: env(safe-area-inset-top);
 		--safe-area-inset-bottom: env(safe-area-inset-bottom);
+		--huge-radius: 24px;
+		--large-radius: 16px;
+		--medium-radius: 12px;
 	}
 
 	* {
@@ -516,7 +519,7 @@
 		box-sizing: border-box;
 		padding: 0.6rem 0.8rem;
 		background-color: var(--inputbg);
-		border-radius: 12px;
+		border-radius: var(--medium-radius);
 		border: 2px solid transparent;
 		font-size: 1rem;
 		transition: 0.2s;
@@ -546,6 +549,16 @@
 			top: 0;
 			font-size: 1.5rem;
 			z-index: 1;
+		}
+		&.minimal {
+			all: unset;
+			background-color: transparent;
+			width: auto;
+			min-width: 0;
+			font-family: 'Kanit';
+			padding: .2rem 0;
+			text-transform: lowercase;
+			color: var(--inputbg);
 		}
 	}
 	::placeholder {

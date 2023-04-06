@@ -18,7 +18,7 @@
 			width: 100%;
 			padding: 1.2rem 1.2rem;
 			background-color: var(--cardbg);
-			border-radius: 24px;
+			border-radius: var(--huge-radius);
 			margin-bottom: 0.7rem;
 			font-size: 1.1rem;
             position: relative;

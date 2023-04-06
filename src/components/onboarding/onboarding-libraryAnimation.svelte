@@ -178,7 +178,7 @@
 							width: 4px;
 						}
 						i {
-							top: 12px;
+							top: var(--medium-radius);
 							left: 5px;
 							font-size: 2rem;
 							color: var(--yellow);

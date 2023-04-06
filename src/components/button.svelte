@@ -8,7 +8,7 @@
 	export let left = false;
 	export let invisible = false;
 	export let disabled = false;
-	let buttonWidth,buttonHeight;
+	let buttonWidth, buttonHeight;
 	export let loading = false;
 </script>
 
@@ -22,7 +22,8 @@
 	class:invisible
 	class:disabled
 	class:left
-	class:loading={loading}
+	class:notext={!text}
+	class:loading
 	style={loading ? 'width:' + buttonWidth + 'px; height:' + buttonHeight + 'px' : ''}
 >
 	{#if loading === true}
@@ -40,7 +41,7 @@
 
 <style lang="scss">
 	button {
-		border-radius: 18px 0 0 18px;
+		border-radius: var(--large-radius) 0 0 var(--large-radius);
 		border: 2px solid transparent;
 		min-height: 48px;
 		box-sizing: border-box;
@@ -64,22 +65,22 @@
 		// }
 		&.loading {
 			pointer-events: none;
-			filter: brightness(.8);
+			filter: brightness(0.8);
 		}
 		&:active {
 			transform: scale(0.95);
 		}
 		&:first-child {
-			border-radius: 18px 0 0 18px;
+			border-radius: var(--large-radius) 0 0 var(--large-radius);
 		}
 		&:last-child {
-			border-radius: 0 18px 18px 0;
+			border-radius: 0 var(--large-radius) var(--large-radius) 0;
 		}
 		&:not(:only-child, :first-child, :last-child) {
 			border-radius: 0;
 		}
 		&:only-child {
-			border-radius: 18px;
+			border-radius: var(--large-radius);
 		}
 		i {
 			vertical-align: -4px;
@@ -91,21 +92,23 @@
 			animation-duration: 1s;
 			animation-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955);
 			animation-iteration-count: infinite;
-			margin-top: -.1rem;
+			margin-top: -0.1rem;
 			i {
 				font-size: 1.5rem;
 			}
 			@keyframes rotate {
-				to {transform: rotate(360deg)}
+				to {
+					transform: rotate(360deg);
+				}
 			}
 		}
-		&.right {
-			padding: 0.6rem 0.5rem 0.6rem 0.8rem;
-			i {
-				margin-right: 0;
-				margin-left: 0.2rem;
-			}
-		}
+		// &.right {
+		// 	padding: 0.6rem 0.5rem 0.6rem 0.8rem;
+		// 	i {
+		// 		margin-right: 0;
+		// 		margin-left: 0.2rem;
+		// 	}
+		// }
 		&.fill {
 			background-color: var(--inputbg);
 			color: var(--onbackground);
@@ -184,19 +187,33 @@
 			&.translucent {
 				color: var(--onbackground);
 				border-color: var(--onbackground);
-				opacity: .3;
+				opacity: 0.3;
 			}
 			&.darkblue {
-			background-color: var(--bodybg);
-			color: var(--onbackground);
-			border-color: var(--darkblue);
-		}
+				background-color: var(--bodybg);
+				color: var(--onbackground);
+				border-color: var(--darkblue);
+			}
 		}
 		&.disabled {
 			pointer-events: none;
 		}
 		&.left {
-			border-radius: 18px 0 0 18px;
+			border-radius: var(--large-radius) 0 0 var(--large-radius);
+			width: 100%;
+		}
+		&.right {
+			border-radius: 0 var(--large-radius) var(--large-radius) 0;
+			width: 100%;
+		}
+		&.notext {
+			min-width: 0;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			i {
+				margin: 0;
+			}
 		}
 	}
 </style>

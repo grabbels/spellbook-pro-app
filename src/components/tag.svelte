@@ -12,7 +12,7 @@
         padding: .7rem .6rem .7rem .5rem;
         // height: 42px;
         background-color: var(--translucent);
-        border-radius: 12px;
+        border-radius: var(--medium-radius);
         border: 2px solid transparent;
         i {
             vertical-align: sub;

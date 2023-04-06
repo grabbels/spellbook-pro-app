@@ -42,7 +42,7 @@
 			content: '';
 			background-color: transparent;
 			transition: 0.2s;
-			border-radius: 18px;
+			border-radius: var(--large-radius);
 		}
 		.button_inner {
 			display: flex;
@@ -91,10 +91,10 @@
 			}
 		}
 		&:first-of-type {
-			border-radius: 18px 0 0 18px;
+			border-radius: var(--large-radius) 0 0 var(--large-radius);
 		}
 		&:last-of-type {
-			border-radius: 0 18px 18px 0;
+			border-radius: 0 var(--large-radius) var(--large-radius) 0;
 			&:after {
 				content: '';
 				position: absolute;
@@ -103,7 +103,7 @@
 				bottom: 0.3rem;
 				right: 0.3rem;
 				background-color: var(--moretranslucent);
-				border-radius: 18px;
+				border-radius: var(--large-radius);
 				pointer-events: none;
 				opacity: .7;
 			}

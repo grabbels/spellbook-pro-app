@@ -139,7 +139,7 @@
 		background-color: var(--panelbg);
 		z-index: 250;
 		box-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
-		border-radius: 18px 18px 0 0;
+		border-radius: var(--large-radius) var(--large-radius) 0 0;
 		pointer-events: auto;
 
 		.inner {
@@ -190,7 +190,7 @@
 				grid-gap: 0.3rem;
 				button.tab {
 					// background-color: var(--moretranslucent);
-					border-radius: 12px;
+					border-radius: var(--medium-radius);
 					overflow: hidden;
 					height: 100%;
 					display: flex;

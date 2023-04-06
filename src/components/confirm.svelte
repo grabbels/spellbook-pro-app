@@ -85,8 +85,10 @@
 								$confirm = '';
 								goto('/onboarding');
 							} else if (button.action == 'publish-book') {
+								$localUserLibrary[$lookupBookId].published = true
 								$confirm = '';
 							} else if (button.action == 'unpublish-book') {
+								$localUserLibrary[$lookupBookId].published = false
 								$confirm = '';
 							}
 						}}
@@ -117,7 +119,8 @@
 			width: 100%;
 			padding: 2rem;
 			max-width: 300px;
-			border-radius: 18px;
+			border-radius: var(--large-radius);
+			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
 			.buttons {
 				margin-top: 1.5rem;
 				display: flex;

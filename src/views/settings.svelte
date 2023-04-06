@@ -348,6 +348,7 @@
 										on:click={() => ($manualSync = true)}
 									/>
 								</div>
+								<p class="small" style="opacity: .5; margin-top: 3rem">Debugging checksum: {$localLastSyncTime}</p>
 							</div>
 						</div>
 					</div>
@@ -389,7 +390,7 @@
 				// padding: .5rem;
 				width: 40px;
 				height: 40px;
-				border-radius: 12px;
+				border-radius: var(--medium-radius);
 				margin-right: 0.8rem;
 				display: inline-flex;
 				justify-content: center;

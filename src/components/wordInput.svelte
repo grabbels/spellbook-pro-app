@@ -204,7 +204,7 @@
 			z-index: 1;
 			height: 100vh;
 			// mask-image: linear-gradient(180deg, black 80%, transparent 100%);
-			border-radius: 0 0 18px 18px;
+			border-radius: 0 0 var(--large-radius) var(--large-radius);
 			background-color: var(--panelbg);
 			padding: 0.4rem 1.8rem 2rem;
 			ul {

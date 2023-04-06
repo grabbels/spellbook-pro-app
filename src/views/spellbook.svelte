@@ -67,12 +67,24 @@
 		{#if $openBooksIdsArray && $openBooksIdsArray.length > 0 && $activeOpenBookId}
 			{#if $spellList && $spellList.length > 0}
 				<div style="margin-top: 3.5rem">
-					<Button
+					<!-- <Button
 						text="Add spells"
 						icon="ri-add-line"
-						type="fill accent"
+						type="outline accent"
 						on:click={() => ($addSpellsMenuOpen = true)}
 					/>
+					<Button
+						text="Edit book"
+						icon="ri-edit-2-line"
+						type="outline"
+						on:click={() => ($addSpellsMenuOpen = true)}
+					/>
+					<Button
+						text="Share"
+						icon="ri-share-line"
+						type="outline blue"
+						on:click={() => ($addSpellsMenuOpen = true)}
+					/> -->
 				</div>
 				{#key $filters}
 					{#if Object.keys($filters).length > 0 && noShownSpells}

@@ -109,7 +109,7 @@
 			width: 100%;
 			// min-height: 350px;
 			box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-			border-radius: 24px;
+			border-radius: var(--huge-radius);
 			max-height: 100%;
 			position: relative;
 			display: flex;

@@ -7,7 +7,8 @@
 	import { lookupBookId, modalCall, spellbookQuery } from '../stores';
 	import { localUserLibrary } from '../stores-persist';
 	let results = [];
-
+	let sort;
+	$: console.log($localUserLibrary)
 	$: if ($spellbookQuery) {
 		results = [];
 		for (const property in $localUserLibrary) {
@@ -26,7 +27,15 @@
 </script>
 
 <SafeViewPadding>
-	<div style="margin-top: 4rem">
+	<div class="sort_by_wrapper" style="margin-top: 2.5rem; text-align: right">
+		<select bind:value={sort} name="sort" id="sort" class="minimal">
+			<option value="alphabetical">Alphabetical</option>
+			<option value="created">Date created</option>
+			<option value="modified" selected>Date modified</option>
+		</select>
+		<button class="updown"><i class="ri-arrow-down-line"/></button>
+	</div>
+	<div style="padding-bottom: calc(var(--safe-area-inset-bottom) + 5rem);">
 		{#each Object.entries($localUserLibrary) as [key], i}
 			<!-- <h1>{$localUserLibrary[key].name}</h1> -->
 			{#if !$spellbookQuery || results.includes(key)}
@@ -67,6 +76,15 @@
 	div {
 		width: 100%;
 		position: relative;
-		padding: 0.8rem 0.8rem calc(var(--safe-area-inset-bottom) + 5rem);
+		padding: 0.8rem .8rem 0;
+	}
+	.sort_by_wrapper {
+		width: 100%;
+		button.updown {
+			i {
+				color: var(--inputbg);
+				vertical-align: sub;
+			}
+		}
 	}
 </style>

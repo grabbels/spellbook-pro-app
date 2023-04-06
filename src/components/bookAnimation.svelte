@@ -46,7 +46,7 @@
 			<div class="pages">
 				<div
 					class="page cover"
-					style="--i: 18px; --negi: 0px; background-image: url('{overlay}')"
+					style="--i: var(--large-radius); --negi: 0px; background-image: url('{overlay}')"
 				/>
 				<div class="page" style="--i: 14px; --negi: -2px">
 					<p>
@@ -58,7 +58,7 @@
 						mollit anim id est laborum. Lorem ipsum dolor sit amet, consectetur adipis
 					</p>
 				</div>
-				<div class="page" style="--i: 12px; --negi: -4px">
+				<div class="page" style="--i: var(--medium-radius); --negi: -4px">
 					<p>
 						Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
 						nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui
@@ -93,7 +93,7 @@
 						commodo consequat. Duis aute irure dolor in reprehenderit in volupta
 					</p>
 				</div>
-				<div class="page" style="--i: 4px; --negi: -12px">
+				<div class="page" style="--i: 4px; --negi: -var(--medium-radius)">
 					<p>
 						Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
 						veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -112,13 +112,13 @@
 				{#if type === 'repeat'}
 					<div
 						class="page cover"
-						style="--i: 0px; --negi: -18px; background-image: url('{overlayflip}')"
+						style="--i: 0px; --negi: -var(--large-radius); background-image: url('{overlayflip}')"
 						on:animationend={restartAnimation}
 					/>
 				{:else}
 					<div
 						class="page cover"
-						style="--i: 0px; --negi: -18px; background-image: url('{overlayflip}')"
+						style="--i: 0px; --negi: -var(--large-radius); background-image: url('{overlayflip}')"
 					/>
 				{/if}
 			</div>
@@ -270,11 +270,11 @@
 					&.cover {
 						animation-name: coverflipping;
 						&:first-child {
-							transform: translateZ(18px) translateX(-5px);
+							transform: translateZ(var(--large-radius)) translateX(-5px);
 							animation-name: firstcoverflipping;
 						}
 						&:last-child {
-							transform: translateZ(-18px);
+							transform: translateZ(-var(--large-radius));
 						}
 					}
 				}
@@ -337,7 +337,7 @@
 					left: 74px;
 					top: 0;
 					&:first-child {
-						transform: translateZ(18px) translateX(-4px);
+						transform: translateZ(var(--large-radius)) translateX(-4px);
 					}
 					&:last-child {
 						transform: translateZ(0px) translateX(0px);

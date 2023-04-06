@@ -37,7 +37,7 @@
 		background-color: var(--cardbg);
 		// margin: .4rem .8rem;
 		padding: 1.5rem 1.3rem;
-		border-radius: 24px;
+		border-radius: var(--huge-radius);
 		position: relative;
 		width: 100%;
 		box-sizing: border-box;
@@ -68,7 +68,7 @@
 			// 	width: 100%;
 			// 	height: 105px;
 			// 	// aspect-ratio: 1 / 1.4;
-			// 	border-radius: 12px;
+			// 	border-radius: var(--medium-radius);
 			// 	background-color: var(--bookcolor);
 			// 	// padding: 0.3rem;
 			// 	position: relative;
@@ -103,7 +103,7 @@
 			// 	i {
 			// 		font-size: 1.2rem;
 			// 		position: absolute;
-			// 		bottom: -12px;
+			// 		bottom: -var(--medium-radius);
 			// 		z-index: -1;
 			// 		left: 5px;
 			// 		color: var(--bookcolor);
@@ -113,7 +113,7 @@
 			// 		width: 100%;
 			// 		height: 100%;
 			// 		border: 7px solid rgba(0, 0, 0, 0.25);
-			// 		border-radius: 12px;
+			// 		border-radius: var(--medium-radius);
 			// 		z-index: 1;
 			// 		padding: 1.1rem 0.3rem;
 			// 		text-align: center;

@@ -96,7 +96,7 @@
 			/>
 		</div>
 		{#if $user.id === $localUserLibrary[$lookupBookId].user_id}
-			{#if $localUserLibrary[$lookupBookId].published === true}
+			{#if $localUserLibrary[$lookupBookId].published === false}
 				<div>
 					<Button
 						text="Publish"
@@ -104,7 +104,7 @@
 						type="fill blue"
 						on:click={() =>
 							($confirm = [
-								'Are you sure you want to publish this spellbook?',
+								'Are you sure you want to publish this spellbook? This means it will be available to the community in the "Browse" tab.',
 								{ text: 'Cancel', type: 'outline', action: 'cancel' },
 								{
 									text: 'Publish',
@@ -115,7 +115,7 @@
 							])}
 					/>
 				</div>
-			{:else if $localUserLibrary[$lookupBookId].published === false}
+			{:else if $localUserLibrary[$lookupBookId].published === true}
 				<div>
 					<Button
 						text="Unpublish"
@@ -123,7 +123,7 @@
 						type="outline blue"
 						on:click={() =>
 							($confirm = [
-								'Are you sure you want to unpublish this spellbook?',
+								'Are you sure you want to unpublish this spellbook? This means it will be no longer available to the community in the "Browse" tab.',
 								{ text: 'Cancel', type: 'outline', action: 'cancel' },
 								{
 									text: 'Unpublish',
@@ -201,9 +201,8 @@
 		margin-bottom: 2rem;
 	}
 	.buttons {
-		display: grid;
-		gap: 0.3rem;
-		grid-template-columns: 1fr;
+		display: flex;
+		flex-direction: column;
 		gap: 0.3rem;
 		width: 100%;
 		div {

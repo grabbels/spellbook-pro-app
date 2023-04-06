@@ -4,6 +4,7 @@
 	export let placeholder;
 	export let value = '';
 	export let right = false;
+	export let middle = false;
 	export let showclose = false;
 	export let field;
 	export let noclose = false;
@@ -12,7 +13,7 @@
 <form on:submit|preventDefault>
 	<i class="ri-search-line" />
 	<!-- svelte-ignore a11y-autofocus -->
-	<input bind:this={field} type="text" bind:value {placeholder} class:right on:focus on:focusout />
+	<input bind:this={field} type="text" bind:value {placeholder} class:right class:middle on:focus on:focusout />
 	{#if showclose}
 		<button
 			class="cancel"
@@ -47,7 +48,10 @@
 				font-family: 'Kanit';
 			}
 			&.right {
-				border-radius: 0 18px 18px 0;
+				border-radius: 0 var(--large-radius) var(--large-radius) 0;
+			}
+			&.middle {
+				border-radius: 0;
 			}
 		}
 		i.ri-search-line {

@@ -53,6 +53,8 @@
 		}
 		console.log(rangeFilters)
 	}
+
+	let panelHeight
 	// let castingTime, range, save;
 	// $: if (castingTime || range || save) {
 	// 	castingTime
@@ -72,7 +74,7 @@
 	}
 </script>
 
-<div class:open={$filterPanelOpen} class="ui_mobile_filter_panel">
+<div class:open={$filterPanelOpen} class="ui_mobile_filter_panel" bind:clientHeight={panelHeight} on:touchstart={(e)=>console.log(e.touches[0].clientY - panelHeight)}>
 	<button class="close" on:click|stopPropagation={() => ($filterPanelOpen = false)}>
 		<i class="ri-close-line" />
 	</button>
@@ -97,6 +99,7 @@
 						id={castingtime}
 						name="casting-time"
 						value={castingtime}
+						on:click|stopPropagation
 					/>
 					<label for={castingtime}>{castingtime}</label>
 				{/each}
@@ -165,7 +168,7 @@
 		background-color: var(--panelbg);
 		bottom: 0;
 		z-index: 9999;
-		border-radius: 18px 18px 0 0;
+		border-radius: var(--large-radius) var(--large-radius) 0 0;
 		box-shadow: 0 3px 20px rgba(0, 0, 0, 0.5);
 		transition: 0.4s;
 		transform: translateY(100%);
@@ -222,13 +225,13 @@
 							font-size: 1.3rem;
 						}
 						&:first-of-type {
-							border-radius: 12px 0 0 12px;
+							border-radius: var(--medium-radius) 0 0 var(--medium-radius);
 						}
 						// &:nth-child(2) {
-						//     border-radius: 12px 0 0 12px;
+						//     border-radius: var(--medium-radius) 0 0 var(--medium-radius);
 						// }
 						&:last-of-type {
-							border-radius: 0 12px 12px 0;
+							border-radius: 0 var(--medium-radius) var(--medium-radius) 0;
 							padding-right: 1rem;
 						}
 					}

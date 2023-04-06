@@ -173,7 +173,7 @@
 			overflow: hidden;
 			margin: 0.4rem 0.8rem;
 			padding: 0.5rem 0.8rem;
-			border-radius: 24px;
+			border-radius: var(--huge-radius);
 			.card_inner {
 				margin: 0 0.5rem;
 				padding: 0.7rem 0 0.2rem;

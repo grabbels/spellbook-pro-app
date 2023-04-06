@@ -10,7 +10,7 @@
     div {
         width: 100%;
         background-color: var(--moretranslucent);
-        border-radius: 12px;
+        border-radius: var(--medium-radius);
         padding: 1rem;
         box-shadow: 0 3px 5px rgba(10, 10, 10, 0.2);
         margin-top: .5rem;

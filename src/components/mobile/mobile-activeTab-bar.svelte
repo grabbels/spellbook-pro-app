@@ -33,7 +33,7 @@
 <style lang="scss">
 	.ui-active_tab_bar {
 		width: calc(100% - 1.4rem);
-		border-radius: 12px;
+		border-radius: var(--medium-radius);
 		position: fixed;
 		left: 0.7rem;
 		overflow: hidden;
@@ -112,7 +112,7 @@
 				display: flex;
 				justify-content: center;
 				align-items: center;
-				border-radius: 12px;
+				border-radius: var(--medium-radius);
 				// margin: 1rem;
 				i {
 					font-size: 1.2rem;

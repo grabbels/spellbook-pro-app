@@ -32,49 +32,25 @@
 		<h1>
 			{$view.replace(/^(\w)(.+)/, (match, p1, p2) => p1.toUpperCase() + p2.toLowerCase())}
 		</h1>
-		<div class="wrapper">
+		<div class="wrapper {$view === 'spellbook' ? 'three' : ''}">
 			{#if $view === 'spellbook'}
 				{#if $localUserLibrary && $activeOpenBookId !== '' && $activeOpenBookId !== null}
-					{#if $spellList.length}
-						<!-- {#if $filterPanelOpen === false} -->
-						
-							<Button
-								text="Filter"
-								icon="ri-filter-line"
-								type="{Object.keys($filters).length > 0 ? 'darkblue' : 'subtle'} fill"
-								iconfill={Object.keys($filters).length > 0}
-								left
-								on:click={() => {
-									$filterPanelOpen = true;
-								}}
-							/>
-						<!-- {:else if $filterPanelOpen === true}
-							<Button
-								text="Close"
-								icon="ri-close-line"
-								type="fill red"
-								left
-								on:click={() => {
-									$filterPanelOpen = false;
-								}}
-							/>
-						{/if} -->
-					{:else}
-						<Button
-							text="Add spells"
-							icon="ri-add-line"
-							type="fill accent"
-							left
-							on:click={() => ($addSpellsMenuOpen = true)}
-						/>
-					{/if}
+					<Button
+						text=""
+						icon="ri-add-line"
+						type="fill accent"
+						left
+						on:click={() => ($addSpellsMenuOpen = true)}
+					/>
 				{:else}
 					<Button
 						text="Library"
 						icon="ri-book-mark-line"
 						type="fill blue"
 						left
-						on:click={() => {$view = 'library'}}
+						on:click={() => {
+							$view = 'library';
+						}}
 					/>
 				{/if}
 			{:else if $view === 'library'}
@@ -93,14 +69,6 @@
 				/>
 			{/if}
 			<div class="input_wrapper">
-				<!-- <input
-						type="text"
-						class="search"
-						bind:value={$quickQuery}
-						placeholder="Quick spell lookup..."
-						on:focus={() => ($quickSearchPanelOpen = true)}
-						on:focusout={() => ($quickSearchPanelOpen = false)}
-					/> -->
 				{#if $view === 'spellbook'}
 					<SearchField
 						noclose
@@ -108,7 +76,7 @@
 						on:focus={() => ($quickSearchPanelOpen = true)}
 						on:focusout={() => ($quickSearchPanelOpen = false)}
 						bind:value={$quickQuery}
-						right
+						middle={!$quickSearchPanelOpen}
 					/>
 				{:else if $view === 'library'}
 					<SearchField placeholder="Search spellbooks..." bind:value={$spellbookQuery} right />
@@ -123,6 +91,18 @@
 					</button>
 				{/if}
 			</div>
+			{#if $view === 'spellbook'}
+					<Button
+						text=""
+						icon="ri-filter-line"
+						type="{Object.keys($filters).length > 0 ? 'darkblue' : 'darkblue'} fill"
+						iconfill={Object.keys($filters).length > 0}
+						right
+						on:click={() => {
+							$filterPanelOpen = true;
+						}}
+					/>
+			{/if}
 		</div>
 	</div>
 </div>
@@ -145,27 +125,15 @@
 				text-align: center;
 				font-size: 1.3rem;
 				margin: 0 0 0.7rem;
-				height: 24px;
+				height: var(--huge-radius);
 				transition: 0.3s;
 				overflow: hidden;
+				will-change: height, margin;
 			}
 			.input_wrapper {
 				position: relative;
 				transform-origin: center top;
 				transition: 0.3s;
-
-				// input {
-				// 	width: 100%;
-				// 	border: 2px solid transparent;
-				// 	transition: 0.2s;
-				// 	height: 100%;
-				// 	&::placeholder {
-				// 		opacity: 0.5;
-				// 	}
-				// 	&:focus {
-				// 		border-color: var(--accent);
-				// 	}
-				// }
 				button.close {
 					position: absolute;
 					right: 0.7rem;
@@ -209,21 +177,24 @@
 		&.columns {
 			.header_content {
 				.wrapper {
+					will-change: grid-template-columns, height;
 					display: grid;
 					height: 54px;
-					grid-template-columns: 125px 1fr;
-					// grid-template-rows: 50px;
+					grid-template-columns: 125px 1fr 0;
 					gap: 0.2rem;
 					background-color: var(--cardbg);
-					border-radius: 18px;
+					border-radius: var(--large-radius);
 					overflow: hidden;
 					transition: 0.2s;
+					&.three {
+						grid-template-columns: 58px 1fr 58px;
+					}
 				}
 			}
 			&.scrolled {
 				.header_content {
 					.wrapper {
-						height: 48px;
+						// height: 48px;
 					}
 				}
 			}
@@ -232,11 +203,13 @@
 			.header_content {
 				padding: max(var(--safe-area-inset-top), 1rem) 1rem 0;
 				.wrapper {
-					grid-template-columns: 0 1fr;
+					grid-template-columns: 0 1fr 0!important;
 					gap: 0;
+					border-radius: var(--medium-radius);
+					transform: scale(1.025);
 				}
 				.input_wrapper {
-					transform: scale(1.025);
+					// transform: scale(1.025);
 				}
 			}
 		}

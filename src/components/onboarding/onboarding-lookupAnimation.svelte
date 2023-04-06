@@ -42,7 +42,7 @@
 			background-color: var(--panelbg);
 			position: absolute;
 			z-index: 2;
-			border-radius: 12px;
+			border-radius: var(--medium-radius);
 			transform: scale(0.9);
 			opacity: 0;
 			animation-name: appear;

@@ -2,7 +2,7 @@
 	import { addSpellsMenuOpen, confirm, modalCall, noScroll } from '../stores';
 	import { goto } from '$app/navigation';
 	import { allowedTags } from '../tags';
-	import { localUserLibrary, openBooksIdsArray, spells, user } from '../stores-persist';
+	import { lastSyncTry, localLastSyncTime, localUserLibrary, openBooksIdsArray, spells, user } from '../stores-persist';
 	import PocketBase from 'pocketbase';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	import { get } from 'svelte/store';
@@ -47,7 +47,13 @@
 </script>
 
 <div>
-
+<button on:click={()=>{
+	$localUserLibrary = {}
+	$lastSyncTry = {}
+	$localLastSyncTime = 0
+	$user = ''
+	pb.authStore.clear();
+}}>Reset</button>
 </div>
 
 <style>

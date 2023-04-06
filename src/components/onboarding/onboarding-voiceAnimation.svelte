@@ -53,7 +53,7 @@
 			color: var(--onforeground);
 			z-index: 2;
 			padding: 0.8rem 0.6rem 1.2rem;
-			border-radius: 18px;
+			border-radius: var(--large-radius);
 			font-weight: 500;
 			left: -3rem;
 			top: 2rem;

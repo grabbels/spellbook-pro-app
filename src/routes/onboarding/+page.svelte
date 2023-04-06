@@ -128,7 +128,7 @@
 		grid-column-start: 0;
 	}
 	:global(.buttons.single-last button:first-child) {
-		border-radius: 18px;
+		border-radius: var(--large-radius);
 	}
 	.shift-bg {
 		position: absolute;

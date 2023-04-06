@@ -11,22 +11,24 @@
 	import Button from '../button.svelte';
 	import Tag from '../tag.svelte';
 	import WordInput from '../wordInput.svelte';
-	let bookClass, bookName, bookColor, bookLevel, bookIcon;
+	let bookClass, bookName, bookColor, bookLevel, bookIcon, bookDateCreated;
 	let bookTags = [];
 	if ($bookToEdit) {
 		$bookToEdit.class ? (bookClass = $bookToEdit.class) : '';
 		$bookToEdit.color ? (bookColor = $bookToEdit.color) : '';
 		$bookToEdit.level ? (bookLevel = $bookToEdit.level) : '';
 		$bookToEdit.icon ? (bookIcon = $bookToEdit.icon) : '';
-		$bookToEdit.name ? (bookName = $bookToEdit.name) : '';
 		$bookToEdit.tags ? (bookTags = $bookToEdit.tags) : '';
+		$bookToEdit.name ? (bookName = $bookToEdit.name) : '';
+		$bookToEdit.date_created ? (bookDateCreated = $bookToEdit.date_created) : '';
 	}
 
 	$: if (bookName && bookName.length > 8) {
 		bookName.pop()
 		$notification = "The name can be a maximum of 8 words long.#info"
 	}
-	onMount(() => {});
+	onMount(() => {
+	});
 
 	let tagSearch = '';
 	let tagResults = [];
@@ -37,8 +39,6 @@
 			submit = false;
 		}, 2000);
 	}
-
-	$: console.log(bookIcon);
 
 	let icons = [
 		'magic',
@@ -171,7 +171,7 @@
 			}
 			function save() {
 				$localUserLibrary[saveId] = {
-					id: $user.id + '_' + Date.now(),
+					id: saveId ? saveId : $user.id + '_' + Date.now(),
 					name: bookName,
 					tags: bookTags,
 					class: bookClass,
@@ -181,6 +181,8 @@
 					published: false,
 					user: $user.username,
 					user_id: $user.id,
+					date_created: bookDateCreated ? bookDateCreated : Date.now(),
+					date_edited: Date.now(),
 					list: []
 				};
 				$localUserLibrary = $localUserLibrary
@@ -221,7 +223,7 @@
 
 <form
 	on:keydown={(e) => (e.key == 'Enter' ? e.preventDefault() : '')}
-	on:submit|preventDefault={() => handleSubmit()}
+	on:submit|preventDefault
 	style="--bookcolor: {bookColor ? bookColor : 'var(--white)'}"
 >
 	<h2>
@@ -239,7 +241,7 @@
 	<!-- <label for="name">Name</label>
 		<input type="text" id="name" minlength="5" maxlength="60"> -->
 	<label for="">Name</label>
-	<div style="border-radius: 12px" class:missing={!bookName?.length && submit}>
+	<div style="border-radius: var(--medium-radius)" class:missing={!bookName?.length && submit}>
 		<WordInput bind:value={bookName} />
 	</div>
 	<div class="row uneven">
@@ -327,7 +329,7 @@
 	<div style="margin-top: 2rem; text-align: center">
 		{#if $bookToEdit}
 			<div>
-				<Button submit text="Save changes" icon="ri-save-line" type="fill accent" />
+				<Button on:click={() => handleSubmit()} text="Save changes" icon="ri-save-line" type="fill accent" />
 				<Button
 					on:click={() => {
 						$modalCall = '';
@@ -340,7 +342,7 @@
 				/>
 			</div>
 		{:else}
-			<Button submit text="Create spellbook" icon="ri-add-line" type="fill accent" />
+			<Button on:click={() => handleSubmit()} text="Create spellbook" icon="ri-add-line" type="fill accent" />
 		{/if}
 	</div>
 </form>

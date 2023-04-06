@@ -117,7 +117,7 @@
 				align-items: center;
 				img {
 					width: 150px;
-					border-radius: 24px;
+					border-radius: var(--huge-radius);
 				}
 				h1 {
 					margin-top: 0.5rem;

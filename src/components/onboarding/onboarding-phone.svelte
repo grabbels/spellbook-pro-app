@@ -21,7 +21,7 @@
 		.bezel {
             pointer-events: none;
 			position: absolute;
-			border-radius: 24px;
+			border-radius: var(--huge-radius);
 			height: 100%;
 			left: 0;
 			top: 0;

@@ -125,7 +125,7 @@
 					text-align: center;
 					height: 100%;
 					img {
-						border-radius: 24px;
+						border-radius: var(--huge-radius);
 						width: 150px;
 					}
 					h1 {
