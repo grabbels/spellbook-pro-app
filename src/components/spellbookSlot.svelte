@@ -5,29 +5,35 @@
 	export let id;
 </script>
 
-<button on:click style="--bookcolor: {$localUserLibrary[id].color}">
+<button on:click style="--bookcolor: {$localUserLibrary[id] ? $localUserLibrary[id].color : ''}" class:new={id === 'new'}>
 	<div class="inner">
-		<div>
-			<i class="ri-{$localUserLibrary[id].icon ? $localUserLibrary[id].icon : 'bookmark'}-fill" style="color: {$localUserLibrary[id].color}"/>
-			<!-- <div class="book">
-				<div class="book_inner">
-					<h1>{data.character}</h1>
-				</div>
-				<i class="ri-bookmark-fill" />
-			</div> -->
-		</div>
-		<div style="align-self:center; margin-top: -.4rem">
-			<h2>{$localUserLibrary[id].name.toString().replaceAll(',', ' ')}</h2>
-			<div class="pills">
-				<Pill type="fill small green" text={$localUserLibrary[id].class} icon="ri-contacts-line" label="Character level" />
-				<Pill
-					type="fill small blue"
-					text={'Level ' + $localUserLibrary[id].level}
-					icon="ri-user-star-line"
-					label="Character level"
+		{#if id === 'new'}
+			<i class="ri-add-line"></i>
+		{:else}
+			<div>
+				<i
+					class="ri-{$localUserLibrary[id].icon ? $localUserLibrary[id].icon : 'bookmark'}-fill"
+					style="color: {$localUserLibrary[id].color}"
 				/>
 			</div>
-		</div>
+			<div style="align-self:center; margin-top: -.4rem">
+				<h2>{$localUserLibrary[id].name.toString().replaceAll(',', ' ')}</h2>
+				<div class="pills">
+					<Pill
+						type="fill small green"
+						text={$localUserLibrary[id].class}
+						icon="ri-contacts-line"
+						label="Character level"
+					/>
+					<Pill
+						type="fill small blue"
+						text={'Level ' + $localUserLibrary[id].level}
+						icon="ri-user-star-line"
+						label="Character level"
+					/>
+				</div>
+			</div>
+		{/if}
 	</div>
 </button>
 
@@ -126,6 +132,18 @@
 			// 		}
 			// 	}
 			// }
+		}
+		&.new {
+			background-color: transparent;
+			border: 2px dashed var(--moretranslucent);
+			min-height: 90px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			i {
+				margin: 0;
+				color: var(--translucent);
+			}
 		}
 	}
 </style>

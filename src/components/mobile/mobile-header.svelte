@@ -32,13 +32,21 @@
 		<h1>
 			{$view.replace(/^(\w)(.+)/, (match, p1, p2) => p1.toUpperCase() + p2.toLowerCase())}
 		</h1>
-		<div class="wrapper {$view === 'spellbook' ? 'three' : ''}">
+		<div
+			class="wrapper {$view === 'spellbook' &&
+			$localUserLibrary &&
+			$activeOpenBookId !== '' &&
+			$activeOpenBookId !== null
+				? 'three'
+				: ''}"
+		>
 			{#if $view === 'spellbook'}
 				{#if $localUserLibrary && $activeOpenBookId !== '' && $activeOpenBookId !== null}
 					<Button
 						text=""
 						icon="ri-add-line"
-						type="fill accent"
+						type="fill accent liquid"
+						liquid
 						left
 						on:click={() => ($addSpellsMenuOpen = true)}
 					/>
@@ -54,19 +62,32 @@
 					/>
 				{/if}
 			{:else if $view === 'library'}
-				<Button
-					text="New book"
-					icon="ri-add-line"
-					type="fill accent"
-					left
-					on:click={() => {
-						if (Object.keys($localUserLibrary).length < 13) {
-							$modalCall = 'new';
-						} else {
-							$notification = 'You have reached the maximum of 12 spellbooks.#info';
-						}
-					}}
-				/>
+				{#if Object.entries($localUserLibrary).length < 12}
+					<Button
+						text="New book"
+						icon="ri-add-line"
+						type="fill accent liquid"
+						liquid
+						left
+						on:click={() => {
+							if (Object.keys($localUserLibrary).length < 13) {
+								$modalCall = 'new';
+							} else {
+								$notification = 'You have reached the maximum of 12 spellbooks.#alert';
+							}
+						}}
+					/>
+				{:else}
+					<Button
+						text="New book"
+						icon="ri-add-line"
+						type="outline"
+						left
+						on:click={() => {
+							$notification = "You've reached the maximum of 12 saved books!#alert"
+						}}
+					/>
+				{/if}
 			{/if}
 			<div class="input_wrapper">
 				{#if $view === 'spellbook'}
@@ -91,17 +112,17 @@
 					</button>
 				{/if}
 			</div>
-			{#if $view === 'spellbook'}
-					<Button
-						text=""
-						icon="ri-filter-line"
-						type="{Object.keys($filters).length > 0 ? 'darkblue' : 'darkblue'} fill"
-						iconfill={Object.keys($filters).length > 0}
-						right
-						on:click={() => {
-							$filterPanelOpen = true;
-						}}
-					/>
+			{#if $view === 'spellbook' && $localUserLibrary && $activeOpenBookId !== '' && $activeOpenBookId !== null}
+				<Button
+					text=""
+					icon="ri-filter-line"
+					type="{Object.keys($filters).length > 0 ? 'darkblue' : 'subtle'} fill"
+					iconfill={Object.keys($filters).length > 0}
+					right
+					on:click={() => {
+						$filterPanelOpen = true;
+					}}
+				/>
 			{/if}
 		</div>
 	</div>
@@ -201,9 +222,12 @@
 		}
 		&.quicksearch {
 			.header_content {
+				h1 {
+					height: 0;
+				}
 				padding: max(var(--safe-area-inset-top), 1rem) 1rem 0;
 				.wrapper {
-					grid-template-columns: 0 1fr 0!important;
+					grid-template-columns: 0 1fr 0 !important;
 					gap: 0;
 					border-radius: var(--medium-radius);
 					transform: scale(1.025);

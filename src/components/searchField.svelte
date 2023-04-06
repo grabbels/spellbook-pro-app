@@ -13,13 +13,12 @@
 <form on:submit|preventDefault>
 	<i class="ri-search-line" />
 	<!-- svelte-ignore a11y-autofocus -->
-	<input bind:this={field} type="text" bind:value {placeholder} class:right class:middle on:focus on:focusout />
+	<input bind:this={field} type="text" bind:value {placeholder} class:right class:middle on:focus on:blur on:focusout />
 	{#if showclose}
 		<button
 			class="cancel"
 			on:click={() => {
 				value = '';
-				$addSpellsMenuOpen = false;
 			}}><i class="ri-close-line" /></button
 		>
 	{:else if value && !noclose}
@@ -27,7 +26,6 @@
 			class="cancel"
 			on:click={() => {
 				value = '';
-				$addSpellsMenuOpen = false;
 			}}><i class="ri-close-line" /></button
 		>
 	{/if}
@@ -44,6 +42,7 @@
 			margin-bottom: 0;
 			height: 100%;
 			font-family: 'Kanit';
+			height: 54px;
 			&::placeholder {
 				font-family: 'Kanit';
 			}

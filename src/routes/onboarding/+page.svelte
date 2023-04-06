@@ -49,7 +49,7 @@
 						text="continue"
 						icon="ri-arrow-right-s-line"
 						type="fill accent"
-						right
+						
 					/>
 			</div>
 		</div>

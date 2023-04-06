@@ -80,7 +80,7 @@
 	</button>
 	<div class="filters_inner">
 		<h2><i class="ri-filter-line" /> Filter spellsheet</h2>
-		{#if castingtimeFilters.length > 0}
+		{#if castingtimeFilters && castingtimeFilters.length > 0}
 			<h4>Casting time</h4>
 			<div class="filter row castime-time">
 				<input
@@ -105,7 +105,7 @@
 				{/each}
 			</div>
 		{/if}
-		{#if rangeFilters.length > 0}
+		{#if rangeFilters && rangeFilters.length > 0}
 			<h4>Range</h4>
 			<div class="filter row range">
 				<input disabled type="radio" bind:group={$filters.range} name="range" value="" />
@@ -126,7 +126,7 @@
 			</div>
 		{/if}
 		<h4>Saving throw</h4>
-		{#if saveFilters.length > 0}
+		{#if saveFilters && saveFilters.length > 0}
 			<div class="filter row save">
 				<input disabled type="radio" bind:group={$filters.save} name="save" value="" />
 				<label for="disabled" disabled><i class="ri-lifebuoy-line" /> </label>

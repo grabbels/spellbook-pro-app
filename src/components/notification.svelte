@@ -16,6 +16,8 @@
 				? 'ri-information-line'
 				: text.split('#')[1] == 'error'
 				? 'ri-error-warning-line'
+				: text.split('#')[1] == 'alert'
+				? 'ri-alert-line'
 				: ''}
 		/>
 		<p>
@@ -55,6 +57,9 @@
 				}
 				&.ri-error-warning-line {
 					color: var(--red);
+				}
+				&.ri-alert-line {
+					color: orange;
 				}
 			}
 			p {

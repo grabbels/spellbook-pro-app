@@ -47,13 +47,13 @@
 </script>
 
 <div>
-<button on:click={()=>{
+<!-- <button on:click={()=>{
 	$localUserLibrary = {}
 	$lastSyncTry = {}
 	$localLastSyncTime = 0
 	$user = ''
 	pb.authStore.clear();
-}}>Reset</button>
+}}>Reset</button> -->
 </div>
 
 <style>

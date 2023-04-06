@@ -7,7 +7,7 @@
 {#if $view.toLowerCase() === 'spellbook'}
 	<button
 		class="ui-active_tab_bar"
-		style="bottom: calc({$tabBarHeight}px + .5rem); --bookcolor: {$localUserLibrary[$activeOpenBookId] ? $localUserLibrary[$activeOpenBookId].color : 'var(--purple)'}"
+		style="bottom: calc({$tabBarHeight}px + .2rem); --bookcolor: {$localUserLibrary[$activeOpenBookId] ? $localUserLibrary[$activeOpenBookId].color : 'var(--purple)'}"
 		transition:fly={{ y: 50, duration: 250 }}
 		on:click={() => ($tabPanelOpen = true)}
 		class:hidden={$tabPanelOpen}

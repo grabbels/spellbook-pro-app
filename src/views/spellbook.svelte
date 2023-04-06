@@ -111,7 +111,7 @@
 					{/if}
 				{/key}
 			{:else}
-				<p style="margin: 2rem">
+				<p style="margin: 4rem 2rem; opacity: .5">
 					A whole lot of nothing. <button class="href" on:click={() => ($addSpellsMenuOpen = true)}
 						>Add some spells</button
 					> to this spellbook!
@@ -133,13 +133,13 @@
 			padding: 0.4rem 0.75rem;
 			margin: 1rem 0.2rem 0.5rem;
 			text-align: center;
-			background-color: var(--lightblue);
+			background-color: var(--lightbg);
 			width: 90px;
 			display: inline-block;
 			border-radius: 50vh;
 			color: var(--lesstranslucent);
 			opacity: 1;
-			position: sticky;
+			// position: sticky;
 			top: calc(var(--safe-area-inset-top) + 3.7rem);
 			z-index: 1;
 			font-size: 0.9rem;

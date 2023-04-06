@@ -16,33 +16,13 @@
 	.ui-mobile_tabbar {
 		width: 100%;
 		position: fixed;
-		// background-color: var(--panelbg);
 		bottom: 0;
 		left: 0;
-		padding: 0.3rem 0.7rem max(calc(var(--safe-area-inset-bottom) + 0.3rem), 1rem);
-		// padding-bottom: max(var(--safe-area-inset-bottom), .5rem);
+		padding: 0.3rem .7rem max(calc(var(--safe-area-inset-bottom)), 1rem);
 		display: grid;
 		grid-template-columns: 1fr 1fr 1fr 1fr;
 		z-index: 10;
 		pointer-events: auto;
-		// .indicator_container {
-		// 	position: absolute;
-		// 	left: 0;
-		// 	top: 0;
-		// 	// bottom: -.25rem;
-		// 	// margin: 0.3rem 0.7rem max(calc(var(--safe-area-inset-bottom) + 0.3rem), 0.5rem);
-		// 	pointer-events: none;
-		// 	height: 100%;
-		// 	.indicator {
-		// 		width: 25%;
-		// 		height: 100%;
-		// 		.inner {
-		// 			background-color: var(--moretranslucent);
-		// 			height: 2rem;
-		// 			width: 100%;
-		// 		}
-		// 	}
-		// }
 		&:after {
 			content: '';
 			position: absolute;

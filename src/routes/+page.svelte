@@ -158,7 +158,7 @@
 		{/if}
 	{/if}
 
-	<SyncStatus />
+	<!-- <SyncStatus /> -->
 </div>
 
 <style lang="scss">

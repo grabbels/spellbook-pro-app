@@ -1,6 +1,14 @@
 <script>
-	import { addSpellsMenuOpen, horizontalSwipe, notification, visualViewport } from '../stores';
+	import { slide } from 'svelte/transition';
+	import {
+		addSpellsMenuOpen,
+		horizontalSwipe,
+		notification,
+		view,
+		visualViewport
+	} from '../stores';
 	import { spells } from '../stores-persist';
+	import Button from './button.svelte';
 	import SafeViewPadding from './safeViewPadding.svelte';
 	import SearchField from './searchField.svelte';
 	import SearchResult from './searchResult.svelte';
@@ -8,7 +16,7 @@
 	let query;
 	let results = [];
 	$: if ($addSpellsMenuOpen) {
-		console.log(input)
+		console.log(input);
 		if (input) {
 			input.focus();
 		}
@@ -29,12 +37,42 @@
 	} else {
 		results = [];
 	}
+	let touchMove = false;
+	let blur = false;
+	let touchStart, screenWidth;
+	function handleTouchStart(e) {
+		touchMove = true;
+		touchStart = e.touches[0].clientX;
+	}
+	function handleTouchMove(e) {
+		if (touchStart / screenWidth > 0.88) {
+			if (e.touches[0].clientX < touchStart) {
+				$horizontalSwipe = (e.touches[0].clientX - touchStart) / screenWidth + 1;
+			}
+		}
+	}
+	function handleTouchEnd(e) {
+		if ($horizontalSwipe < 0.6 && $horizontalSwipe > 0.1) {
+			console.log($horizontalSwipe);
+			$addSpellsMenuOpen = false;
+			touchStart = 0;
+			$horizontalSwipe = 0;
+			input.blur();
+		} else {
+			touchStart = 0;
+			$horizontalSwipe = 0;
+		}
+	}
 </script>
 
 <div
 	class:open={$addSpellsMenuOpen}
 	class="ui-add_spells_menu"
 	style="height: {$visualViewport.height}px"
+	on:touchmove={(e) => handleTouchMove(e)}
+	on:touchstart={(e) => handleTouchStart(e)}
+	on:touchend={(e) => handleTouchEnd(e)}
+	bind:clientWidth={screenWidth}
 >
 	<SafeViewPadding nooverflow side="bottom">
 		<div class="inner">
@@ -42,9 +80,9 @@
 				<SearchField
 					bind:field={input}
 					placeholder="Search spells..."
-					on:blur={() => handleBlur()}
 					bind:value={query}
-					showclose
+					on:blur={() => (blur = true)}
+					on:focus={() => (blur = false)}
 				/>
 				<!-- <button class="close" on:click={() => ($addSpellsMenuOpen = false)}>
 					<i class="ri-close-line" />
@@ -63,6 +101,16 @@
 			</div>
 		</div>
 	</SafeViewPadding>
+	{#if blur || !query}
+		<div in:slide class="close_panel">
+			<Button
+				on:click={() => ($addSpellsMenuOpen = false)}
+				icon="ri-arrow-right-s-line"
+				text="Back"
+				type="outline"
+			/>
+		</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -102,10 +150,12 @@
 			width: 100%;
 			margin-top: max(1rem, var(--safe-area-inset-top));
 			pointer-events: auto;
-			height: 100%;
+			height: calc(100% - 1rem);
 			padding: 0 1rem;
 			overflow: hidden;
-
+			display: flex;
+			flex-direction: column;
+			position: relative;
 			* {
 				pointer-events: auto;
 			}
@@ -152,6 +202,15 @@
 					overflow-y: auto;
 				}
 			}
+		}
+		.close_panel {
+			text-align: center;
+			position: fixed;
+			width: 100%;
+			// height
+			left: 0;
+			right: 0;
+			bottom: 2rem;
 		}
 	}
 </style>

@@ -66,7 +66,8 @@
 				<Button
 					text="Open"
 					icon="ri-folder-open-line"
-					type="fill accent"
+					type="fill accent liquid"
+					liquid
 					on:click={() => {
 						openSpellbook($lookupBookId);
 					}}

@@ -92,7 +92,7 @@
 						</div>
 					</div>
 					<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
-						{#if $spellList.includes(data.id)}
+						{#if JSON.stringify($spellList).includes(data.id)}
 							<Button
 								text="Remove spell"
 								icon="ri-close-line"

@@ -6,10 +6,15 @@
 	export let icon = '';
 	export let right = false;
 	export let left = false;
+	export let liquid = false;
 	export let invisible = false;
 	export let disabled = false;
 	let buttonWidth, buttonHeight;
 	export let loading = false;
+	import liquidVideo from '$lib/liquid-bg.mp4';
+	import liquidAccent from '$lib/liquid-accent.mp4';
+	import { fade } from 'svelte/transition';
+	import { quickSearchPanelOpen } from '../stores';
 </script>
 
 <button
@@ -22,8 +27,10 @@
 	class:invisible
 	class:disabled
 	class:left
+	class:liquid
 	class:notext={!text}
 	class:loading
+	class:nooverflow={$quickSearchPanelOpen}
 	style={loading ? 'width:' + buttonWidth + 'px; height:' + buttonHeight + 'px' : ''}
 >
 	{#if loading === true}
@@ -34,8 +41,15 @@
 		{/if}
 		{text}
 		{#if icon && right}
-			<i class={icon} />
+			<i class={iconfill ? icon.replace('line', 'fill') : icon} />
 		{/if}
+	{/if}
+	{#if liquid}
+		<div class="video">
+			<video width="100%" height="100%" in:fade={{ duration: 300 }} playsinline autoplay muted loop>
+				<source src={liquidAccent} id="video" type="video/mp4" />
+			</video>
+		</div>
 	{/if}
 </button>
 
@@ -72,15 +86,32 @@
 		}
 		&:first-child {
 			border-radius: var(--large-radius) 0 0 var(--large-radius);
+			.video {
+				border-radius: var(--large-radius) 0 0 var(--large-radius);
+			}
 		}
 		&:last-child {
 			border-radius: 0 var(--large-radius) var(--large-radius) 0;
+			.video {
+				border-radius: 0 var(--large-radius) var(--large-radius) 0;
+			}
 		}
 		&:not(:only-child, :first-child, :last-child) {
 			border-radius: 0;
+			.video {
+				border-radius: 0;
+			}
 		}
 		&:only-child {
 			border-radius: var(--large-radius);
+			.video {
+				border-radius: var(--large-radius);
+				&:after,
+				&:before,
+				video {
+					border-radius: var(--large-radius);
+				}
+			}
 		}
 		i {
 			vertical-align: -4px;
@@ -165,6 +196,12 @@
 			background-color: var(--purple);
 			color: var(--onbackground);
 		}
+		&.nude {
+			background-color: transparent;
+			padding: 0.8rem;
+			min-height: 0;
+			color: var(--transparent);
+		}
 		&.translucent {
 			background-color: var(--moretranslucent);
 			color: var(--onbackgroundtranslucent);
@@ -207,12 +244,47 @@
 			width: 100%;
 		}
 		&.notext {
-			min-width: 0;
+			min-width: 0 !important;
 			display: inline-flex;
 			justify-content: center;
 			align-items: center;
+			padding: 0;
 			i {
 				margin: 0;
+			}
+		}
+		&.nooverflow {
+			overflow: hidden;
+		}
+		&.liquid {
+			background-color: transparent;
+
+			z-index: 3;
+			.video {
+				z-index: -1;
+				position: absolute;
+				left: -4px;
+				top: -4px;
+				bottom: -2px;
+				right: -2px;
+				width: calc(100% + 6px);
+				height: calc(100% + 6px);
+				overflow: hidden;
+				background-color: var(--accent);
+				video {
+					position: absolute;
+					width: 200%;
+					height: 120%;
+					left: -50%;
+					top: 0;
+					z-index: 1;
+					object-fit: cover;
+					// transform: rotate(45deg);
+					// filter: contrast(1.2) brightness(.8);
+					// mix-blend-mode: luminosity;
+					// filter: brightness(.7);
+					// opacity: .6;
+				}
 			}
 		}
 	}

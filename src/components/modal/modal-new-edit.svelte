@@ -11,15 +11,19 @@
 	import Button from '../button.svelte';
 	import Tag from '../tag.svelte';
 	import WordInput from '../wordInput.svelte';
-	let bookClass, bookName, bookColor, bookLevel, bookIcon, bookDateCreated;
+	let bookClass, bookName, bookColor, bookLevel, bookIcon, bookDateCreated, bookPublished;
+	let bookList = [];
 	let bookTags = [];
+	console.log($bookToEdit)
 	if ($bookToEdit) {
 		$bookToEdit.class ? (bookClass = $bookToEdit.class) : '';
 		$bookToEdit.color ? (bookColor = $bookToEdit.color) : '';
 		$bookToEdit.level ? (bookLevel = $bookToEdit.level) : '';
+		$bookToEdit.published ? (bookPublished = $bookToEdit.published) : '';
 		$bookToEdit.icon ? (bookIcon = $bookToEdit.icon) : '';
 		$bookToEdit.tags ? (bookTags = $bookToEdit.tags) : '';
 		$bookToEdit.name ? (bookName = $bookToEdit.name) : '';
+		$bookToEdit.list ? (bookList = $bookToEdit.list) : [];
 		$bookToEdit.date_created ? (bookDateCreated = $bookToEdit.date_created) : '';
 	}
 
@@ -178,12 +182,12 @@
 					icon: bookIcon,
 					color: bookColor,
 					level: bookLevel,
-					published: false,
+					published: bookPublished ? bookPublished : false,
 					user: $user.username,
 					user_id: $user.id,
 					date_created: bookDateCreated ? bookDateCreated : Date.now(),
 					date_edited: Date.now(),
-					list: []
+					list: bookList.length ? bookList : []
 				};
 				$localUserLibrary = $localUserLibrary
 				$modalCall = '';
