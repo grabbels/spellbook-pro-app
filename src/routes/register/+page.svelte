@@ -27,13 +27,19 @@
 					};
 
 					const record = await pb.collection('users').create(data);
+					const usernameData = {
+						user_id: record.id,
+						username: nickname
+					};
+					const usernameRecord = await pb.collection('usernames').create(usernameData);
 
 					// (optional) send an email verification request
 					await pb.collection('users').requestVerification(email);
 					if (record) {
-						$notification = 'Registration succesful! Please check your email to confirm your account creation to get started.#info'
+						$notification =
+							'Registration succesful! Please check your email to confirm your account creation to get started.#info';
 						loadingRegister = false;
-						goto('/onboarding')
+						goto('/onboarding');
 					}
 				} catch (error) {
 					console.log(error.data.data);
@@ -51,8 +57,7 @@
 							$notification = 'Password length must be between 7 and 72 characters#error';
 						}
 						loadingRegister = false;
-					}
-					else {
+					} else {
 						$notification = 'An unknown error occured#error';
 						loadingRegister = false;
 					}

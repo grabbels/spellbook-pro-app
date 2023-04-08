@@ -11,8 +11,7 @@
 	export let disabled = false;
 	let buttonWidth, buttonHeight;
 	export let loading = false;
-	import liquidVideo from '$lib/liquid-bg.mp4';
-	import liquidAccent from '$lib/liquid-accent.mp4';
+	import liquidGif from '$lib/liquid-greyscale.gif';
 	import { fade } from 'svelte/transition';
 	import { quickSearchPanelOpen } from '../stores';
 </script>
@@ -46,9 +45,7 @@
 	{/if}
 	{#if liquid}
 		<div class="video">
-			<video width="100%" height="100%" in:fade={{ duration: 300 }} playsinline autoplay muted loop>
-				<source src={liquidAccent} id="video" type="video/mp4" />
-			</video>
+			<img src={liquidGif} alt="">
 		</div>
 	{/if}
 </button>
@@ -152,6 +149,9 @@
 		&.accent {
 			background-color: var(--accent);
 			color: var(--onforeground);
+			.video  {
+				background-color: var(--accent);
+			}
 			@media (hover: hover) {
 				&:hover {
 					filter: drop-shadow(0 0 5px rgba(var(--accentrgb), 0.8));
@@ -161,6 +161,9 @@
 		&.blue {
 			background-color: var(--lightblue);
 			color: var(--onforeground);
+			.video  {
+				background-color: var(--lightblue);
+			}
 			@media (hover: hover) {
 				&:hover {
 					filter: drop-shadow(0 0 5px rgba(var(--accentrgb), 0.8));
@@ -281,15 +284,18 @@
 				width: calc(100% + 6px);
 				height: calc(100% + 6px);
 				overflow: hidden;
-				background-color: var(--accent);
-				video {
+				
+				img {
 					position: absolute;
-					width: 200%;
-					height: 120%;
-					left: -50%;
 					top: 0;
-					z-index: 1;
+					left: 0;
+					height: 100%;
+					width: 100%;
 					object-fit: cover;
+					z-index: 1;
+					mix-blend-mode: soft-light;
+							filter: contrast(1.3);
+
 					// transform: rotate(45deg);
 					// filter: contrast(1.2) brightness(.8);
 					// mix-blend-mode: luminosity;

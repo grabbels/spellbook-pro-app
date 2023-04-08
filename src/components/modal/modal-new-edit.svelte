@@ -144,7 +144,7 @@
 		'emotion-sad'
 	];
 
-	let words = ['awesome', 'epic', 'evil', 'sorcerer', 'wizard', 'bbeg', 'npc'];
+	let words = ['Awesome', 'Epic', 'Evil', 'Sorcerer', 'Wizard', 'Bbeg', 'Npc'];
 	let classes = [
 		'Artificer',
 		'Barbarian',

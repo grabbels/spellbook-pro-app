@@ -89,8 +89,6 @@
 
 <FuncSync />
 <div
-	out:fly={{ duration: 300, y: 20 }}
-	in:fly={{ duration: 300, y: 20, delay: 300 }}
 	class="main_content {$view}"
 	class:right={$addSpellsMenuOpen}
 	on:scroll={(e) => {
@@ -105,7 +103,7 @@
 >
 	{#key $view}
 		<div
-			in:fade={{ duration: 200 }}
+			
 			bind:clientWidth={screenWidth}
 			class="page {$view}"
 			on:touchmove={(e) => handleTouchMove(e)}

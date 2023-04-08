@@ -13,7 +13,10 @@
 		zoomOutModifier,
 		filterPanelOpen,
 		spellList,
-		filters
+		filters,
+
+		browseQuery
+
 	} from '../../stores';
 	import { activeOpenBookId, localUserLibrary } from '../../stores-persist';
 	import Button from '../button.svelte';
@@ -101,6 +104,8 @@
 					/>
 				{:else if $view === 'library'}
 					<SearchField placeholder="Search spellbooks..." bind:value={$spellbookQuery} right />
+				{:else if $view === 'browse'}
+					<SearchField placeholder="Search spellbooks by creator, class..." bind:value={$browseQuery} />
 				{/if}
 				{#if $quickSearchPanelOpen}
 					<button

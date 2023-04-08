@@ -5,7 +5,9 @@
 	export let label;
 </script>
 
-<div class="pill {type}"><i class={type.includes('discreet') ? icon.replace('line', 'line') : icon} /><span>{text}</span></div>
+<div class="pill {type}">
+	<i class={type.includes('discreet') ? icon.replace('line', 'line') : icon} /><span>{text}</span>
+</div>
 
 <style lang="scss">
 	.pill {
@@ -48,7 +50,8 @@
 				font-size: 1rem;
 			}
 		}
-		&.outline, &.discreet {
+		&.outline,
+		&.discreet {
 			background-color: transparent;
 			border-width: 2px;
 			&:nth-child(1) {
@@ -80,10 +83,18 @@
 					color: var(--translucent);
 				}
 			}
-            &.discreet {
-                border-width: 0;
-                padding: 0 .1rem 0;
-            }
+			&.discreet {
+				border-width: 0;
+				padding: 0 0.1rem 0;
+			}
+		}
+		&.neutral {
+			background-color: var(--translucent);
+			color: var(--onbackground);
+			border-color: transparent;
+			i {
+				color: var(--onbackground);
+			}
 		}
 		&.green {
 			background-color: var(--lightgreen);

@@ -8,11 +8,14 @@
 	let castingtimeFilters = [];
 	let rangeFilters = [];
 	$: $spellList, gatherFilters();
+	$: console.log(castingtimeFilters)
 
 	function gatherFilters() {
 		for (let i = 0; i < $spellList.length; i++) {
 			if ($spellList[i].save) {
-				!saveFilters.includes($spellList[i].save) ? saveFilters.push($spellList[i].save) : '';
+				if (!saveFilters.includes($spellList[i].save)) {
+					saveFilters = [...saveFilters, $spellList[i].save]
+				}
 			}
 			if (
 				$spellList[i].casting_time.toLowerCase().includes('action') &&

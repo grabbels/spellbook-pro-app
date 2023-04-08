@@ -63,6 +63,15 @@
 				$notification = 'Nickname succesfully changed!#positive';
 				$user.username = record.username;
 				nickname = record.username;
+
+				const resultList = await pb.collection('usernames').getFirstListItem(`user_id="${$user.id}"`);
+				
+				let id = resultList.items[0].id;
+				console.log(id)
+				const data = {
+					username: nickname
+				};
+				const nicknameUpdate = await pb.collection('usernames').update(id, data);
 			}
 		} catch (error) {
 			loadingNickname = false;
@@ -92,7 +101,7 @@
 				$notification = 'Uh oh, Something went wrong.#error';
 			}
 		} else {
-			$notification = 'Please fill in a valid email address#alert;'
+			$notification = 'Please fill in a valid email address#alert;';
 		}
 	}
 </script>
@@ -337,7 +346,9 @@
 								<SyncStatus large />
 								{#key $lastSyncTry}
 									<p in:fade>
-										Last sync: {$lastSyncTry == 0 ? 'none' : new Date($lastSyncTry).toUTCString().replace('GMT', 'UTC')}
+										Last sync: {$lastSyncTry == 0
+											? 'none'
+											: new Date($lastSyncTry).toUTCString().replace('GMT', 'UTC')}
 									</p>
 								{/key}
 								<div class="buttons">
@@ -348,7 +359,9 @@
 										on:click={() => ($manualSync = true)}
 									/>
 								</div>
-								<p class="small" style="opacity: .5; margin-top: 3rem">Debugging checksum: {$localLastSyncTime}</p>
+								<p class="small" style="opacity: .5; margin-top: 3rem">
+									Debugging checksum: {$localLastSyncTime}
+								</p>
 							</div>
 						</div>
 					</div>
@@ -361,10 +374,30 @@
 							<h3>settings</h3>
 							Donate
 						</h2>
-						<p>Hi there! I'm Sem, and I made the Spellbook Pro app by myself. The idea was born when I grew more and more frustrated by how when spellcasters are involved, D&D fights drag on for ages for all the wrong reasons. And that's not on the players, but on how much information goes into playing a spellcaster. I started tinkering en before long Spellbook Pro was a reality!</p>
-						<p>From the humble beginnings to the more serious later phase of releasing this app, I always knew I wanted to make this app free to use. I learn(ed) a lot while developing this platform and that's enough for me. <br><strong>Would you like to help me out anyway by providing me with a hot cup of coffee? Feel free to donate any amount you like, thank you!</strong></p>
-						<div style="margin-top: 2rem"><Button text="Donate" icon="ri-heart-fill" type="fill accent"/></div>
-						<p style="margin-top: 1rem">Curious what else I make? Visit <a style="color:var(--onbackground)" href="https://semhak.com">my website</a>!</p>
+						<p>
+							Hi there! I'm Sem, and I made the Spellbook Pro app by myself. The idea was born when
+							I grew more and more frustrated by how when spellcasters are involved, D&D fights drag
+							on for ages for all the wrong reasons. And that's not on the players, but on how much
+							information goes into playing a spellcaster. I started tinkering en before long
+							Spellbook Pro was a reality!
+						</p>
+						<p>
+							From the humble beginnings to the more serious later phase of releasing this app, I
+							always knew I wanted to make this app free to use. I learn(ed) a lot while developing
+							this platform and that's enough for me. <br /><strong
+								>Would you like to help me out anyway by providing me with a hot cup of coffee? Feel
+								free to donate any amount you like, thank you!</strong
+							>
+						</p>
+						<div style="margin-top: 2rem">
+							<Button text="Donate" icon="ri-heart-fill" type="fill accent" />
+						</div>
+						<p style="margin-top: 1rem">
+							Curious what else I make? Visit <a
+								style="color:var(--onbackground)"
+								href="https://semhak.com">my website</a
+							>!
+						</p>
 					</div>
 				</div>
 			{/if}

@@ -1,7 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import { openSpellbook } from '../../functions';
-	import { bookToEdit, confirm, lookupBookId, modalCall } from '../../stores';
+	import { bookToEdit, confirm, lookupBookId, lookupUserId, modalCall } from '../../stores';
 	import {
 		localUserFavoriteBooks,
 		localUserLibrary,
@@ -16,6 +16,8 @@
 	import PocketBase from 'pocketbase';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	let spellbook;
+	let raw;
+	let username;
 	let sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
 
 	if ($localUserLibrary[$lookupBookId]) {
@@ -30,6 +32,12 @@
 			spellbook = record;
 			if (record) {
 				spellbook = record.book;
+				raw = record;
+				let userId = record.user_id;
+				const usernameRecord = await pb
+					.collection('usernames')
+					.getFirstListItem(`user_id="${userId}"`);
+				username = usernameRecord.username;
 			}
 		} catch (error) {
 			console.log(error.data);
@@ -69,11 +77,19 @@
 </script>
 
 {#if spellbook}
-	<div in:fade={{ duration: 200 }}>
+	<div in:fade={{ duration: 300 }}>
 		<div class="title">
-			<i class="ri-bookmark-fill" style="--bookcolor: {spellbook.color}; color: var(--bookcolor)" />
+			<i
+				class="ri-{spellbook.icon}-fill"
+				style="--bookcolor: {spellbook.color}; color: var(--bookcolor)"
+			/>
 			<h2>{spellbook.name.toString().replaceAll(',', ' ')}</h2>
 		</div>
+		{#if !$lookupBookId.includes($user.id)}
+			<div class="username" style="height: 34px">
+				{#if username}<p in:fade={{duration: 200}}>Made by <strong><button class="href" on:click={()=>{$modalCall = 'user'; $lookupUserId = spellbook.user_id}}>{username}</button></strong></p>{/if}
+			</div>
+		{/if}
 		<div class="pills">
 			<Pill
 				type="fill"
@@ -82,6 +98,10 @@
 				label="Character level"
 			/>
 			<Pill type="fill" text={spellbook.class} icon="ri-contacts-line" label="Character level" />
+			{#if raw}
+				<Pill text={raw.favorites} type="large bold red" icon="ri-heart-fill" />
+				<Pill text={raw.views} type="large bold neutral" icon="ri-eye-fill" />
+			{/if}
 		</div>
 		<div class="tags">
 			{#each spellbook.tags as tag}
@@ -104,7 +124,16 @@
 				</div>
 			{:else}
 				<div>
-					<Button text="View" icon="ri-eye-line" type="fill blue" on:click={() => {}} />
+					<Button
+						text="View"
+						liquid
+						icon="ri-eye-line"
+						type="fill blue liquid"
+						on:click={() => {}}
+					/>
+				</div>
+				<div>
+					<Button text="Import" icon="ri-download-line" type="fill accent" on:click={() => {}} />
 				</div>
 				{#key $localUserFavoriteBooks}
 					{#if $localUserFavoriteBooks.includes($lookupBookId)}
@@ -212,6 +241,7 @@
 				</div>
 			{/if}
 		</div>
+
 		<div class="spells">
 			{#each sortedSpellsList as list, i}
 				{#if list.length > 0}

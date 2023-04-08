@@ -7,6 +7,7 @@
 		localLastSyncTime,
 		localPendingChanges,
 		localPreviousLibrary,
+		localUserFavoriteBooks,
 		localUserLibrary,
 		openBooksIdsArray,
 		spells,
@@ -44,12 +45,14 @@
 	if (!Object.keys($localUserLibrary).length && $openBooksIdsArray.length) {
 		$openBooksIdsArray = [];
 	}
-	// console.log()
 	for (let i = 0; i < $openBooksIdsArray.length; i++) {
 		if (!JSON.stringify($localUserLibrary).includes($openBooksIdsArray[i])) {
 			$openBooksIdsArray.splice(i, 1);
 			$openBooksIdsArray = $openBooksIdsArray;
 		}
+	}
+	if ($localUserFavoriteBooks.length >= 0) {
+		$localUserFavoriteBooks = []
 	}
 
 	import { onMount } from 'svelte';
