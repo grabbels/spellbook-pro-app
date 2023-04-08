@@ -21,7 +21,8 @@
 						emailVisibility: false,
 						password: password,
 						passwordConfirm: passwordConfirm,
-						library: [],
+						library: {},
+						notes: {},
 						last_sync_time: 0
 					};
 

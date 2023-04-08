@@ -2,7 +2,14 @@
 	import { addSpellsMenuOpen, confirm, modalCall, noScroll } from '../stores';
 	import { goto } from '$app/navigation';
 	import { allowedTags } from '../tags';
-	import { lastSyncTry, localLastSyncTime, localUserLibrary, openBooksIdsArray, spells, user } from '../stores-persist';
+	import {
+		lastSyncTry,
+		localLastSyncTime,
+		localUserLibrary,
+		openBooksIdsArray,
+		spells,
+		user
+	} from '../stores-persist';
 	import PocketBase from 'pocketbase';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	import { get } from 'svelte/store';
@@ -40,14 +47,20 @@
 	onMount(() => {
 		// sync();
 	});
-
-	
+	// test()
+	// async function test() {
+	// 	const records = await pb.collection('spellbooks').getFullList({
+	// 		filter: `user_id="${$user.id}"`
+	// 	});
+	// 	console.log(records)
+	// }
+	// console.log(JSON.stringify($localUserLibrary).includes('qifyezl9wou7dmh_1680335337728'))
 
 	// console.log(Object.keys($localUserLibrary).length)
 </script>
 
 <div>
-<!-- <button on:click={()=>{
+	<!-- <button on:click={()=>{
 	$localUserLibrary = {}
 	$lastSyncTry = {}
 	$localLastSyncTime = 0

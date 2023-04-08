@@ -424,6 +424,7 @@
 		--huge-radius: 24px;
 		--large-radius: 16px;
 		--medium-radius: 12px;
+		--small-radius: 6px;
 	}
 
 	* {

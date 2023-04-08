@@ -1,12 +1,21 @@
 <script>
 	import { fly } from 'svelte/transition';
 	import { manualSync, online, syncStatus } from '../../stores';
-	import { localLastSyncTime, localUserLibrary, user, lastSyncTry } from '../../stores-persist';
+	import {
+		localLastSyncTime,
+		localUserLibrary,
+		user,
+		lastSyncTry,
+		localUserNotes,
+
+		localUserFavoriteBooks
+
+	} from '../../stores-persist';
 	import PocketBase from 'pocketbase';
 	import deepDiff from 'deep-diff';
 	import { onMount } from 'svelte';
 	const pb = new PocketBase('https://db.spellbook.pro');
-
+	console.log($localUserNotes);
 	let syncDoneTimeout;
 
 	$: if ($syncStatus === 'done' || $syncStatus === 'error') {
@@ -20,6 +29,8 @@
 		$manualSync = null;
 	}
 	$: $localUserLibrary, triggerPush();
+	$: $localUserNotes, triggerPush();
+	$: $localUserFavoriteBooks, triggerPush();
 
 	let syncTimeout;
 	function triggerPush() {
@@ -30,7 +41,7 @@
 				sync();
 			}, 6000);
 		} else {
-			console.log('offline')
+			console.log('offline');
 		}
 	}
 
@@ -42,14 +53,16 @@
 			if (record) {
 				let remoteState = record;
 				if (
-					!$localLastSyncTime ||
-					($localLastSyncTime == 0 && !Object.keys($localUserLibrary).length)
+					$localLastSyncTime == 0 && !Object.keys($localUserLibrary).length && !Object.keys($localUserNotes).length && $localUserFavoriteBooks.length
 				) {
 					//this device has not synced before and the local library is empty
 					//check for remote library and pull if present
-					if (Object.keys(remoteState.library).length) {
+					
+					if (Object.keys(remoteState.library).length || Object.keys(remoteState.notes).length) {
 						$localUserLibrary = remoteState.library;
+						$localUserNotes = remoteState.notes;
 						$localLastSyncTime = remoteState.last_sync_time;
+						$localUserFavoriteBooks = remoteState.favorite_books;
 						$lastSyncTry = Date.now();
 						setTimeout(() => {
 							$syncStatus = 'done';
@@ -64,12 +77,17 @@
 					//remote state has been pushed from another device, which means it is newer than local, pull
 					// console.log('sync, pull remote to local.');
 					$localUserLibrary = remoteState.library;
+					$localUserNotes = remoteState.notes;
 					$localLastSyncTime = remoteState.last_sync_time;
+					$localUserFavoriteBooks = remoteState.favorite_books;
 					$lastSyncTry = Date.now();
 					setTimeout(() => {
 						$syncStatus = 'done';
 					}, 1000);
-				} else if (deepDiff(remoteState.library, $localUserLibrary) == undefined) {
+				} else if (
+					deepDiff(remoteState.library, $localUserLibrary) == undefined &&
+					deepDiff(remoteState.notes, $localUserNotes) == undefined && deepDiff(remoteState.favorite_books, $localUserFavoriteBooks) == undefined
+				) {
 					//remote state is same as local state, do nothing.
 					// console.log('sync, no action neccessary.');
 					$localLastSyncTime = remoteState.last_sync_time;
@@ -79,10 +97,13 @@
 					}, 1000);
 				} else {
 					// console.log('sync, push local to remote.');
+					
 					let syncTime = Date.now();
 					const data = {
 						library: $localUserLibrary,
-						last_sync_time: syncTime
+						notes: $localUserNotes,
+						favorite_books: $localUserFavoriteBooks,
+						last_sync_time: syncTime	
 					};
 					try {
 						const record = await pb.collection('users').update($user.id, data);
@@ -98,6 +119,39 @@
 						setTimeout(() => {
 							$syncStatus = 'error';
 						}, 1000);
+					}
+					for (const key in $localUserLibrary) {
+						//update global books list
+						const data = {
+							user_id: $user.id,
+							book_id: key,
+							book: $localUserLibrary[key],
+							public: $localUserLibrary[key].published
+						};
+						try {
+							const record = await pb
+								.collection('spellbooks')
+								.getFirstListItem('book_id="' + key + '"');
+							if (record) {
+								let bookId = record.id;
+								const result = await pb.collection('spellbooks').update(bookId, data);
+							}
+						} catch (error) {
+							const record = await pb.collection('spellbooks').create(data);
+							// console.log(error.data);
+						}
+					}
+					//remove books from global books list if removed from localuserlibrary
+					const allUserSpellbooksInCollection = await pb.collection('spellbooks').getFullList({
+						filter: `user_id="${$user.id}"`
+					});
+					if (allUserSpellbooksInCollection) {
+						let userLibraryStringified = JSON.stringify($localUserLibrary);
+						for (let i = 0; i < allUserSpellbooksInCollection.length; i++) {
+							if (!userLibraryStringified.includes(allUserSpellbooksInCollection[i].book_id)) {
+								await pb.collection('spellbooks').delete(allUserSpellbooksInCollection[i].id);
+							}
+						}
 					}
 				}
 			}

@@ -184,6 +184,10 @@
 			background-color: var(--darkblue);
 			color: var(--onbackground);
 		}
+		&.darkgreen {
+			background-color: var(--darkgreen);
+			color: var(--onbackground);
+		}
 		&.card {
 			background-color: var(--cardbg);
 			color: var(--onbackground);
@@ -218,8 +222,15 @@
 				border-color: var(--lightblue);
 				// color: var(--lightblue)
 			}
+			&.darkgreen {
+				border-color: var(--darkgreen);
+				// color: var(--onbackground);
+			}
 			&.red {
 				border-color: var(--red);
+			}
+			&.yellow {
+				border-color: var(--yellow);
 			}
 			&.translucent {
 				color: var(--onbackground);

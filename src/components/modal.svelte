@@ -176,8 +176,12 @@
 				overflow-y: auto;
 				border-radius: 0;
 				.inner {
+					height: 100%;
 					.modal_content {
 						padding-top: calc(var(--safe-area-inset-top) + 1.5rem);
+						height: 100%;
+						// height: 100%;
+						position: relative;
 					}
 				}
 			}

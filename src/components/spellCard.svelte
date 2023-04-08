@@ -4,6 +4,7 @@
 	import {
 		activeOpenBookId,
 		localUserLibrary,
+		localUserNotes,
 		localUserPreferences,
 		openBooksIdsArray
 	} from '../stores-persist';
@@ -13,9 +14,28 @@
 	export let type;
 	export let data;
 	export let id = '';
-
+	let editNote = false;
+	let noteText, noteTextArea, scrollHeight;
 	let fadeDuration = 0;
 
+	function handleNote() {
+		editNote = true;
+		noteText =
+			$localUserNotes.spells && $localUserNotes.spells[data.id]
+				? $localUserNotes.spells[data.id]
+				: '';
+		setTimeout(() => {
+			noteTextArea.focus();
+		}, 1);
+	}
+	function saveNote() {
+		!$localUserNotes.spells ? ($localUserNotes.spells = {}) : '';
+		$localUserNotes.spells[data.id] = noteText;
+		editNote = false;
+	}
+	function cancelNote() {
+		editNote = false;
+	}
 	// type === 'list' || type === 'small' ? (fadeDuration = 0) : '';
 </script>
 
@@ -36,6 +56,9 @@
 		}}
 	>
 		<div class="card_inner">
+			<!-- {#if type == 'list' && $localUserLibrary.notes && $localUserLibrary.notes[data.id]}
+				<i class="has_note ri-sticky-note-fill" />
+			{/if} -->
 			<div class="block title">
 				<h2>
 					<div class="icon">
@@ -91,12 +114,59 @@
 							{@html data.description}
 						</div>
 					</div>
+					{#if editNote === true || ($localUserNotes.spells && $localUserNotes.spells[data.id])}
+						<div class="block note" class:edit={editNote}>
+							<h4><i class="ri-sticky-note-line" /> Note</h4>
+							{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
+								<p>{$localUserNotes.spells[data.id]}</p>
+							{:else if editNote === true}
+								<textarea
+									maxlength="500"
+									bind:this={noteTextArea}
+									bind:value={noteText}
+									name="note"
+									id="note"
+									on:input={() => (scrollHeight = noteTextArea.scrollHeight)}
+									style="height: {scrollHeight}px"
+								/>
+							{/if}
+						</div>
+					{/if}
 					<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
-						{#if JSON.stringify($spellList).includes(data.id)}
+						{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
+							<Button
+								text="Edit note"
+								icon="ri-edit-2-line"
+								type="outline darkgreen"
+								on:click={() => handleNote()}
+							/>
+						{:else if editNote === true}
+							<Button
+								text="Save note"
+								icon="ri-save-line"
+								type="fill darkgreen"
+								on:click={() => saveNote()}
+							/>
+						{:else}
+							<Button
+								text="Note"
+								icon="ri-sticky-note-line"
+								type="outline darkgreen"
+								on:click={() => handleNote()}
+							/>
+						{/if}
+						{#if editNote === true}
+							<Button
+								text="Cancel"
+								icon="ri-close-line"
+								type="outline"
+								on:click={() => cancelNote()}
+							/>
+						{:else if JSON.stringify($spellList).includes(data.id)}
 							<Button
 								text="Remove spell"
 								icon="ri-close-line"
-								type="outline translucent"
+								type="outline red"
 								on:click={() => {
 									$localUserLibrary[$activeOpenBookId].list = $localUserLibrary[
 										$activeOpenBookId
@@ -108,9 +178,9 @@
 							<Button
 								text="Add to spellbook"
 								icon="ri-add-line"
-								type="fill"
+								type="outline accent"
 								on:click={() => {
-									$addSpell = data.id 
+									$addSpell = data.id;
 								}}
 							/>
 						{/if}
@@ -124,11 +194,49 @@
 <style lang="scss">
 	.card {
 		text-align: left;
+		.has_note {
+			position: absolute;
+			top: 1rem;
+			right: 1rem;
+			color: var(--darkgreen);
+			opacity: .5;
+		}
 		.block.pills {
 			margin-bottom: 0.3rem;
 			display: flex;
 			gap: 0.3rem;
 			flex-wrap: wrap;
+		}
+		.block.note {
+			padding: 1rem;
+			// background-color: rgb(62, 56, 51);
+			background-color: var(--darkgreen);
+			box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+			border-radius: var(--large-radius);
+			margin-top: 2rem;
+			pointer-events: auto;
+			// color: var(--);
+			h4 {
+				margin-left: -2px;
+				margin-top: 0;
+				i {
+					vertical-align: -5px;
+					font-size: 1.4rem;
+				}
+			}
+			p {
+				margin-bottom: 0.2rem;
+				white-space: pre-wrap;
+			}
+			textarea {
+				resize: none;
+				background-color: var(--moretranslucent);
+				border: none;
+				color: var(--onbackground);
+				min-height: 100px;
+				max-height: 200px;
+			}
+			// border-radius: var(--small-radius);
 		}
 		&.small {
 			width: 100%;

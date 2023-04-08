@@ -18,6 +18,13 @@
 	let text = $confirm[0];
 	console.log($confirm);
 
+	async function publishSpellbook(spellbook) {
+
+	}
+	async function unpublishSpellbook(spellbook) {
+
+	}
+
 	// let test = [
 	// 	'Are you sure you want to delete all your spellbooks?',
 	// 	{ text: 'DELETE', type: 'type', action: 'confirm' },
@@ -86,9 +93,11 @@
 								goto('/onboarding');
 							} else if (button.action == 'publish-book') {
 								$localUserLibrary[$lookupBookId].published = true
+								publishSpellbook($localUserLibrary[$lookupBookId])
 								$confirm = '';
 							} else if (button.action == 'unpublish-book') {
 								$localUserLibrary[$lookupBookId].published = false
+								unpublishSpellbook($localUserLibrary[$lookupBookId])
 								$confirm = '';
 							}
 						}}

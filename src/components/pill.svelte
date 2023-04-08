@@ -22,6 +22,9 @@
 			font-size: 1.1rem;
 			margin-right: 0.2rem;
 		}
+		&.bold {
+			font-weight: 500;
+		}
 		&:nth-child(1) {
 			background-color: var(--lightgreen);
 			border-color: var(--lightgreen);
@@ -86,12 +89,22 @@
 			background-color: var(--lightgreen);
 			color: var(--onforeground);
 			text-transform: capitalize;
+			border-color: var(--lightgreen);
 			i {
 				color: var(--onforeground);
 			}
 		}
 		&.blue {
 			background-color: var(--lightblue);
+			color: var(--onforeground);
+			border-color: var(--lightblue);
+			i {
+				color: var(--onforeground);
+			}
+		}
+		&.red {
+			background-color: var(--red);
+			border-color: var(--red);
 			color: var(--onforeground);
 			i {
 				color: var(--onforeground);

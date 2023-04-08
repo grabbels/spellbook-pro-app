@@ -14,3 +14,5 @@ export const localUserPreferences = persisted('localUserPreferences', { spellDes
 export const localPendingChanges = persisted('localPendingChanges', {});
 export const lastSyncedLibrary = persisted('lastSyncedLibrary', {});
 export const localPreviousLibrary = persisted('localPreviousLibrary', {});
+export const localUserNotes = persisted('localUserNotes', {});
+export const localUserFavoriteBooks = persisted('localUserFavoriteBooks', []);
