@@ -55,6 +55,14 @@
 			}
 		}}
 	>
+		{#if type === 'list'}
+		<!-- svelte-ignore a11y-click-events-have-key-events -->
+		<div on:click|stopPropagation class="prepared">
+			<!-- svelte-ignore a11y-click-events-have-key-events -->
+			<input id="prepared-{data.id}" type="checkbox">
+			<label on:click|stopPropagation for="prepared-{data.id}"></label>
+		</div>
+		{/if}
 		<div class="card_inner">
 			<!-- {#if type == 'list' && $localUserLibrary.notes && $localUserLibrary.notes[data.id]}
 				<i class="has_note ri-sticky-note-fill" />
@@ -194,6 +202,23 @@
 <style lang="scss">
 	.card {
 		text-align: left;
+		.prepared {
+			position: absolute;
+			top: 1.4rem;
+			right: 1.2rem;
+			input {
+				display: none;
+				&:checked + label {
+					background-color: var(--accent);
+				}
+			}
+			label {
+				height: 17px;
+				width: 17px;
+				border-radius: 50vh;
+				background-color: var(--moretranslucent);
+			}
+		}
 		.has_note {
 			position: absolute;
 			top: 1rem;
