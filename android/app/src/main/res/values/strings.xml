@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Spellbook Pro</string>
+    <string name="title_activity_main">Spellbook Pro</string>
+    <string name="package_name">pro.spellbook.app</string>
+    <string name="custom_url_scheme">pro.spellbook.app</string>
+</resources>
