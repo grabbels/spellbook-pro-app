@@ -23,6 +23,8 @@
 						passwordConfirm: passwordConfirm,
 						library: {},
 						notes: {},
+						favorite_books: {},
+						prepared_spells: {},
 						last_sync_time: 0
 					};
 

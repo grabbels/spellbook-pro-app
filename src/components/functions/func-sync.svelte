@@ -7,9 +7,8 @@
 		user,
 		lastSyncTry,
 		localUserNotes,
-
-		localUserFavoriteBooks
-
+		localUserFavoriteBooks,
+		localUserPreparedSpells
 	} from '../../stores-persist';
 	import PocketBase from 'pocketbase';
 	import deepDiff from 'deep-diff';
@@ -31,6 +30,7 @@
 	$: $localUserLibrary, triggerPush();
 	$: $localUserNotes, triggerPush();
 	$: $localUserFavoriteBooks, triggerPush();
+	$: $localUserPreparedSpells, triggerPush();
 
 	let syncTimeout;
 	function triggerPush() {
@@ -53,16 +53,22 @@
 			if (record) {
 				let remoteState = record;
 				if (
-					$localLastSyncTime == 0 && !Object.keys($localUserLibrary).length && !Object.keys($localUserNotes).length && $localUserFavoriteBooks.length
+					$localLastSyncTime == 0 &&
+					!Object.keys($localUserLibrary).length &&
+					!Object.keys($localUserNotes).length &&
+					$localUserFavoriteBooks.length
 				) {
 					//this device has not synced before and the local library is empty
 					//check for remote library and pull if present
-					
+
 					if (Object.keys(remoteState.library).length || Object.keys(remoteState.notes).length) {
 						$localUserLibrary = remoteState.library;
-						$localUserNotes = remoteState.notes;
+						$localUserNotes = remoteState.notes ? remoteState.notes : {};
 						$localLastSyncTime = remoteState.last_sync_time;
-						$localUserFavoriteBooks = remoteState.favorite_books;
+						$localUserFavoriteBooks = remoteState.favorite_books ? remoteState.favorite_books : [];
+						$localUserPreparedSpells = remoteState.prepared_spells
+							? remoteState.prepared_spells
+							: {};
 						$lastSyncTry = Date.now();
 						setTimeout(() => {
 							$syncStatus = 'done';
@@ -77,16 +83,19 @@
 					//remote state has been pushed from another device, which means it is newer than local, pull
 					// console.log('sync, pull remote to local.');
 					$localUserLibrary = remoteState.library;
-					$localUserNotes = remoteState.notes;
+					$localUserNotes = remoteState.notes ? remoteState.notes : {};
 					$localLastSyncTime = remoteState.last_sync_time;
-					$localUserFavoriteBooks = remoteState.favorite_books;
+					$localUserFavoriteBooks = remoteState.favorite_books ? remoteState.favorite_books : [];
+					$localUserPreparedSpells = remoteState.prepared_spells ? remoteState.prepared_spells : {};
 					$lastSyncTry = Date.now();
 					setTimeout(() => {
 						$syncStatus = 'done';
 					}, 1000);
 				} else if (
 					deepDiff(remoteState.library, $localUserLibrary) == undefined &&
-					deepDiff(remoteState.notes, $localUserNotes) == undefined && deepDiff(remoteState.favorite_books, $localUserFavoriteBooks) == undefined
+					deepDiff(remoteState.notes, $localUserNotes) == undefined &&
+					deepDiff(remoteState.favorite_books, $localUserFavoriteBooks) == undefined &&
+					deepDiff(remoteState.prepared_spells, $localUserPreparedSpells) == undefined
 				) {
 					//remote state is same as local state, do nothing.
 					// console.log('sync, no action neccessary.');
@@ -97,13 +106,14 @@
 					}, 1000);
 				} else {
 					// console.log('sync, push local to remote.');
-					
+
 					let syncTime = Date.now();
 					const data = {
 						library: $localUserLibrary,
 						notes: $localUserNotes,
 						favorite_books: $localUserFavoriteBooks,
-						last_sync_time: syncTime	
+						prepared_spells: $localUserPreparedSpells,
+						last_sync_time: syncTime
 					};
 					try {
 						const record = await pb.collection('users').update($user.id, data);

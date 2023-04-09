@@ -9,6 +9,7 @@
 		localPreviousLibrary,
 		localUserFavoriteBooks,
 		localUserLibrary,
+		localUserPreparedSpells,
 		openBooksIdsArray,
 		spells,
 		unsyncedChanges,
@@ -54,6 +55,9 @@
 	if ($localUserFavoriteBooks.length >= 0) {
 		$localUserFavoriteBooks = []
 	}
+	if (!$localUserPreparedSpells) {
+		$localUserPreparedSpells = {}
+	}
 
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
@@ -97,7 +101,7 @@
 		}
 	}
 
-	if ($spells.length < 1 && $online) {
+	if ($spells.length < 1 && $online && $user) {
 		pullSpells();
 	}
 	async function pullSpells() {
@@ -371,9 +375,7 @@
 			$lookupBookId = '';
 		}
 	}
-	// $: console.log($zoomOutModifier * 0.03)
-	// console.log($view.route.id);
-	// $modalCall = 'login'
+
 </script>
 
 <!-- GLOBAL FUNCTIONS -->

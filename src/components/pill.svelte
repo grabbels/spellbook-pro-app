@@ -51,6 +51,39 @@
 			}
 		}
 		&.outline,
+		&.neutral {
+			background-color: var(--translucent);
+			color: var(--onbackground);
+			border-color: transparent;
+			i {
+				color: var(--onbackground);
+			}
+		}
+		&.green {
+			background-color: var(--lightgreen);
+			color: var(--onforeground);
+			text-transform: capitalize;
+			border-color: var(--lightgreen);
+			i {
+				color: var(--onforeground);
+			}
+		}
+		&.blue {
+			background-color: var(--lightblue);
+			color: var(--onforeground);
+			border-color: var(--lightblue);
+			i {
+				color: var(--onforeground);
+			}
+		}
+		&.red {
+			background-color: var(--red);
+			border-color: var(--red);
+			color: var(--onforeground);
+			i {
+				color: var(--onforeground);
+			}
+		}
 		&.discreet {
 			background-color: transparent;
 			border-width: 2px;
@@ -87,38 +120,23 @@
 				border-width: 0;
 				padding: 0 0.1rem 0;
 			}
-		}
-		&.neutral {
-			background-color: var(--translucent);
-			color: var(--onbackground);
-			border-color: transparent;
-			i {
-				color: var(--onbackground);
+			&.green {
+				color: var(--lightgreen);
+				i {
+					color: var(--lightgreen);
+				}
 			}
-		}
-		&.green {
-			background-color: var(--lightgreen);
-			color: var(--onforeground);
-			text-transform: capitalize;
-			border-color: var(--lightgreen);
-			i {
-				color: var(--onforeground);
+			&.blue {
+				color: var(--lightblue);
+				i {
+					color: var(--lightblue);
+				}
 			}
-		}
-		&.blue {
-			background-color: var(--lightblue);
-			color: var(--onforeground);
-			border-color: var(--lightblue);
-			i {
-				color: var(--onforeground);
-			}
-		}
-		&.red {
-			background-color: var(--red);
-			border-color: var(--red);
-			color: var(--onforeground);
-			i {
-				color: var(--onforeground);
+			&.yellow {
+				color: var(--yellow);
+				i {
+					color: var(--yellow);
+				}
 			}
 		}
 	}

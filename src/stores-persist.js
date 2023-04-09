@@ -16,3 +16,4 @@ export const lastSyncedLibrary = persisted('lastSyncedLibrary', {});
 export const localPreviousLibrary = persisted('localPreviousLibrary', {});
 export const localUserNotes = persisted('localUserNotes', {});
 export const localUserFavoriteBooks = persisted('localUserFavoriteBooks', []);
+export const localUserPreparedSpells = persisted('localUserPreparedSpells', {});

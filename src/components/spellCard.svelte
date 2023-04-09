@@ -6,6 +6,7 @@
 		localUserLibrary,
 		localUserNotes,
 		localUserPreferences,
+		localUserPreparedSpells,
 		openBooksIdsArray
 	} from '../stores-persist';
 	import Button from './button.svelte';
@@ -15,8 +16,68 @@
 	export let data;
 	export let id = '';
 	let editNote = false;
+
 	let noteText, noteTextArea, scrollHeight;
 	let fadeDuration = 0;
+
+	function preparedAddRemove() {
+		if (
+			$localUserPreparedSpells[$activeOpenBookId] &&
+			$localUserPreparedSpells[$activeOpenBookId].includes(data.id)
+		) {
+			$localUserPreparedSpells[$activeOpenBookId].splice(
+				$localUserPreparedSpells[$activeOpenBookId].indexOf(data.id),
+				1
+			);
+			if ($localUserPreparedSpells[$activeOpenBookId].length < 1) {
+				delete $localUserPreparedSpells[$activeOpenBookId];
+			}
+			$localUserPreparedSpells = $localUserPreparedSpells;
+		} else {
+			if (!$localUserPreparedSpells[$activeOpenBookId]) {
+				$localUserPreparedSpells[$activeOpenBookId] = [];
+				$localUserPreparedSpells[$activeOpenBookId] = [
+					...$localUserPreparedSpells[$activeOpenBookId],
+					data.id
+				];
+				$localUserPreparedSpells = $localUserPreparedSpells;
+			} else {
+				$localUserPreparedSpells[$activeOpenBookId] = [
+					...$localUserPreparedSpells[$activeOpenBookId],
+					data.id
+				];
+				$localUserPreparedSpells = $localUserPreparedSpells;
+			}
+		}
+	}
+
+	// $: if (spellPrepared) {
+	// 	if ($localUserPreparedSpells[$activeOpenBookId]) {
+	// 		$localUserPreparedSpells[$activeOpenBookId] = [
+	// 			...$localUserPreparedSpells[$activeOpenBookId],
+	// 			data.id
+	// 		];
+	// 		$localUserPreparedSpells = $localUserPreparedSpells;
+	// 	} else {
+	// 		$localUserPreparedSpells[$activeOpenBookId] = [];
+	// 		$localUserPreparedSpells[$activeOpenBookId] = [
+	// 			...$localUserPreparedSpells[$activeOpenBookId],
+	// 			data.id
+	// 		];
+	// 		$localUserPreparedSpells = $localUserPreparedSpells;
+	// 	}
+	// } else if (
+	// 	$localUserPreparedSpells[$activeOpenBookId] &&
+	// 	$localUserPreparedSpells[$activeOpenBookId].includes(data.id)
+	// ) {
+	// 	$localUserPreparedSpells[$activeOpenBookId].splice(
+	// 		$localUserPreparedSpells[$activeOpenBookId].indexOf(data.id),
+	// 		1
+	// 	);
+	// 	$localUserPreparedSpells = $localUserPreparedSpells;
+	// }
+
+	$: console.log($localUserPreparedSpells);
 
 	function handleNote() {
 		editNote = true;
@@ -55,13 +116,13 @@
 			}
 		}}
 	>
-		{#if type === 'list'}
-		<!-- svelte-ignore a11y-click-events-have-key-events -->
-		<div on:click|stopPropagation class="prepared">
-			<!-- svelte-ignore a11y-click-events-have-key-events -->
-			<input id="prepared-{data.id}" type="checkbox">
-			<label on:click|stopPropagation for="prepared-{data.id}"></label>
-		</div>
+		{#if type === 'list' && data.level > 0}
+			<button
+				on:click|stopPropagation={() => preparedAddRemove()}
+				class:active={$localUserPreparedSpells[$activeOpenBookId] &&
+					$localUserPreparedSpells[$activeOpenBookId].includes(data.id)}
+				class="prepared"
+			/>
 		{/if}
 		<div class="card_inner">
 			<!-- {#if type == 'list' && $localUserLibrary.notes && $localUserLibrary.notes[data.id]}
@@ -206,17 +267,12 @@
 			position: absolute;
 			top: 1.4rem;
 			right: 1.2rem;
-			input {
-				display: none;
-				&:checked + label {
-					background-color: var(--accent);
-				}
-			}
-			label {
-				height: 17px;
-				width: 17px;
-				border-radius: 50vh;
-				background-color: var(--moretranslucent);
+			height: 17px;
+			width: 17px;
+			border-radius: 50vh;
+			background-color: var(--moretranslucent);
+			&.active {
+				background-color: var(--accent);
 			}
 		}
 		.has_note {
@@ -224,7 +280,7 @@
 			top: 1rem;
 			right: 1rem;
 			color: var(--darkgreen);
-			opacity: .5;
+			opacity: 0.5;
 		}
 		.block.pills {
 			margin-bottom: 0.3rem;
@@ -339,6 +395,9 @@
 					border-bottom: 0;
 				}
 			}
+		}
+		&.shadow {
+			box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 		}
 	}
 </style>
