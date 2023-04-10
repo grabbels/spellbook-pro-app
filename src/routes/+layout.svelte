@@ -41,7 +41,7 @@
 		filterPanelOpen,
 		emailConfirmToken
 	} from '../stores';
-
+	window.screen.orientation.lock('portrait');
 	//ERROR/FAULT DETECTION IN LOCAL STORAGE
 	if (!Object.keys($localUserLibrary).length && $openBooksIdsArray.length) {
 		$openBooksIdsArray = [];

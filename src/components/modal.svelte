@@ -46,13 +46,14 @@
 			duration: 0
 		};
 	}
-
+	let modalInner;
+	let scrollY;
 	
 </script>
 
 <div class="container" class:fullscreen={fullScreen} in:transition={modalContainerAnimationArgs} out:transition={modalContainerAnimationArgs}>
 	<!-- <div class="outer" transition:fly={{ y: 15, duration: 250 }}> -->
-	<div class="outer" in:transition={modalOuterAnimationArgs} out:transition={modalOuterAnimationArgs}>
+	<div  class="outer" in:transition={modalOuterAnimationArgs} out:transition={modalOuterAnimationArgs}>
 		{#if $modalCall !== 'login'}
 			<div class="close">
 				<Close
@@ -65,7 +66,7 @@
 			</div>
 		{/if}
 		<div class="inner">
-			<div class="modal_content">
+			<div bind:this={modalInner} on:scroll={(e)=>scrollY = modalInner.scrollTop} class="modal_content">
 				{#if $modalCall === 'spell'}
 					<SpellCard type="embed" data={$lookupSpell} />
 				{/if}
@@ -88,7 +89,7 @@
 					<ModalConfirmEmailChange />
 				{/if}
 				{#if $modalCall === 'tutorial-spellbook'}
-					<ModalTutorialSpellbook/>
+					<ModalTutorialSpellbook scrollY={scrollY}/>
 				{/if}
 			</div>
 		</div>
