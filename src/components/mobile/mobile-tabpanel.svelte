@@ -84,7 +84,10 @@
 								<i class="ri-{$localUserLibrary[openSpellbookId].icon}-fill" />
 							</div>
 							<span>{$localUserLibrary[openSpellbookId].name.toString().replaceAll(',', ' ')}</span>
-							<div class="close"><button><i class="ri-close-line" /></button></div>
+							<div class="close"><button on:click|stopPropagation={()=>{
+								$openBooksIdsArray.splice($openBooksIdsArray.indexOf(openSpellbookId), 1)
+								$openBooksIdsArray = $openBooksIdsArray
+							}}><i class="ri-close-line" /></button></div>
 						</div>
 						<!-- <div class="pills">
 							<Pill

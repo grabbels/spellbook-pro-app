@@ -26,10 +26,10 @@
 				sort: '-' + type
 			});
 			books = resultList.items;
-			setTimeout(() => {
-				totalSlides = slides.length;
-				interval = setInterval(nextSlide, 5000);
-			}, 1 + Math.random() * 1000);
+			// setTimeout(() => {
+			// 	totalSlides = slides.length;
+			// 	interval = setInterval(nextSlide, 5000);
+			// }, 1 + Math.random() * 1000);
 		} catch (error) {
 			console.log(error.data);
 		}
@@ -83,7 +83,7 @@
 		{#each books as book, i}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<li
-				in:fly={{ duration: 800, x: -400}}
+				in:fly={{ duration: 1200, x: -1000}}
 				style="--bookcolor: {book.book.color}"
 				on:click={() => handleClick(book.id)}
 				bind:this={slides[i]}

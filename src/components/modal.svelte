@@ -10,10 +10,19 @@
 	import ModalTerms from './modal/modal-terms.svelte';
 	import ModalChangelog from './modal/modal-changelog.svelte';
 	import ModalConfirmEmailChange from './modal/modal-confirmEmailChange.svelte';
-	import ModalTutorialSpellbook from './modal/modal-tutorial-spellbook.svelte';
+	import ModalTutorialSpellbook from './modal/modal-tutorial-spells.svelte';
+	import ModalWelcome from './modal/modal-welcome.svelte';
+	import ModalTutorialSpellbookScreen from './modal/modal-tutorial-spellbookScreen.svelte';
 
 	let fullScreen = false;
-	let fullscreenModalCalls = ['login', 'spellbook', 'new', 'edit', 'confirm-email-change', 'tutorial-spellbook'];
+	let fullscreenModalCalls = [
+		'login',
+		'spellbook',
+		'new',
+		'edit',
+		'confirm-email-change',
+		'tutorial-spells'
+	];
 	let modalOuterAnimationArgs;
 	let modalContainerAnimationArgs;
 
@@ -48,12 +57,20 @@
 	}
 	let modalInner;
 	let scrollY;
-	
 </script>
 
-<div class="container" class:fullscreen={fullScreen} in:transition={modalContainerAnimationArgs} out:transition={modalContainerAnimationArgs}>
+<div
+	class="container"
+	class:fullscreen={fullScreen}
+	in:transition={modalContainerAnimationArgs}
+	out:transition={modalContainerAnimationArgs}
+>
 	<!-- <div class="outer" transition:fly={{ y: 15, duration: 250 }}> -->
-	<div  class="outer" in:transition={modalOuterAnimationArgs} out:transition={modalOuterAnimationArgs}>
+	<div
+		class="outer"
+		in:transition={modalOuterAnimationArgs}
+		out:transition={modalOuterAnimationArgs}
+	>
 		{#if $modalCall !== 'login'}
 			<div class="close">
 				<Close
@@ -66,9 +83,13 @@
 			</div>
 		{/if}
 		<div class="inner">
-			<div bind:this={modalInner} on:scroll={(e)=>scrollY = modalInner.scrollTop} class="modal_content">
+			<div bind:this={modalInner} class="modal_content">
 				{#if $modalCall === 'spell'}
-					<SpellCard type="embed" data={$lookupSpell} />
+					{#key $lookupSpell}
+						<div in:fly>
+							<SpellCard type="embed" data={$lookupSpell} />
+						</div>
+					{/key}
 				{/if}
 				{#if $modalCall === 'login'}
 					<ModalLogin />
@@ -88,8 +109,14 @@
 				{#if $modalCall === 'confirm-email-change'}
 					<ModalConfirmEmailChange />
 				{/if}
-				{#if $modalCall === 'tutorial-spellbook'}
-					<ModalTutorialSpellbook scrollY={scrollY}/>
+				{#if $modalCall === 'welcome'}
+					<ModalWelcome />
+				{/if}
+				{#if $modalCall === 'tutorial-spells'}
+					<ModalTutorialSpellbook />
+				{/if}
+				{#if $modalCall === 'tutorial-spellbookscreen'}
+					<ModalTutorialSpellbookScreen />
 				{/if}
 			</div>
 		</div>

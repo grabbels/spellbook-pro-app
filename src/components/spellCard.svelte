@@ -7,13 +7,17 @@
 		localUserNotes,
 		localUserPreferences,
 		localUserPreparedSpells,
-		openBooksIdsArray
+		openBooksIdsArray,
+		spells
 	} from '../stores-persist';
 	import Button from './button.svelte';
 	import Pill from './pill.svelte';
 	import Schoolicon from './schoolicon.svelte';
+	import { onMount } from 'svelte';
 	export let type;
 	export let data;
+	let description = data.description;
+	export let nobuttons = false;
 	export let id = '';
 	let editNote = false;
 
@@ -51,34 +55,6 @@
 		}
 	}
 
-	// $: if (spellPrepared) {
-	// 	if ($localUserPreparedSpells[$activeOpenBookId]) {
-	// 		$localUserPreparedSpells[$activeOpenBookId] = [
-	// 			...$localUserPreparedSpells[$activeOpenBookId],
-	// 			data.id
-	// 		];
-	// 		$localUserPreparedSpells = $localUserPreparedSpells;
-	// 	} else {
-	// 		$localUserPreparedSpells[$activeOpenBookId] = [];
-	// 		$localUserPreparedSpells[$activeOpenBookId] = [
-	// 			...$localUserPreparedSpells[$activeOpenBookId],
-	// 			data.id
-	// 		];
-	// 		$localUserPreparedSpells = $localUserPreparedSpells;
-	// 	}
-	// } else if (
-	// 	$localUserPreparedSpells[$activeOpenBookId] &&
-	// 	$localUserPreparedSpells[$activeOpenBookId].includes(data.id)
-	// ) {
-	// 	$localUserPreparedSpells[$activeOpenBookId].splice(
-	// 		$localUserPreparedSpells[$activeOpenBookId].indexOf(data.id),
-	// 		1
-	// 	);
-	// 	$localUserPreparedSpells = $localUserPreparedSpells;
-	// }
-
-	$: console.log($localUserPreparedSpells);
-
 	function handleNote() {
 		editNote = true;
 		noteText =
@@ -97,167 +73,209 @@
 	function cancelNote() {
 		editNote = false;
 	}
-	// type === 'list' || type === 'small' ? (fadeDuration = 0) : '';
+
+	const findIndices = (str, char) =>
+		str.split('').reduce((indices, letter, index) => {
+			letter === char && indices.push(index);
+			return indices;
+		}, []);
+
+	function replaceAt(str, index, ch) {
+		return str.replace(/./g, (c, i) => (i == index ? ch : c));
+	}
+	let spellLinksArray = [];
+	if (type === 'embed') {
+		let openBrackets = findIndices(description, '[');
+		let closeBrackets = findIndices(description, ']');
+		if (openBrackets.length > 0) {
+			for (let i = openBrackets.length - 1; i >= 0; i--) {
+				let spellName = description.substr(
+					openBrackets[i] + 1,
+					closeBrackets[i] - openBrackets[i] - 1
+				);
+				let spell = $spells.find((o) => o.name.toLowerCase() == spellName);
+				spellLinksArray = [...spellLinksArray, spell];
+				console.log(spellLinksArray);
+				let openTag = '<button data-id=' + spell.id + ' class="spell_link href accent">';
+				let closeTag = '</button>';
+				description = replaceAt(description, closeBrackets[i], closeTag);
+				description = replaceAt(description, openBrackets[i], openTag);
+			}
+			spellLinksArray = spellLinksArray.reverse()
+		}
+	}
+
+	onMount(() => {
+		let spellLinks = document.querySelectorAll('button.spell_link');
+		for (let i = spellLinks.length - 1; i >= 0; i--) {
+			spellLinks[i].addEventListener('click', (e) => {
+				e.stopPropagation();
+				$lookupSpell = spellLinksArray[i];
+			});
+		}
+	});
 </script>
 
 {#if data}
-	<button
-		class="card {type}"
-		{id}
-		data-id={data.id}
-		data-range={data.range}
-		data-casting-time={data.casting_time}
-		data-duration={data.duration}
-		data-save={data.save}
-		on:click={() => {
-			if (type !== 'small') {
-				$lookupSpell = data;
-				$modalCall = 'spell';
-			}
-		}}
-	>
-		{#if type === 'list' && data.level > 0}
-			<button
-				on:click|stopPropagation={() => preparedAddRemove()}
-				class:active={$localUserPreparedSpells[$activeOpenBookId] &&
-					$localUserPreparedSpells[$activeOpenBookId].includes(data.id)}
-				class="prepared"
-			/>
-		{/if}
-		<div class="card_inner">
-			<!-- {#if type == 'list' && $localUserLibrary.notes && $localUserLibrary.notes[data.id]}
+		<button
+			class="card {type}"
+			{id}
+			data-id={data.id}
+			data-range={data.range}
+			data-casting-time={data.casting_time}
+			data-duration={data.duration}
+			data-save={data.save}
+			on:click={() => {
+				if (type !== 'small' && type !== 'embed') {
+					$lookupSpell = data;
+					$modalCall = 'spell';
+				}
+			}}
+		>
+			{#if type === 'list' && data.level > 0}
+				<button
+					on:click|stopPropagation={() => preparedAddRemove()}
+					class:active={$localUserPreparedSpells[$activeOpenBookId] &&
+						$localUserPreparedSpells[$activeOpenBookId].includes(data.id)}
+					class="prepared"
+				/>
+			{/if}
+			<div class="card_inner">
+				<!-- {#if type == 'list' && $localUserLibrary.notes && $localUserLibrary.notes[data.id]}
 				<i class="has_note ri-sticky-note-fill" />
 			{/if} -->
-			<div class="block title">
-				<h2>
-					<div class="icon">
-						<Schoolicon
-							type={type === 'list' || type === 'small' ? 'small' : ''}
-							school={data.school}
-						/>
-					</div>
-					{data.name}
-				</h2>
-			</div>
-			{#if type !== 'small'}
-				<div class="block pills">
-					<Pill
-						type={type === 'embed' ? 'fill' : 'discreet'}
-						text={data.casting_time}
-						icon="ri-flashlight-line"
-						label="Casting time"
-					/>
-					<Pill
-						type={type === 'embed' ? 'fill' : 'discreet'}
-						text={data.range}
-						icon="ri-arrow-right-up-line"
-						label="Range"
-					/>
-					<Pill
-						type={type === 'embed' ? 'fill' : 'discreet'}
-						text={data.duration}
-						icon="ri-time-line"
-						label="Duration"
-					/>
+				<div class="block title">
+					<h2>
+						<div class="icon">
+							<Schoolicon
+								type={type === 'list' || type === 'small' ? 'small' : ''}
+								school={data.school}
+							/>
+						</div>
+						{data.name}
+					</h2>
 				</div>
-				<div class="block pills" style="margin-bottom: .7rem">
-					<Pill
-						type="small {type === 'embed' ? 'fill' : 'discreet'}"
-						text={data.type}
-						icon="ri-book-2-line"
-						label="Level and school of magic"
-					/>
-					{#if data.save}
+				{#if type !== 'small'}
+					<div class="block pills">
 						<Pill
-							type="small {type === 'embed' ? 'fill' : 'discreet'}"
-							text={data.save}
-							icon="ri-lifebuoy-line"
+							type={type === 'embed' ? 'fill' : 'discreet'}
+							text={data.casting_time}
+							icon="ri-flashlight-line"
+							label="Casting time"
+						/>
+						<Pill
+							type={type === 'embed' ? 'fill' : 'discreet'}
+							text={data.range}
+							icon="ri-arrow-right-up-line"
 							label="Range"
 						/>
-					{/if}
-					<!-- <Pill type="small" text={data.duration} icon="ri-time-line" label="Duration" /> -->
-				</div>
-				{#if type === 'embed' || (type === 'list' && $localUserPreferences.spellDescription === true)}
-					<div class="block description">
-						<div class="description_inner">
-							{@html data.description}
-						</div>
+						<Pill
+							type={type === 'embed' ? 'fill' : 'discreet'}
+							text={data.duration}
+							icon="ri-time-line"
+							label="Duration"
+						/>
 					</div>
-					{#if editNote === true || ($localUserNotes.spells && $localUserNotes.spells[data.id])}
-						<div class="block note" class:edit={editNote}>
-							<h4><i class="ri-sticky-note-line" /> Note</h4>
-							{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
-								<p>{$localUserNotes.spells[data.id]}</p>
-							{:else if editNote === true}
-								<textarea
-									maxlength="500"
-									bind:this={noteTextArea}
-									bind:value={noteText}
-									name="note"
-									id="note"
-									on:input={() => (scrollHeight = noteTextArea.scrollHeight)}
-									style="height: {scrollHeight}px"
-								/>
-							{/if}
-						</div>
-					{/if}
-					<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
-						{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
-							<Button
-								text="Edit note"
-								icon="ri-edit-2-line"
-								type="outline darkgreen"
-								on:click={() => handleNote()}
-							/>
-						{:else if editNote === true}
-							<Button
-								text="Save note"
-								icon="ri-save-line"
-								type="fill darkgreen"
-								on:click={() => saveNote()}
-							/>
-						{:else}
-							<Button
-								text="Note"
-								icon="ri-sticky-note-line"
-								type="outline darkgreen"
-								on:click={() => handleNote()}
+					<div class="block pills" style="margin-bottom: .7rem">
+						<Pill
+							type="small {type === 'embed' ? 'fill' : 'discreet'}"
+							text={data.type}
+							icon="ri-book-2-line"
+							label="Level and school of magic"
+						/>
+						{#if data.save}
+							<Pill
+								type="small {type === 'embed' ? 'fill' : 'discreet'}"
+								text={data.save}
+								icon="ri-lifebuoy-line"
+								label="Range"
 							/>
 						{/if}
-						{#if editNote === true}
-							<Button
-								text="Cancel"
-								icon="ri-close-line"
-								type="outline"
-								on:click={() => cancelNote()}
-							/>
-						{:else if JSON.stringify($spellList).includes(data.id)}
-							<Button
-								text="Remove spell"
-								icon="ri-close-line"
-								type="outline red"
-								on:click={() => {
-									$localUserLibrary[$activeOpenBookId].list = $localUserLibrary[
-										$activeOpenBookId
-									].list.filter((o) => o !== data.id);
-									$modalCall = '';
-								}}
-							/>
-						{:else}
-							<Button
-								text="Add to spellbook"
-								icon="ri-add-line"
-								type="outline accent"
-								on:click={() => {
-									$addSpell = data.id;
-								}}
-							/>
-						{/if}
+						<!-- <Pill type="small" text={data.duration} icon="ri-time-line" label="Duration" /> -->
 					</div>
+					{#if type === 'embed' || (type === 'list' && $localUserPreferences.spellDescription === true)}
+						<div class="block description">
+							<div class="description_inner">
+								{@html description}
+							</div>
+						</div>
+						{#if editNote === true || ($localUserNotes.spells && $localUserNotes.spells[data.id])}
+							<div class="block note" class:edit={editNote}>
+								<h4><i class="ri-sticky-note-line" /> Note</h4>
+								{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
+									<p>{$localUserNotes.spells[data.id]}</p>
+								{:else if editNote === true}
+									<textarea
+										maxlength="500"
+										bind:this={noteTextArea}
+										bind:value={noteText}
+										name="note"
+										id="note"
+										on:input={() => (scrollHeight = noteTextArea.scrollHeight)}
+										style="height: {scrollHeight}px"
+									/>
+								{/if}
+							</div>
+						{/if}
+						{#if nobuttons == false}
+							<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
+								{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
+									<Button
+										text="Edit note"
+										icon="ri-edit-2-line"
+										type="outline darkgreen"
+										on:click={() => handleNote()}
+									/>
+								{:else if editNote === true}
+									<Button
+										text="Save note"
+										icon="ri-save-line"
+										type="fill darkgreen"
+										on:click={() => saveNote()}
+									/>
+								{:else}
+									<Button
+										text="Note"
+										icon="ri-sticky-note-line"
+										type="outline darkgreen"
+										on:click={() => handleNote()}
+									/>
+								{/if}
+								{#if editNote === true}
+									<Button
+										text="Cancel"
+										icon="ri-close-line"
+										type="outline"
+										on:click={() => cancelNote()}
+									/>
+								{:else if JSON.stringify($spellList).includes(data.id)}
+									<Button
+										text="Remove spell"
+										icon="ri-close-line"
+										type="outline red"
+										on:click={() => {
+											$localUserLibrary[$activeOpenBookId].list = $localUserLibrary[
+												$activeOpenBookId
+											].list.filter((o) => o !== data.id);
+											$modalCall = '';
+										}}
+									/>
+								{:else}
+									<Button
+										text="Add to spellbook"
+										icon="ri-add-line"
+										type="outline accent"
+										on:click={() => {
+											$addSpell = data.id;
+										}}
+									/>
+								{/if}
+							</div>
+						{/if}
+					{/if}
 				{/if}
-			{/if}
-		</div>
-	</button>
+			</div>
+		</button>
 {/if}
 
 <style lang="scss">
@@ -351,6 +369,13 @@
 							margin-right: 0.2rem;
 							vertical-align: -3px;
 						}
+					}
+				}
+				.block.description {
+					pointer-events: auto;
+					cursor: default;
+					.spell_link {
+						cursor: pointer;
 					}
 				}
 			}

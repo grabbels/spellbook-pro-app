@@ -25,6 +25,7 @@ export const spellbookQuery = writable('');
 export const online = writable(null);
 export const manualSync = writable(null);
 export const syncStatus = writable('');
+export const optionsCall = writable('');
 export const confirm = writable('');
 export const lookupUserId = writable('');
 export const filters = writable({});

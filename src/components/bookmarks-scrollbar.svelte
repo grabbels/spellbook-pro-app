@@ -34,11 +34,13 @@
 				if (!scrollTimeOut && elementAnchor !== previousAnchor) {
 					scrollTimeOut = true;
 					hapticsImpactLight();
-					document.getElementById(elementAnchor).scrollIntoView();
-					previousAnchor = elementAnchor;
-					setTimeout(() => {
-						scrollTimeOut = false;
-					}, 100);
+					if (document.getElementById(elementAnchor)) {
+						document.getElementById(elementAnchor).scrollIntoView();
+						previousAnchor = elementAnchor;
+						setTimeout(() => {
+							scrollTimeOut = false;
+						}, 100);
+					}
 				}
 			}
 		}

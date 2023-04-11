@@ -27,8 +27,13 @@
 			$spellList = [];
 			let list = $localUserLibrary[$activeOpenBookId].list;
 			for (let i = 0; i < list.length; i++) {
-				$spellList = [...$spellList, $spells.find((o) => o.id == list[i])];
-				i === list.length - 1 ? sortAndFilterSpells() : '';
+				let spell = $spells.find((o) => o.id == list[i])
+					? $spells.find((o) => o.id == list[i])
+					: '';
+				if (spell) {
+					$spellList = [...$spellList, spell];
+					i === list.length - 1 ? sortAndFilterSpells() : '';
+				}
 			}
 		}
 	}
@@ -59,7 +64,6 @@
 			}
 		}
 	}
-
 </script>
 
 <SafeViewPadding>
@@ -91,7 +95,9 @@
 						<p style="margin: 2rem">
 							All spells were filtered away. <button
 								class="href"
-								on:click={() => {$filters = {}}}>Reset filters</button
+								on:click={() => {
+									$filters = {};
+								}}>Reset filters</button
 							>.
 						</p>
 					{:else}

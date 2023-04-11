@@ -88,43 +88,44 @@
 </script>
 
 <FuncSync />
-<div
-	class="main_content {$view}"
-	class:right={$addSpellsMenuOpen}
-	on:scroll={(e) => {
-		$scrollY = e.target.scrollTop;
-		$view === 'spellbook' ? handleScroll() : '';
-	}}
-	bind:this={mainContent}
-	class:back={$quickSearchPanelOpen || $modalCall || $filterPanelOpen}
-	style="{$horizontalSwipe
-		? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
-		: ''} {$zoomOutModifier ? 'transform: scale(' + (1 - $zoomOutModifier * 0.02) + ')' : ''};"
->
-	{#key $view}
-		<div
-			
-			bind:clientWidth={screenWidth}
-			class="page {$view}"
-			on:touchmove={(e) => handleTouchMove(e)}
-			on:touchstart={(e) => handleTouchStart(e)}
-			on:touchend={(e) => handleTouchEnd(e)}
-			style={$spellbookQuery ? 'height: ' + $visualViewport.height + 'px' : ''}
-		>
-			{#if $view === 'spellbook'}
-				<Spellbook />
-			{:else if $view === 'library'}
-				{#key $localUserLibrary}
-					<Library />
-				{/key}
-			{:else if $view === 'browse'}
-				<Browse />
-			{:else if $view === 'settings'}
-				<Settings />
-			{/if}
-		</div>
-	{/key}
-</div>
+{#key $view}
+	<div
+		class="main_content {$view}"
+		class:right={$addSpellsMenuOpen}
+		on:scroll={(e) => {
+			$scrollY = e.target.scrollTop;
+			$view === 'spellbook' ? handleScroll() : '';
+		}}
+		bind:this={mainContent}
+		class:back={$quickSearchPanelOpen || $modalCall || $filterPanelOpen}
+		style="{$horizontalSwipe
+			? 'transition: 0s; overflow-y: hidden; transform: translateX(' + $horizontalSwipe * 100 + '%)'
+			: ''} {$zoomOutModifier ? 'transform: scale(' + (1 - $zoomOutModifier * 0.02) + ')' : ''};"
+	>
+		{#key $view}
+			<div
+				bind:clientWidth={screenWidth}
+				class="page {$view}"
+				on:touchmove={(e) => handleTouchMove(e)}
+				on:touchstart={(e) => handleTouchStart(e)}
+				on:touchend={(e) => handleTouchEnd(e)}
+				style={$spellbookQuery ? 'height: ' + $visualViewport.height + 'px' : ''}
+			>
+				{#if $view === 'spellbook'}
+					<Spellbook />
+				{:else if $view === 'library'}
+					{#key $localUserLibrary}
+						<Library />
+					{/key}
+				{:else if $view === 'browse'}
+					<Browse />
+				{:else if $view === 'settings'}
+					<Settings />
+				{/if}
+			</div>
+		{/key}
+	</div>
+{/key}
 <div
 	class:right={$addSpellsMenuOpen}
 	class:back={$modalCall}
@@ -191,7 +192,7 @@
 			border-radius: 50px;
 			pointer-events: none;
 			opacity: 0;
-			transition: .2s;
+			transition: 0.2s;
 		}
 		&.filters {
 			// &:after {

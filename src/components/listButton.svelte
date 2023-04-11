@@ -12,6 +12,7 @@
 
 <style lang="scss">
 	li {
+		list-style: none;
 		width: 100%;
 		button {
 			box-sizing: border-box;

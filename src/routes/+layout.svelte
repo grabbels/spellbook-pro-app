@@ -41,7 +41,7 @@
 		filterPanelOpen,
 		emailConfirmToken
 	} from '../stores';
-	window.screen.orientation.lock('portrait');
+
 	//ERROR/FAULT DETECTION IN LOCAL STORAGE
 	if (!Object.keys($localUserLibrary).length && $openBooksIdsArray.length) {
 		$openBooksIdsArray = [];
@@ -53,10 +53,10 @@
 		}
 	}
 	if ($localUserFavoriteBooks.length >= 0) {
-		$localUserFavoriteBooks = []
+		$localUserFavoriteBooks = [];
 	}
 	if (!$localUserPreparedSpells) {
-		$localUserPreparedSpells = {}
+		$localUserPreparedSpells = {};
 	}
 
 	import { onMount } from 'svelte';
@@ -286,6 +286,7 @@
 	}
 	//onMount
 	onMount(() => {
+		window.screen.orientation.lock('portrait');
 		$visualViewport = window.visualViewport;
 		window.visualViewport.addEventListener('resize', () => {
 			$visualViewport = window.visualViewport;
@@ -304,7 +305,7 @@
 			} else if (params.get('confirm-email-change')) {
 				console.log('register verification');
 				$emailConfirmToken = params.get('confirm-email-change');
-				$modalCall = 'confirm-email-change'
+				$modalCall = 'confirm-email-change';
 			}
 		}
 		if ($user) {
@@ -325,6 +326,8 @@
 			}
 		}
 	});
+
+	$modalCall = 'welcome';
 
 	$: if ($quickSearchPanelOpen === false) {
 		$quickQuery = '';
@@ -375,7 +378,6 @@
 			$lookupBookId = '';
 		}
 	}
-
 </script>
 
 <!-- GLOBAL FUNCTIONS -->
@@ -430,6 +432,10 @@
 		--large-radius: 16px;
 		--medium-radius: 12px;
 		--small-radius: 6px;
+	}
+
+	.scroll-bar-indicator {
+		display: none;
 	}
 
 	* {
@@ -499,7 +505,7 @@
 	}
 	p {
 		font-weight: 300;
-		font-size: 1rem;
+		font-size: 1.05rem;
 		margin-bottom: 0.8rem;
 		line-height: 1.4;
 		&.small {
@@ -512,6 +518,10 @@
 		&.href {
 			text-decoration: underline;
 			display: inline;
+			cursor: pointer;
+			&.accent {
+				color: var(--accent);
+			}
 		}
 	}
 	input,
@@ -562,7 +572,7 @@
 			width: auto;
 			min-width: 0;
 			font-family: 'Kanit';
-			padding: .2rem 0;
+			padding: 0.2rem 0;
 			text-transform: lowercase;
 			color: var(--inputbg);
 		}
