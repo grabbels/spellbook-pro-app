@@ -57,7 +57,13 @@
 	// console.log(JSON.stringify($localUserLibrary).includes('qifyezl9wou7dmh_1680335337728'))
 
 	// console.log(Object.keys($localUserLibrary).length)
-	$modalCall = 'tutorial-spellbook'
+
+	// $modalCall = 'tutorial-spellbookscreen'
+
+	console.log($spells)
+	for (let i = 0; i < $spells.length; i++) {
+				
+	}
 
 </script>
 
