@@ -25,7 +25,7 @@
 		>
 	</p>
 	<div style="margin-top: 2rem">
-		<Button text="Donate" icon="ri-heart-fill" type="fill accent" />
+		<Button text="Donate" icon="ri-heart-fill" liquid type="fill accent liquid" />
 	</div>
 	<p style="margin-top: 1rem">
 		Curious what else I make? Visit <a style="color:var(--onbackground)" href="https://semhak.com"
