@@ -14,13 +14,16 @@
 		filterPanelOpen,
 		spellList,
 		filters,
+		browseQuery,
 
-		browseQuery
+		browseFilter
 
 	} from '../../stores';
 	import { activeOpenBookId, localUserLibrary } from '../../stores-persist';
 	import Button from '../button.svelte';
 	import SearchField from '../searchField.svelte';
+
+	$: console.log($browseFilter)
 </script>
 
 <div
@@ -87,7 +90,7 @@
 						type="outline"
 						left
 						on:click={() => {
-							$notification = "You've reached the maximum of 12 saved books!#alert"
+							$notification = "You've reached the maximum of 12 saved books!#alert";
 						}}
 					/>
 				{/if}
@@ -105,7 +108,10 @@
 				{:else if $view === 'library'}
 					<SearchField placeholder="Search spellbooks..." bind:value={$spellbookQuery} right />
 				{:else if $view === 'browse'}
-					<SearchField placeholder="Search spellbooks by creator, class..." bind:value={$browseQuery} />
+					<SearchField
+						placeholder="Search spellbooks by creator, class..."
+						bind:value={$browseFilter.query}
+					/>
 				{/if}
 				{#if $quickSearchPanelOpen}
 					<button
@@ -145,8 +151,9 @@
 		pointer-events: auto;
 		.header_content {
 			padding: max(var(--safe-area-inset-top), 1rem) 1rem 0;
-			transition: 0.2s;
-
+			transition: 0.3s;
+			will-change: transform;
+			transform: translateY(0);
 			h1 {
 				text-align: center;
 				font-size: 1.3rem;
@@ -154,7 +161,10 @@
 				height: var(--huge-radius);
 				transition: 0.3s;
 				overflow: hidden;
-				will-change: height, margin;
+				will-change: transform, opacity;
+				transform-origin: top;
+				height: 24px;
+				opacity: 1;
 			}
 			.input_wrapper {
 				position: relative;
@@ -181,9 +191,10 @@
 		}
 		&.scrolled {
 			.header_content {
+				transform: translateY(-24px);
 				h1 {
-					height: 0;
-					margin: 0;
+					transform: translateY(-100%);
+					opacity: 0;
 				}
 			}
 		}
@@ -240,6 +251,12 @@
 				.input_wrapper {
 					// transform: scale(1.025);
 				}
+			}
+		}
+		@media only screen and (min-width: 992px) {
+			// right: auto;
+			.wrapper {
+				max-width: 30vw;
 			}
 		}
 	}

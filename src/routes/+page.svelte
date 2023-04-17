@@ -40,6 +40,10 @@
 	import SyncStatus from '../components/syncStatus.svelte';
 	let touchStart, touchEnd, touchPos, touchMove, direction, screenWidth, mainContent;
 
+	$: if ($view) {
+		$scrollY = 0;
+	}
+
 	function handleTouchStart(e) {
 		if ($view === 'spellbook') {
 			touchMove = true;

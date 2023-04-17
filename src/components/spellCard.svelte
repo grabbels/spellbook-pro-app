@@ -1,6 +1,6 @@
 <script>
 	import { fade } from 'svelte/transition';
-	import { addSpell, lookupSpell, modalCall, notification, spellList } from '../stores';
+	import { addSpell, lookupSpell, lookupSpellList, modalCall, notification, spellList } from '../stores';
 	import {
 		activeOpenBookId,
 		localUserLibrary,
@@ -125,6 +125,9 @@
 			data-casting-time={data.casting_time}
 			data-duration={data.duration}
 			data-save={data.save}
+	
+			class:compact={$localUserPreferences.spellbookLayout === 'grid' && !$modalCall}
+			class:full={$localUserPreferences.spellbookLayout === 'list-full' && !$modalCall}
 			on:click={() => {
 				if (type !== 'small' && type !== 'embed') {
 					$lookupSpell = data;
@@ -193,7 +196,7 @@
 						{/if}
 						<!-- <Pill type="small" text={data.duration} icon="ri-time-line" label="Duration" /> -->
 					</div>
-					{#if type === 'embed' || (type === 'list' && $localUserPreferences.spellDescription === true)}
+					{#if type === 'embed' || $localUserPreferences.spellbookLayout === 'list-full' || (type === 'list' && $localUserPreferences.spellDescription === true)}
 						<div class="block description">
 							<div class="description_inner">
 								{@html description}
@@ -217,7 +220,7 @@
 								{/if}
 							</div>
 						{/if}
-						{#if nobuttons == false}
+						{#if nobuttons == false && type === 'embed' && $lookupSpellList.length < 1}
 							<div class="block buttons" style="margin-top: 2rem; pointer-events: auto">
 								{#if $localUserNotes.spells && $localUserNotes.spells[data.id] && editNote !== true}
 									<Button
@@ -281,6 +284,7 @@
 <style lang="scss">
 	.card {
 		text-align: left;
+		scroll-margin: calc(var(--safe-area-inset-top) + 100px);
 		.prepared {
 			position: absolute;
 			top: 1.4rem;
@@ -289,6 +293,7 @@
 			width: 17px;
 			border-radius: 50vh;
 			background-color: var(--moretranslucent);
+			z-index: 1;
 			&.active {
 				background-color: var(--accent);
 			}
@@ -419,6 +424,41 @@
 				.card_inner {
 					border-bottom: 0;
 				}
+			}
+			&.compact {
+				height: 100%;
+				min-height: 0;
+				margin: 0;
+				align-items: flex-start;
+				display: flex;
+				flex-wrap: wrap;
+				align-items: flex-start;
+				padding: .3rem .6rem;
+				.prepared {
+					top: .7rem;
+					right: .7rem;
+				}
+				.block.pills:not(:last-child) {
+					display: none;
+				}
+				.block.title {
+					h2 {
+						font-size: 1.1rem;
+						max-width: 90%;
+						hyphens: auto;
+						.icon {
+							position: absolute;
+							transform: scale(7);
+							left: 3rem;
+							top: 2rem;
+							opacity: .07;
+							z-index: 1;
+						}
+					}
+				}
+			}
+			&.full {
+				// display: none;
 			}
 		}
 		&.shadow {

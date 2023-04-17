@@ -3,7 +3,8 @@ import {
 	activeOpenBookId,
 	localLastSyncTime,
 	localUserLibrary,
-	openBooksIdsArray
+	openBooksIdsArray,
+	user
 } from './stores-persist';
 import { goto } from '$app/navigation';
 import { get } from 'svelte/store';
@@ -50,5 +51,6 @@ export function resetUserData() {
 	openBooksIdsArray.set([]);
 	localUserLibrary.set([]);
 	localLastSyncTime.set(0);
-	user.set('');
+	page.set('');
+	view.set('');
 }

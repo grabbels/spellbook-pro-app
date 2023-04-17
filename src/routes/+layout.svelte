@@ -52,7 +52,7 @@
 			$openBooksIdsArray = $openBooksIdsArray;
 		}
 	}
-	if ($localUserFavoriteBooks.length >= 0) {
+	if ($localUserFavoriteBooks.length <= 0) {
 		$localUserFavoriteBooks = [];
 	}
 	if (!$localUserPreparedSpells) {
@@ -387,9 +387,9 @@
 <DevTools />
 <slot />
 {#if $modalCall}
-	{#key $modalCall}
+	<!-- {#key $modalCall} -->
 		<Modal />
-	{/key}
+	<!-- {/key} -->
 {/if}
 {#if $notification}
 	<Notification />

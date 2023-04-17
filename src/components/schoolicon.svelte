@@ -1,6 +1,6 @@
 <script>
 	export let school;
-	export let type = ''
+	export let type = '';
 	var iconClass = '';
 	$: switch (school.toLowerCase()) {
 		case 'evocation':
@@ -28,7 +28,7 @@
 			iconClass = 'ri-contrast-line';
 			break;
 		case 'blank':
-			iconClass = 'ri-checkbox-blank-circle-fill'
+			iconClass = 'ri-checkbox-blank-circle-fill';
 			break;
 		default:
 			break;
@@ -59,34 +59,40 @@
 		font-size: 2rem;
 		vertical-align: -6px;
 		// margin-right: 0.5rem;
-        &.evocation {
-            color: var(--red);
-        }
-        &.divination {
-            color: var(--purple);
-        }
-        &.abjuration {
-            color: var(--lightgreen);
-        }
-        &.conjuration  {
-            color: var(--lightblue);
-        }
-        &.enchantment {
-            color: var(--yellow);
-        }
-        &.illusion {
-            color: var(--darkblue);
-        }
-        &.necromancy {
-            color: var(--darkgreen);
-        }
-        &.transmutation {
-            color:var(--pink)
-        }
+		&.evocation {
+			color: var(--red);
+		}
+		&.divination {
+			color: var(--purple);
+		}
+		&.abjuration {
+			color: var(--lightgreen);
+		}
+		&.conjuration {
+			color: var(--lightblue);
+		}
+		&.enchantment {
+			color: var(--yellow);
+		}
+		&.illusion {
+			color: var(--darkblue);
+		}
+		&.necromancy {
+			color: var(--darkgreen);
+		}
+		&.transmutation {
+			color: var(--pink);
+		}
 		&.small {
 			font-size: 1.3rem;
-			margin-right: .2rem;
+			margin-right: 0.2rem;
 			vertical-align: -5px;
+			margin-left: -3px;
+		}
+		&.tiny {
+			font-size: 1rem;
+			margin-right: 0.2rem;
+			vertical-align: -2px;
 			margin-left: -3px;
 		}
 	}

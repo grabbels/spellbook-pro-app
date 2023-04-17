@@ -1,6 +1,6 @@
 <script>
-	import { fly, scale } from 'svelte/transition';
-	import { bookToEdit, lookupSpell, modalCall } from '../stores';
+	import { fade, fly, scale } from 'svelte/transition';
+	import { bookToEdit, browseFilter, lookupSpell, lookupSpellList, modalCall } from '../stores';
 	import Close from './close.svelte';
 	import ModalLogin from './modal/modal-login.svelte';
 	import SpellCard from './spellCard.svelte';
@@ -13,6 +13,8 @@
 	import ModalTutorialSpellbook from './modal/modal-tutorial-spells.svelte';
 	import ModalWelcome from './modal/modal-welcome.svelte';
 	import ModalTutorialSpellbookScreen from './modal/modal-tutorial-spellbookScreen.svelte';
+	import ModalBrowse from './modal/modal-browse.svelte';
+	import ModalSpellbookView from './modal/modal-spellbookView.svelte';
 
 	let fullScreen = false;
 	let fullscreenModalCalls = [
@@ -21,10 +23,16 @@
 		'new',
 		'edit',
 		'confirm-email-change',
-		'tutorial-spells'
+		'tutorial-spells',
+		'browse',
+		'spellbook-view'
 	];
 	let modalOuterAnimationArgs;
 	let modalContainerAnimationArgs;
+	let modalInnerAnimationArgs = {
+		fn: fly,
+		duration: 0
+	};
 
 	function transition(node, options) {
 		return options.fn(node, options);
@@ -57,69 +65,114 @@
 	}
 	let modalInner;
 	let scrollY;
+
+	$: if ($modalCall === 'spellbook-view') {
+		modalInnerAnimationArgs = {
+			fn: fly,
+			x: 50
+		};
+	} else {
+		modalInnerAnimationArgs = {
+			fn: fly,
+			duration: 0
+		};
+	}
 </script>
 
 <div
 	class="container"
 	class:fullscreen={fullScreen}
+	class:fromspellbooklist={$lookupSpellList.length > 0}
 	in:transition={modalContainerAnimationArgs}
 	out:transition={modalContainerAnimationArgs}
 >
 	<!-- <div class="outer" transition:fly={{ y: 15, duration: 250 }}> -->
+
 	<div
 		class="outer"
 		in:transition={modalOuterAnimationArgs}
 		out:transition={modalOuterAnimationArgs}
+		class:dark={$modalCall === 'spellbook-view'}
 	>
-		{#if $modalCall !== 'login'}
+		{#if $modalCall !== 'login' && $modalCall !== 'browse' && $modalCall !== 'spellbook-view' && $lookupSpellList.length < 1}
 			<div class="close">
 				<Close
 					on:click={() => {
 						$modalCall = '';
 						$lookupSpell = '';
 						$bookToEdit = '';
+						$lookupSpellList = [];
 					}}
 				/>
 			</div>
 		{/if}
-		<div class="inner">
-			<div bind:this={modalInner} class="modal_content">
-				{#if $modalCall === 'spell'}
-					{#key $lookupSpell}
-						<div in:fly>
-							<SpellCard type="embed" data={$lookupSpell} />
-						</div>
-					{/key}
-				{/if}
-				{#if $modalCall === 'login'}
-					<ModalLogin />
-				{/if}
-				{#if $modalCall === 'spellbook'}
-					<ModalSpellbook />
-				{/if}
-				{#if $modalCall === 'new' || $modalCall === 'edit'}
-					<ModalNew />
-				{/if}
-				{#if $modalCall === 'terms'}
-					<ModalTerms />
-				{/if}
-				{#if $modalCall === 'changelog'}
-					<ModalChangelog />
-				{/if}
-				{#if $modalCall === 'confirm-email-change'}
-					<ModalConfirmEmailChange />
-				{/if}
-				{#if $modalCall === 'welcome'}
-					<ModalWelcome />
-				{/if}
-				{#if $modalCall === 'tutorial-spells'}
-					<ModalTutorialSpellbook />
-				{/if}
-				{#if $modalCall === 'tutorial-spellbookscreen'}
-					<ModalTutorialSpellbookScreen />
-				{/if}
+		{#if $modalCall === 'spellbook-view'}
+			<button
+				class="back"
+				on:click={() => {
+					$modalCall = 'spellbook';
+					$lookupSpellList = [];
+				}}><i class="ri-arrow-left-s-line" /></button
+			>
+		{/if}
+		{#if $modalCall === 'spell' && $lookupSpellList.length > 1}
+			<button
+				class="back"
+				on:click={() => {
+					$modalCall = 'spellbook-view';
+				}}><i class="ri-arrow-left-s-line" /></button
+			>
+		{/if}
+		{#key $modalCall}
+			<div class="inner" in:transition={modalInnerAnimationArgs}>
+				<div
+					bind:this={modalInner}
+					class="modal_content"
+					class:paddingtop={$modalCall === 'spellbook-view' || $lookupSpellList.length > 0}
+				>
+					{#if $modalCall === 'spell'}
+						{#key $lookupSpell}
+							<div in:fly>
+								<SpellCard type="embed" data={$lookupSpell} />
+							</div>
+						{/key}
+					{/if}
+					{#if $modalCall === 'login'}
+						<ModalLogin />
+					{/if}
+					{#if $modalCall === 'spellbook'}
+						<ModalSpellbook />
+					{/if}
+					{#if $modalCall === 'spellbook-view'}
+						<ModalSpellbookView />
+					{/if}
+					{#if $modalCall === 'new' || $modalCall === 'edit'}
+						<ModalNew />
+					{/if}
+					{#if $modalCall === 'terms'}
+						<ModalTerms />
+					{/if}
+					{#if $modalCall === 'changelog'}
+						<ModalChangelog />
+					{/if}
+					{#if $modalCall === 'confirm-email-change'}
+						<ModalConfirmEmailChange />
+					{/if}
+					{#if $modalCall === 'welcome'}
+						<ModalWelcome />
+					{/if}
+					{#if $modalCall === 'tutorial-spells'}
+						<ModalTutorialSpellbook />
+					{/if}
+					{#if $modalCall === 'tutorial-spellbookscreen'}
+						<ModalTutorialSpellbookScreen />
+					{/if}
+					{#if $modalCall === 'browse'}
+						<ModalBrowse />
+					{/if}
+				</div>
 			</div>
-		</div>
+		{/key}
 	</div>
 </div>
 
@@ -148,6 +201,7 @@
 			position: relative;
 			display: flex;
 			overflow: hidden;
+			transition: 0.4s;
 			// &:after {
 			// 	content: '';
 			// 	left: 0;
@@ -162,6 +216,9 @@
 			// 	filter: contrast(1) brightness(4);
 			// 	// mix-blend-mode: multiply;
 			// }
+			&.dark {
+				background-color: var(--bodybg);
+			}
 			.inner {
 				position: relative;
 				z-index: 1;
@@ -172,6 +229,9 @@
 					max-height: 100%;
 					padding: 1.8rem 1.5rem;
 					width: 100%;
+					&.paddingtop {
+						padding-top: 4rem!important;
+					}
 				}
 				// &:after {
 				// 	position: absolute;
@@ -192,7 +252,8 @@
 				z-index: 2;
 			}
 		}
-		&.fullscreen {
+		&.fullscreen,
+		&.fromspellbooklist {
 			background-color: var(--cardbg);
 			padding: 0;
 			.close {
@@ -219,6 +280,17 @@
 					}
 				}
 			}
+		}
+	}
+	.back {
+		position: absolute;
+		top: calc(var(--safe-area-inset-top) + .7rem);
+		left: 1rem;
+		z-index: 2;
+		// pointer-events: auto;
+		i {
+			font-size: 2rem;
+			color: var(--translucent);
 		}
 	}
 </style>

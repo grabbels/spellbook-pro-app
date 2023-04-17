@@ -11,7 +11,7 @@
 		spellList,
 		view
 	} from '../stores';
-	import { activeOpenBookId, localUserLibrary, openBooksIdsArray, spells } from '../stores-persist';
+	import { activeOpenBookId, localUserLibrary, localUserPreferences, openBooksIdsArray, spells } from '../stores-persist';
 	// $sortedSpellsList = [[], [], [], [], [], [], [], [], [], []];
 	$: $activeOpenBookId &&
 	$openBooksIdsArray.includes($activeOpenBookId) &&
@@ -67,7 +67,7 @@
 </script>
 
 <SafeViewPadding>
-	<div class="list_wrapper">
+	<div class="list_wrapper {$localUserPreferences.spellbookLayout}">
 		{#if $openBooksIdsArray && $openBooksIdsArray.length > 0 && $activeOpenBookId}
 			{#if $spellList && $spellList.length > 0}
 				<div style="margin-top: 3.5rem">
@@ -160,6 +160,14 @@
 		}
 		&:first-child {
 			margin-top: 2.5rem;
+		}
+		&.grid {
+			.list {
+				grid-template-columns: 1fr 1fr;
+				align-items: flex-start;
+				grid-gap: 1.1rem .5rem;
+				margin: 2rem .8rem;
+			}
 		}
 	}
 </style>

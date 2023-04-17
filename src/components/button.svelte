@@ -123,6 +123,7 @@
 			margin-top: -0.1rem;
 			i {
 				font-size: 1.5rem;
+				height: 18px;
 			}
 			@keyframes rotate {
 				to {
@@ -248,6 +249,7 @@
 		}
 		&.disabled {
 			pointer-events: none;
+			color: var(--lesstranslucent);
 		}
 		&.left {
 			border-radius: var(--large-radius) 0 0 var(--large-radius);
@@ -303,6 +305,15 @@
 					// opacity: .6;
 				}
 			}
+		}
+		&.label {
+			pointer-events: none;
+			background-color: var(--moretranslucent);
+			color: var(--lesstranslucent);
+			padding-right: .6rem;
+			padding-left: .9rem;
+			min-width: 0;
+			height: 100%;
 		}
 	}
 </style>

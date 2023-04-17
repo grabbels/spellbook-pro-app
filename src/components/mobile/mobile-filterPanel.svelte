@@ -8,56 +8,47 @@
 	let castingtimeFilters = [];
 	let rangeFilters = [];
 	$: $spellList, gatherFilters();
-	$: console.log(castingtimeFilters)
+	$: console.log(castingtimeFilters);
 
 	function gatherFilters() {
 		for (let i = 0; i < $spellList.length; i++) {
 			if ($spellList[i].save) {
 				if (!saveFilters.includes($spellList[i].save)) {
-					saveFilters = [...saveFilters, $spellList[i].save]
+					saveFilters = [...saveFilters, $spellList[i].save];
 				}
 			}
 			if (
-				$spellList[i].casting_time.toLowerCase().includes('action') &&
+				$spellList[i].casting_time.toLowerCase().includes(' action') &&
 				!castingtimeFilters.includes('action')
 			) {
-				castingtimeFilters.push('action');
+				castingtimeFilters = [...castingtimeFilters, 'action']
 			}
 			if (
 				$spellList[i].casting_time.toLowerCase().includes('bonus') &&
 				!castingtimeFilters.includes('bonus')
 			) {
-				castingtimeFilters.push('bonus');
+				castingtimeFilters = [...castingtimeFilters, 'bonus']
 			}
 			if (
 				$spellList[i].casting_time.toLowerCase().includes('reaction') &&
 				!castingtimeFilters.includes('reaction')
 			) {
-				castingtimeFilters.push('reaction');
+				castingtimeFilters = [...castingtimeFilters, 'reaction']
 			}
-			if (
-				$spellList[i].range.toLowerCase().includes('feet') &&
-				!rangeFilters.includes('feet')
-			) {
-				rangeFilters.push('feet');
+			if ($spellList[i].range.toLowerCase().includes('feet') && !rangeFilters.includes('feet')) {
+				rangeFilters = [...rangeFilters, 'feet']
 			}
-			if (
-				$spellList[i].range.toLowerCase().includes('self') &&
-				!rangeFilters.includes('self')
-			) {
-				rangeFilters.push('self');
+			if ($spellList[i].range.toLowerCase().includes('self') && !rangeFilters.includes('self')) {
+				rangeFilters = [...rangeFilters, 'self']
 			}
-			if (
-				$spellList[i].range.toLowerCase().includes('touch') &&
-				!rangeFilters.includes('touch')
-			) {
-				rangeFilters.push('touch');
+			if ($spellList[i].range.toLowerCase().includes('touch') && !rangeFilters.includes('touch')) {
+				rangeFilters = [...rangeFilters, 'touch']
 			}
 		}
-		console.log(rangeFilters)
+		console.log(rangeFilters);
 	}
 
-	let panelHeight
+	let panelHeight;
 	// let castingTime, range, save;
 	// $: if (castingTime || range || save) {
 	// 	castingTime
@@ -77,7 +68,12 @@
 	}
 </script>
 
-<div class:open={$filterPanelOpen} class="ui_mobile_filter_panel" bind:clientHeight={panelHeight} on:touchstart={(e)=>console.log(e.touches[0].clientY - panelHeight)}>
+<div
+	class:open={$filterPanelOpen}
+	class="ui_mobile_filter_panel"
+	bind:clientHeight={panelHeight}
+	on:touchstart={(e) => console.log(e.touches[0].clientY - panelHeight)}
+>
 	<button class="close" on:click|stopPropagation={() => ($filterPanelOpen = false)}>
 		<i class="ri-close-line" />
 	</button>

@@ -8,7 +8,8 @@
 		lastSyncTry,
 		localUserNotes,
 		localUserFavoriteBooks,
-		localUserPreparedSpells
+		localUserPreparedSpells,
+		spells
 	} from '../../stores-persist';
 	import PocketBase from 'pocketbase';
 	import deepDiff from 'deep-diff';
@@ -132,11 +133,28 @@
 					}
 					for (const key in $localUserLibrary) {
 						//update global books list
+						let bookSpells = $localUserLibrary[key].list;
+						let spellTypes = {};
+						for (let i = 0; i < bookSpells.length; i++) {
+							let school = $spells.find((o) => o.id == bookSpells[i]).school;
+							if (school in spellTypes) {
+								spellTypes[school] = spellTypes[school] + 1;
+							} else {
+								spellTypes[school] = 1
+							}
+						}
 						const data = {
 							user_id: $user.id,
 							book_id: key,
 							book: $localUserLibrary[key],
-							public: $localUserLibrary[key].published
+							public: $localUserLibrary[key].published,
+							book_name: $localUserLibrary[key].name.toString().replaceAll(',', ' '),
+							character_class: $localUserLibrary[key].class,
+							character_level: $localUserLibrary[key].level,
+							tags: $localUserLibrary[key].tags,
+							icon: $localUserLibrary[key].icon,
+							color: $localUserLibrary[key].color,
+							spelltypes: spellTypes
 						};
 						try {
 							const record = await pb

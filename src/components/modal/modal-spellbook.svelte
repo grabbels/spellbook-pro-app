@@ -1,7 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import { openSpellbook } from '../../functions';
-	import { bookToEdit, confirm, lookupBookId, lookupUserId, modalCall } from '../../stores';
+	import { bookToEdit, confirm, lookupBookId, lookupSpellList, lookupUserId, modalCall } from '../../stores';
 	import {
 		localUserFavoriteBooks,
 		localUserLibrary,
@@ -129,7 +129,7 @@
 						liquid
 						icon="ri-eye-line"
 						type="fill blue liquid"
-						on:click={() => {}}
+						on:click={() => {$modalCall = 'spellbook-view'; $lookupSpellList = spellbook.list}}
 					/>
 				</div>
 				<div>

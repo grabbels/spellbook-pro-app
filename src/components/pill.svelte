@@ -2,7 +2,7 @@
 	export let type;
 	export let icon;
 	export let text;
-	export let label;
+	export let label = '';
 </script>
 
 <div class="pill {type}">

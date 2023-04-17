@@ -258,50 +258,48 @@
 	img {
 		width: 60px;
 	}
-	.options_inner {
-		padding: 2rem;
-		.title_wrap {
-			margin-bottom: 1rem;
-			h2 {
-				display: inline-block;
-			}
+
+	.title_wrap {
+		margin-bottom: 1rem;
+		h2 {
+			display: inline-block;
 		}
-		form {
+	}
+	form {
+		margin-bottom: 1rem;
+	}
+	.status {
+		margin-top: 2rem;
+		text-align: center;
+		h4 {
 			margin-bottom: 1rem;
 		}
-		.status {
-			margin-top: 2rem;
-			text-align: center;
-			h4 {
-				margin-bottom: 1rem;
-			}
-			p {
-				margin-top: 0.3rem;
-			}
-			.icon {
-				display: inline-block;
-				height: 50px;
-				width: 50px;
-				background-color: var(--onbackground);
-				border-radius: 50vh;
-				display: inline-flex;
-				justify-content: center;
-				align-items: center;
-				i {
-					font-size: 2.3rem;
-					&.ri-cloud-line {
-						color: var(--lightblue);
-					}
+		p {
+			margin-top: 0.3rem;
+		}
+		.icon {
+			display: inline-block;
+			height: 50px;
+			width: 50px;
+			background-color: var(--onbackground);
+			border-radius: 50vh;
+			display: inline-flex;
+			justify-content: center;
+			align-items: center;
+			i {
+				font-size: 2.3rem;
+				&.ri-cloud-line {
+					color: var(--lightblue);
 				}
 			}
 		}
-		.buttons {
-			margin-top: 1rem;
-			display: flex;
-			flex-direction: column;
-			div {
-				margin-bottom: 0.5rem;
-			}
+	}
+	.buttons {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		div {
+			margin-bottom: 0.5rem;
 		}
 	}
 </style>

@@ -170,13 +170,13 @@
 				{:else if $optionsCall === 'interface'}
 					<SettingsInterface />
 				{:else if $optionsCall === 'spellsheet'}
-					<SettingsSpellsheet/>
+					<SettingsSpellsheet />
 				{:else if $optionsCall === 'sync'}
-					<SettingsSync/>
+					<SettingsSync />
 				{:else if $optionsCall === 'help'}
-					<SettingsHelp/>
+					<SettingsHelp />
 				{:else if $optionsCall === 'donate'}
-					<SettingsDonate/>
+					<SettingsDonate />
 				{/if}
 			</div>
 		</SafeViewPadding>
@@ -193,6 +193,8 @@
 	}
 	.options_inner {
 		padding: 2rem;
-		
+	}
+	.options_inner {
+		padding: 2rem;
 	}
 </style>

@@ -55,5 +55,17 @@
 			mask-image: linear-gradient(0deg, rgba(0,0,0,1) 0%, transparent 100%);
 			pointer-events: none;
 		}
+		@media only screen and (min-width: 992px) {
+			bottom: auto;
+			top: 2.5rem;
+			left: auto;
+			right: 0;
+			z-index: 20;
+			width: 400px;
+			max-width: 30vw;
+			&:after {
+				display: none;
+			}
+		}
 	}
 </style>

@@ -39,7 +39,7 @@
 						previousAnchor = elementAnchor;
 						setTimeout(() => {
 							scrollTimeOut = false;
-						}, 100);
+						}, 80);
 					}
 				}
 			}

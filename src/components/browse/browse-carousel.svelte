@@ -129,6 +129,7 @@
 	}
 	.carousel {
 		width: 100%;
+		max-width: 400px;
 		mask-image: linear-gradient(
 			90deg,
 			transparent 0%,

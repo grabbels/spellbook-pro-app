@@ -1,7 +1,7 @@
 <script>
 	import { fade } from 'svelte/transition';
 	import { filterPanelOpen, modalCall, tabPanelOpen } from '../stores';
-	export let solid;
+	export let solid = false;
 	let fadeDuration;
 	if (solid) {
 		fadeDuration = 100

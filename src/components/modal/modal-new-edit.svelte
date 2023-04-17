@@ -51,6 +51,7 @@
 		'aliens',
 		'bear-smile',
 		'criminal',
+		'sword',
 		'ghost',
 		'ghost-2',
 		'spy',
