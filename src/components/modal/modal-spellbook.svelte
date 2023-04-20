@@ -54,9 +54,12 @@
 		let spellbookSpellList = spellbook.list;
 		if (spellbookSpellList) {
 			for (let i = 0; i < spellbookSpellList.length; i++) {
-				sortedSpellsList[$spells.find((o) => o.id == spellbookSpellList[i]).level].push(
-					$spells.find((o) => o.id == spellbookSpellList[i]).id
-				);
+				let spell = $spells.find((o) => o.id == spellbookSpellList[i])
+				let level = spell.level
+				// sortedSpellsList[$spells.find((o) => o.id == spellbookSpellList[i]).level].push(
+				// 	$spells.find((o) => o.id == spellbookSpellList[i]).id
+				// );
+				sortedSpellsList[level] = [...sortedSpellsList[level],spell.id]
 			}
 		}
 	}

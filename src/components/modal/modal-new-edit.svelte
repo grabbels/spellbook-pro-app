@@ -11,10 +11,11 @@
 	import Button from '../button.svelte';
 	import Tag from '../tag.svelte';
 	import WordInput from '../wordInput.svelte';
+	import { classes } from '../../staticData';
 	let bookClass, bookName, bookColor, bookLevel, bookIcon, bookDateCreated, bookPublished;
 	let bookList = [];
 	let bookTags = [];
-	console.log($bookToEdit)
+	console.log($bookToEdit);
 	if ($bookToEdit) {
 		$bookToEdit.class ? (bookClass = $bookToEdit.class) : '';
 		$bookToEdit.color ? (bookColor = $bookToEdit.color) : '';
@@ -28,11 +29,10 @@
 	}
 
 	$: if (bookName && bookName.length > 8) {
-		bookName.pop()
-		$notification = "The name can be a maximum of 8 words long.#info"
+		bookName.pop();
+		$notification = 'The name can be a maximum of 8 words long.#info';
 	}
-	onMount(() => {
-	});
+	onMount(() => {});
 
 	let tagSearch = '';
 	let tagResults = [];
@@ -146,22 +146,6 @@
 	];
 
 	let words = ['Awesome', 'Epic', 'Evil', 'Sorcerer', 'Wizard', 'Bbeg', 'Npc'];
-	let classes = [
-		'Artificer',
-		'Barbarian',
-		'Bard',
-		'Blood Hunter',
-		'Cleric',
-		'Druid',
-		'Fighter',
-		'Monk',
-		'Paladin',
-		'Ranger',
-		'Rogue',
-		'Sorcerer',
-		'Warlock',
-		'Wizard'
-	];
 	let colors = ['purple', 'lightgreen', 'lightblue', 'red', 'yellow', 'darkblue', 'darkgreen'];
 	function handleSubmit() {
 		submit = true;
@@ -190,7 +174,7 @@
 					date_edited: Date.now(),
 					list: bookList.length ? bookList : []
 				};
-				$localUserLibrary = $localUserLibrary
+				$localUserLibrary = $localUserLibrary;
 				$modalCall = '';
 				if (!$bookToEdit) {
 					$openBooksIdsArray = [...$openBooksIdsArray, saveId];
@@ -289,7 +273,9 @@
 			autocomplete="off"
 			bind:value={tagSearch}
 			on:input={() =>
-				(tagResults = allowedTags.filter((el) => el.toLowerCase().includes(tagSearch.toLowerCase())))}
+				(tagResults = allowedTags.filter((el) =>
+					el.toLowerCase().includes(tagSearch.toLowerCase())
+				))}
 			id="tags"
 			type="text"
 		/>
@@ -334,7 +320,12 @@
 	<div style="margin-top: 2rem; text-align: center">
 		{#if $bookToEdit}
 			<div>
-				<Button on:click={() => handleSubmit()} text="Save changes" icon="ri-save-line" type="fill accent" />
+				<Button
+					on:click={() => handleSubmit()}
+					text="Save changes"
+					icon="ri-save-line"
+					type="fill accent"
+				/>
 				<Button
 					on:click={() => {
 						$modalCall = '';
@@ -347,7 +338,12 @@
 				/>
 			</div>
 		{:else}
-			<Button on:click={() => handleSubmit()} text="Create spellbook" icon="ri-add-line" type="fill accent" />
+			<Button
+				on:click={() => handleSubmit()}
+				text="Create spellbook"
+				icon="ri-add-line"
+				type="fill accent"
+			/>
 		{/if}
 	</div>
 </form>
@@ -364,7 +360,7 @@
 		transition: 0.2s;
 	}
 	label {
-		margin-bottom: .5rem;
+		margin-bottom: 0.5rem;
 	}
 	.row {
 		display: grid;

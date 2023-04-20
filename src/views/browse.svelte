@@ -11,15 +11,21 @@
 	import BrowseBookSlot from '../components/browse/browse-bookSlot.svelte';
 	import { fade } from 'svelte/transition';
 	import WordInput from '../components/wordInput.svelte';
+	import { classes } from '../staticData';
 	const pb = new PocketBase('https://db.spellbook.pro');
 	let browsePage = 'popular';
 	let favoriteBooks = [];
 	let browseBooks = [];
 	let loadingFavorites;
 	let placeholderSlots = [0, 1, 2];
+	let levels = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 	$: if (browsePage === 'favorites') {
 		loadingFavorites = true;
 		getFavoriteBooks();
+	}
+
+	$: if ($browseFilter) {
+		browsePage = 'browse'
 	}
 
 	function openBook(id) {
@@ -95,17 +101,32 @@
 						<div class="filters">
 							<h4>filters</h4>
 							<div>
-								<WordInput placeholder="Search by tags..." />
+								<label for="class">Character level</label>
+								<select name="level" id="level">
+									<option selected value="">All</option>
+									{#each levels as item}
+										<option value={item}>Level {item}</option>
+									{/each}
+								</select>
+							</div>
+							<div>
+								<label for="class">Character class</label>
+								<select name="class" id="class">
+									<option selected value="">All</option>
+									{#each classes as item}
+										<option value={item.toLowerCase()}>{item}</option>
+									{/each}
+								</select>
 							</div>
 						</div>
 						<div>
-							{#if (browseBooks = 'No results.')}
+							{#if browseBooks == 'No results.'}
 								<p style="margin-top: 1rem; text-align: center">No results.</p>
 							{:else}
 								{#each browseBooks as book}
 									<BrowseBookSlot data={book} on:click={() => openBook(book.id)} />
 								{:else}
-									<p style="margin-top: 1rem; text-align: center">No results.</p>
+									<p style="margin-top: 1rem; text-align: center">Add some filters to get going!</p>
 								{/each}
 							{/if}
 						</div>

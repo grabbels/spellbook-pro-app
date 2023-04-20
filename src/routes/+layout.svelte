@@ -101,14 +101,18 @@
 		}
 	}
 
-	if ($spells.length < 1 && $online && $user) {
+	if ($spells.length < 1) {
 		pullSpells();
 	}
 	async function pullSpells() {
-		const records = await pb.collection('spells').getFullList({});
-		console.log(records);
-		$spells = records;
-		$lastLocalSpellsPull = Date.now();
+		if ($online) {
+			const records = await pb.collection('spells').getFullList({});
+			console.log(records);
+			$spells = records;
+			$lastLocalSpellsPull = Date.now();
+		} else {
+			$spells = spellsDatabase
+		}
 	}
 	// removeSpells()
 	// async function removeSpells() {
@@ -166,106 +170,6 @@
 		}
 	};
 
-	// trackLibraryChanges();
-	// $: $localUserLibrary, trackLibraryChanges();
-
-	// function trackLibraryChanges() {
-	// console.log(diff($localPreviousLibrary, $localUserLibrary));
-	// let modLib = applyDiff($localPreviousLibrary, $localUserLibrary)
-	// console.log(modLib);
-
-	// $localPendingChanges = detailedDiff($localPendingChanges, $localUserLibrary)
-	// }
-
-	// console.log(DeepDiff.diff(library, $localUserLibrary));
-
-	// async function syncLibrary(record) {
-	// 	let toBePushedLibrary;
-	// 	try {
-	// 		const record = await pb.collection('users').getOne($user.id);
-	// 		toBePushedLibrary = record.library;
-	// 		if (record.library == $localUserLibrary) {
-	// 			//cloud library is identical to local library, no sync neccessary
-	// 		} else if (record) {
-	// 			afterPull(record, toBePushedLibrary);
-	// 		}
-	// 	} catch (error) {
-	// 		console.log(error);
-	// 	}
-
-	// 	function afterPull(record, toBePushedLibrary) {
-	// 		if (Object.keys(localPendingChanges).length) {
-	// 			for (const id in localPendingChanges) {
-	// 				// console.log(localPendingChanges[id])
-	// 				console.log(id);
-	// 				if (!record.library[id]) {
-	// 					//new local record not in cloud, needs to push in its entirety
-	// 					toBePushedLibrary[id] = localPendingChanges[id];
-	// 				} else {
-	// 					for (const key in localPendingChanges[id]) {
-	// 						if (key === 'delete') {
-	// 							delete toBePushedLibrary[id];
-	// 						} else if (key === 'list') {
-	// 							for (const key in localPendingChanges[id].list) {
-	// 								if (key === 'add') {
-	// 									let toBeAddedSpells = localPendingChanges[id].list.add;
-	// 									for (let i = 0; i < toBeAddedSpells; i++) {
-	// 										toBePushedLibrary[id].list = [
-	// 											...toBePushedLibrary[id].list,
-	// 											toBeAddedSpells[i]
-	// 										];
-	// 									}
-	// 								} else if (key === 'remove') {
-	// 									let toBeRemovedSpells = localPendingChanges[id].list.remove;
-	// 									for (let i = 0; i < toBeRemovedSpells; i++) {
-	// 										toBePushedLibrary[id].list = toBePushedLibrary[id].list.filter(
-	// 											(o) => o != toBeRemovedSpells[i]
-	// 										);
-	// 									}
-	// 								}
-	// 							}
-	// 						} else if (
-	// 							key === 'name' ||
-	// 							key === 'tags' ||
-	// 							key === 'class' ||
-	// 							key === 'icon' ||
-	// 							key === 'color' ||
-	// 							key === 'level' ||
-	// 							key === 'published'
-	// 						) {
-	// 							console.log(id);
-	// 							//partial changes that will directly overwrite to the cloud
-	// 							toBePushedLibrary[id][key] = $localUserLibrary[id][key];
-	// 						}
-	// 					}
-	// 				}
-	// 			}
-
-	// 			let lastPushedChanges = localPendingChanges;
-	// 			pushToCloud(lastPushedChanges, toBePushedLibrary);
-	// 		}
-	// 	}
-
-	// 	//
-
-	// 	async function pushToCloud(lastPushedChanges, toBePushedLibrary) {
-	// 		const data = {
-	// 			library: toBePushedLibrary,
-	// 			last_sync_time: Date.now(),
-	// 			last_pushed_changes: lastPushedChanges
-	// 		};
-	// 		try {
-	// 			const record = await pb.collection('users').update($user.id, data);
-	// 			console.log(record);
-	// 		} catch (error) {
-	// 			console.log(error.data);
-	// 		}
-	// 	}
-	// }
-
-	// import { User } from 'svelte-pocketbase';
-
-	// console.log(user.email);
 	//mobile-only components
 	import MobileActiveTabbar from '../components/mobile/mobile-activeTab-bar.svelte';
 	import MobileHeader from '../components/mobile/mobile-header.svelte';
@@ -327,7 +231,7 @@
 		}
 	});
 
-	$modalCall = 'welcome';
+	// $modalCall = 'welcome';
 
 	$: if ($quickSearchPanelOpen === false) {
 		$quickQuery = '';
@@ -388,7 +292,7 @@
 <slot />
 {#if $modalCall}
 	<!-- {#key $modalCall} -->
-		<Modal />
+	<Modal />
 	<!-- {/key} -->
 {/if}
 {#if $notification}
@@ -441,6 +345,7 @@
 	* {
 		box-sizing: border-box;
 		font-family: 'Kanit';
+		-webkit-tap-highlight-color: transparent;
 	}
 
 	.card.filtered {

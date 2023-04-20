@@ -191,7 +191,7 @@
 		}
 		&.scrolled {
 			.header_content {
-				transform: translateY(-24px);
+				transform: translateY(-38px);
 				h1 {
 					transform: translateY(-100%);
 					opacity: 0;

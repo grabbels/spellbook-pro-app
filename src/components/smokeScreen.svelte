@@ -31,8 +31,8 @@
         width: 100%;
         height: 100%;
 		z-index: 100;
-		background-color: rgba(0, 0, 0, 0.7);
-		backdrop-filter: contrast(.8);
+		background-color: rgba(0, 0, 0, 0.75);
+		backdrop-filter: contrast(.7) brightness(.8);
 		z-index: 200;
 		pointer-events: auto;
 		// pointer-events: none;

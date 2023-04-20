@@ -97,8 +97,10 @@
 	div.bookmarks_scrollbar {
 		position: absolute;
 		right: 0;
-		top: calc(var(--safe-area-inset-top) + 6rem);
-		bottom: calc(var(--safe-area-inset-bottom) + 10rem);
+		padding-top:calc(var(--safe-area-inset-top) + 6rem) ;
+		padding-bottom: calc(var(--safe-area-inset-bottom) + 10rem);
+		top: 0;
+		bottom: 0;
 		width: 5px;
 		transition: 0.2s;
 		pointer-events: auto;
@@ -138,6 +140,7 @@
 				background-color: var(--lightblue);
 				width: 25px;
 				margin-left: -15px;
+
 				// border-radius: 10px;
 				div {
 					&:after {
