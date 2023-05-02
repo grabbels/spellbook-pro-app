@@ -8,7 +8,7 @@ import {
 } from './stores-persist';
 import { goto } from '$app/navigation';
 import { get } from 'svelte/store';
-import { modalCall, view } from './stores';
+import { modalCall, view, optionsCall } from './stores';
 
 export function openSpellbook(openId) {
 	if (get(openBooksIdsArray).includes(openId)) {
@@ -51,6 +51,6 @@ export function resetUserData() {
 	openBooksIdsArray.set([]);
 	localUserLibrary.set([]);
 	localLastSyncTime.set(0);
-	page.set('');
-	view.set('');
+	view.set('spellbook');
+	optionsCall.set('');
 }

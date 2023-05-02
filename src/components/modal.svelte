@@ -256,7 +256,7 @@
 		&.fromspellbooklist {
 			background-color: var(--cardbg);
 			padding: 0;
-			.close {
+			.close, .back {
 				top: calc(var(--safe-area-inset-top) + 1rem);
 				position: fixed;
 			}
@@ -279,6 +279,11 @@
 						position: relative;
 					}
 				}
+			}
+		}
+		&.fromspellbooklist {
+			.inner {
+				padding-top: var(--safe-area-inset-top);
 			}
 		}
 	}

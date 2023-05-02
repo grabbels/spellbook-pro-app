@@ -13,7 +13,9 @@
 	let slides = [0, 1, 2, 3, 4, 5, 6];
 	let slide = 0;
 	let direction;
-	
+	$: if (slide > 5) {
+		slide = 6
+	}
 </script>
 
 <SafeViewPadding noheader>
